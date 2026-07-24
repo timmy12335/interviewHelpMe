@@ -1,0 +1,10 @@
+# Reference forks are their own git repos (mianshiya, mianshiya-next); not part of this project's history.
+reference/
+
+# Common build/dependency artifacts (populated once backend/frontend scaffolding is added)
+node_modules/
+target/
+dist/
+.next/
+*.log
+.DS_Store
