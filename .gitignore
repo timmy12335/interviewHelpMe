@@ -1,6 +1,9 @@
 # Reference forks are their own git repos (mianshiya, mianshiya-next); not part of this project's history.
 reference/
 
+# Claude Code local (machine-specific) settings; shareable config under .claude/ can still be tracked.
+.claude/settings.local.json
+
 # Common build/dependency artifacts (populated once backend/frontend scaffolding is added)
 node_modules/
 target/
