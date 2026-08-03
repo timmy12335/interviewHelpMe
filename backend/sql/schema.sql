@@ -5,7 +5,7 @@
 CREATE DATABASE IF NOT EXISTS interview_help_me;
 USE interview_help_me;
 
--- 分類（固定 9 大類：java、spring、jvm、java-concurrency、redis、database、backend-engineering、system-design、ai-llm、ai-agent）
+-- 分類（固定 10 大知識類別 + 1 個實戰題庫：java、spring、jvm、java-concurrency、redis、database、backend-engineering、system-design、ai-llm、ai-agent、real-interviews）
 CREATE TABLE IF NOT EXISTS category
 (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -59,4 +59,5 @@ INSERT INTO category (slug, name_zh, name_en, sort_order) VALUES
     ('backend-engineering', '後端工程面試題', 'Backend Engineering', 7),
     ('system-design', '系統設計面試題', 'System Design', 8),
     ('ai-llm', 'AI 大模型面試題', 'AI LLM', 9),
-    ('ai-agent', 'AI Agent 面試題', 'AI Agent', 10);
+    ('ai-agent', 'AI Agent 面試題', 'AI Agent', 10),
+    ('real-interviews', '實戰面試題（真實公司考題風格）', 'Real Company Interviews', 11);
