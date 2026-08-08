@@ -12,6 +12,9 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
+  "eslintConfig": {
+    "extends": "next/core-web-vitals"
+  },
   "dependencies": {
     "@ant-design/cssinjs": "^1.21.1",
     "@ant-design/nextjs-registry": "^1.0.1",
@@ -41,6 +44,8 @@
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "14.2.7",
     "jsdom": "^25.0.0",
     "storybook": "8.2.9",
     "typescript": "^5.5.4",

@@ -1,3 +1,5 @@
+"use client";
+
 import { Space, Typography } from "antd";
 import type { MouseEvent } from "react";
 

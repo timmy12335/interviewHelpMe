@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, List, Space } from "antd";
 
 import { DifficultyBadge } from "@/components/DifficultyBadge";
