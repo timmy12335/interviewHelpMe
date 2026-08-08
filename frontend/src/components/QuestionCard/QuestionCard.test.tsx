@@ -25,13 +25,11 @@ describe("QuestionCard", () => {
     expect(screen.getByText("簡單")).toBeInTheDocument();
     expect(screen.getByText("Java")).toBeInTheDocument();
     expect(screen.getByText("字串")).toBeInTheDocument();
-    expect(screen.getByText("==", { selector: "code" })).toBeInTheDocument();
+    expect(screen.getAllByText("==", { selector: "code" })).toHaveLength(2);
     expect(
       screen.getByRole("heading", { name: "推薦答案" }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText("equals", { selector: "code" }),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/比較參考是否相同/)).toBeInTheDocument();
   });
 
   it("提供 href 時讓題目標題成為連結", () => {
@@ -48,9 +46,7 @@ describe("QuestionCard", () => {
     render(<QuestionCard question={sampleQuestion} showAnswer={false} />);
 
     expect(screen.queryByText("推薦答案")).not.toBeInTheDocument();
-    expect(
-      screen.queryByText("equals", { selector: "code" }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/比較參考是否相同/)).not.toBeInTheDocument();
     expect(screen.getByText("==", { selector: "code" })).toBeInTheDocument();
   });
 
