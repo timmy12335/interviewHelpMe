@@ -12,9 +12,35 @@
   min-width: 0;
 }
 
+.practice__col {
+  min-width: 0;
+}
+
 .practice__card {
   padding: 24px 26px 26px;
   margin-bottom: 18px;
+}
+
+/* ---------------------------------------------------------------- */
+/* Sealed placeholder (寬螢幕右欄，答案未解鎖時)                       */
+/* ---------------------------------------------------------------- */
+
+.practice__locked {
+  border-style: dashed !important;
+}
+
+.practice__locked-text {
+  margin: 14px 0 18px;
+  color: var(--ink-muted);
+  font-size: 13.5px;
+  line-height: 1.75;
+}
+
+/* 窄螢幕不需要佔位卡：左右欄已經直接堆疊 */
+@media (max-width: 1399px) {
+  .practice__locked {
+    display: none;
+  }
 }
 
 .practice__title {
@@ -294,6 +320,46 @@
 /* ---------------------------------------------------------------- */
 /* Responsive                                                        */
 /* ---------------------------------------------------------------- */
+
+/* ---------------------------------------------------------------- */
+/* 寬螢幕：左問右答並排，答案欄吸頂並自行捲動                          */
+/* ---------------------------------------------------------------- */
+
+@media (min-width: 1400px) {
+  .practice-main {
+    max-width: 1640px;
+  }
+
+  .practice {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(380px, 40%);
+    gap: 20px;
+    align-items: start;
+  }
+
+  .practice__col--ref {
+    position: sticky;
+    top: 0;
+    max-height: calc(100vh - 78px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(34 211 238 / 35%) transparent;
+  }
+
+  .practice__col--ref::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .practice__col--ref::-webkit-scrollbar-thumb {
+    background: rgb(34 211 238 / 30%);
+  }
+
+  /* 右欄較窄，收掉一層水平內距換閱讀寬度 */
+  .practice__col--ref .practice__card {
+    padding-inline: 22px;
+  }
+}
 
 @media (max-width: 900px) {
   .practice-shell {

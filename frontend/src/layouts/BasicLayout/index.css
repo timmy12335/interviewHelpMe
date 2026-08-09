@@ -14,7 +14,13 @@
   background: transparent !important;
 }
 
+/*
+ * ProLayout 把 content 設成 display:flex，頁面根節點會變成 flex item 而用
+ * shrink-to-fit 決定寬度，導致 max-width / margin:auto 全部失效（桌機看起來
+ * 像手機版）。改回 block 之後版面才會照常規文件流撐滿。
+ */
 .ant-pro-layout .ant-pro-layout-content {
+  display: block !important;
   padding-bottom: 96px !important;
 }
 

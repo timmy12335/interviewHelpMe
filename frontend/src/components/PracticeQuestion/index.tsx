@@ -123,6 +123,7 @@ export function PracticeQuestion({ question }: { question: Question }) {
 
   return (
     <article className="practice">
+      <div className="practice__col">
       <div className="practice__card hud-panel hud-brackets">
         <p className="hud-eyebrow">Unit // 題目</p>
         <h1 className="practice__title">{question.title}</h1>
@@ -169,7 +170,9 @@ export function PracticeQuestion({ question }: { question: Question }) {
           </button>
         </div>
       </div>
+      </div>
 
+      <div className="practice__col practice__col--ref">
       {showAnswer ? (
         <div className="practice__card hud-panel hud-brackets is-decrypted" id={answerPanelId}>
           <p className="hud-eyebrow">Decrypted // 推薦答案</p>
@@ -187,7 +190,25 @@ export function PracticeQuestion({ question }: { question: Question }) {
             <AnswerSection title="核心答案" value={question.answer} variant="core" />
           )}
         </div>
-      ) : null}
+      ) : (
+        <div className="practice__card hud-panel hud-brackets practice__locked">
+          <p className="hud-eyebrow">Sealed // 答案封存中</p>
+          <p className="practice__locked-text">
+            先在左邊寫下你的版本，再解鎖對照。解鎖後答案會固定在這一欄，
+            捲動題目時仍看得到，不必來回滑動比對。
+          </p>
+          <button
+            type="button"
+            className="practice__reveal"
+            onClick={() => setShowAnswer(true)}
+          >
+            <span className="practice__reveal-icon" aria-hidden>
+              ◇
+            </span>
+            解鎖對照
+          </button>
+        </div>
+      )}
 
       {question.followUps && question.followUps.length > 0 ? (
         <div className="practice__card hud-panel hud-brackets">
@@ -221,6 +242,7 @@ export function PracticeQuestion({ question }: { question: Question }) {
           </div>
         </div>
       ) : null}
+      </div>
     </article>
   );
 }

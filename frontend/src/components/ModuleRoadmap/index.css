@@ -1,0 +1,157 @@
+.roadmap {
+  padding: 24px 26px 22px;
+  margin-top: 18px;
+}
+
+.roadmap__lede {
+  margin: 14px 0 10px;
+  color: var(--ink-muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.roadmap__map {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.roadmap__trail {
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.32;
+  stroke-dasharray: 5 7;
+}
+
+/* ---------------------------------------------------------------- */
+/* Nodes                                                             */
+/* ---------------------------------------------------------------- */
+
+.roadmap__node {
+  --node: var(--cyan);
+
+  cursor: pointer;
+}
+
+.roadmap__node--easy { --node: var(--lime); }
+.roadmap__node--medium { --node: var(--amber); }
+.roadmap__node--hard { --node: var(--rose); }
+
+.roadmap__halo {
+  fill: transparent;
+  stroke: var(--node);
+  stroke-width: 1;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    opacity var(--fast) var(--ease),
+    transform var(--fast) var(--ease);
+}
+
+.roadmap__disc {
+  fill: rgb(4 6 14 / 92%);
+  stroke: var(--node);
+  stroke-width: 1.6;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    fill var(--fast) var(--ease),
+    transform var(--fast) var(--ease);
+}
+
+.roadmap__num {
+  fill: var(--node);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  text-anchor: middle;
+  pointer-events: none;
+  transition: fill var(--fast) var(--ease);
+}
+
+/* 已作答：實心 */
+.roadmap__node.is-answered .roadmap__disc {
+  fill: var(--node);
+}
+
+.roadmap__node.is-answered .roadmap__num {
+  fill: #04060e;
+  font-weight: 700;
+}
+
+.roadmap__node:hover .roadmap__halo,
+.roadmap__node:focus-visible .roadmap__halo {
+  opacity: 0.75;
+  transform: scale(1.12);
+}
+
+.roadmap__node:hover .roadmap__disc,
+.roadmap__node:focus-visible .roadmap__disc {
+  transform: scale(1.14);
+}
+
+.roadmap__node:focus-visible {
+  outline: none;
+}
+
+/* ---------------------------------------------------------------- */
+/* Legend                                                            */
+/* ---------------------------------------------------------------- */
+
+.roadmap__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 14px 0 0;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--line);
+  list-style: none;
+}
+
+.roadmap__key {
+  --key: var(--cyan);
+
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.roadmap__key::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid var(--key);
+  border-radius: 50%;
+}
+
+.roadmap__key--easy { --key: var(--lime); }
+.roadmap__key--medium { --key: var(--amber); }
+.roadmap__key--hard { --key: var(--rose); }
+
+.roadmap__key--done {
+  --key: var(--cyan);
+}
+
+.roadmap__key--done::before {
+  background: var(--cyan);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roadmap__halo,
+  .roadmap__disc {
+    transition: none;
+  }
+
+  .roadmap__node:hover .roadmap__halo,
+  .roadmap__node:hover .roadmap__disc {
+    transform: none;
+  }
+}
