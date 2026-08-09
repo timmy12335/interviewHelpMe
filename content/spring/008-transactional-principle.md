@@ -2,7 +2,7 @@
 id: spring-008
 category: spring
 slug: transactional-principle
-title: @Transactional 的實作原理
+title: "@Transactional 的實作原理"
 difficulty: medium
 tags: [Transactional, 交易, AOP, 宣告式交易]
 source: original

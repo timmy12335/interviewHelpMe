@@ -2,7 +2,7 @@
 id: spring-024
 category: spring
 slug: conditional-profiles
-title: @Conditional 條件裝配與 Profile
+title: "@Conditional 條件裝配與 Profile"
 difficulty: medium
 tags: [Conditional, Profile, 環境, 條件裝配]
 source: original

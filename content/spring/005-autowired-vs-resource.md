@@ -2,7 +2,7 @@
 id: spring-005
 category: spring
 slug: autowired-vs-resource
-title: @Autowired 與 @Resource 的差異
+title: "@Autowired 與 @Resource 的差異"
 difficulty: easy
 tags: [Autowired, Resource, 注入]
 source: original

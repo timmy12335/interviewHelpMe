@@ -2,7 +2,7 @@
 id: spring-019
 category: spring
 slug: stereotype-annotations
-title: @Component、@Service、@Repository、@Controller 的區別
+title: "@Component、@Service、@Repository、@Controller 的區別"
 difficulty: easy
 tags: [Component, Service, Repository, Controller]
 source: original

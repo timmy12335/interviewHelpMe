@@ -2,7 +2,7 @@
 id: spring-020
 category: spring
 slug: configuration-full-lite
-title: @Configuration 的 full 模式與 lite 模式
+title: "@Configuration 的 full 模式與 lite 模式"
 difficulty: hard
 tags: [Configuration, proxyBeanMethods, full模式, lite模式]
 source: original

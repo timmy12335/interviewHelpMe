@@ -62,7 +62,7 @@ export function getAllCategoriesFromRoot(
     .map(({ slug, nameZh }) => ({
       slug,
       nameZh,
-      questionCount: loadQuestionsFromCategoryDir(contentRoot, slug).length,
+      questionCount: listQuestionFiles(path.join(contentRoot, slug)).length,
     }));
 }
 

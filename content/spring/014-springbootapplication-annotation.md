@@ -2,7 +2,7 @@
 id: spring-014
 category: spring
 slug: springbootapplication-annotation
-title: @SpringBootApplication 註解剖析
+title: "@SpringBootApplication 註解剖析"
 difficulty: medium
 tags: [SpringBootApplication, 組合註解, ComponentScan]
 source: original

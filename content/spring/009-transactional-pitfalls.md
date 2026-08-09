@@ -2,7 +2,7 @@
 id: spring-009
 category: spring
 slug: transactional-pitfalls
-title: @Transactional 失效的常見情境
+title: "@Transactional 失效的常見情境"
 difficulty: hard
 tags: [Transactional, 交易失效, 自我呼叫]
 source: original
