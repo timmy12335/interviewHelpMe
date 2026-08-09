@@ -9,6 +9,7 @@ node_modules/
 target/
 dist/
 .next/
+frontend/out/
 *.log
 .DS_Store
 
