@@ -21,7 +21,7 @@ describe("QuestionList", () => {
       }),
     ).toHaveAttribute(
       "href",
-      "/category/java/question/java-string-equality",
+      "/category/java/question/java-string-equality/",
     );
     expect(screen.getByText("簡單")).toBeInTheDocument();
     expect(screen.getAllByText("Java")).toHaveLength(2);

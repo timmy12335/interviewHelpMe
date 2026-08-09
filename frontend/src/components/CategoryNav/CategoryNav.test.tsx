@@ -18,11 +18,11 @@ describe("CategoryNav", () => {
 
     expect(screen.getByRole("link", { name: "Java（24）" })).toHaveAttribute(
       "href",
-      "/category/java",
+      "/category/java/",
     );
     expect(screen.getByRole("link", { name: "Java 併發" })).toHaveAttribute(
       "href",
-      "/category/java-concurrency",
+      "/category/java-concurrency/",
     );
   });
 

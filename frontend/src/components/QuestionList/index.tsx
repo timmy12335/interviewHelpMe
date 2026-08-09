@@ -5,6 +5,7 @@ import { Card, List, Space } from "antd";
 import { DifficultyBadge } from "@/components/DifficultyBadge";
 import { EmptyState } from "@/components/EmptyState";
 import { TagList } from "@/components/TagList";
+import { withBasePath } from "@/lib/paths";
 import type { Question } from "@/types/question";
 
 export interface QuestionListProps {
@@ -14,12 +15,17 @@ export interface QuestionListProps {
   title?: string;
   /** 無題目時顯示的文字，預設為「尚無題目」。 */
   emptyText?: string;
-  /** 建立題目連結的函式。 */
+  /**
+   * 建立題目連結的函式；預設為 `withBasePath(\`/category/{slug}/question/{slug}/\`)`。
+   * Server Component 請勿傳入（函式無法序列化）；Storybook 等 client 場景可覆寫。
+   */
   getHref?: (question: Question) => string;
 }
 
 const defaultGetHref = (question: Question) =>
-  `/category/${question.categorySlug}/question/${question.slug}`;
+  withBasePath(
+    `/category/${question.categorySlug}/question/${question.slug}/`,
+  );
 
 /**
  * 以卡片與清單呈現題目，並組合難度標籤、題目標籤及空狀態。
