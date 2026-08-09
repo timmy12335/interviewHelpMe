@@ -4,9 +4,9 @@ import gfm from "@bytemd/plugin-gfm";
 import highlight from "@bytemd/plugin-highlight";
 import { Viewer } from "@bytemd/react";
 
-import "github-markdown-css/github-markdown-light.css";
+import "github-markdown-css/github-markdown-dark.css";
 import "bytemd/dist/index.css";
-import "highlight.js/styles/vs.css";
+import "highlight.js/styles/github-dark.css";
 
 export interface MdViewerProps {
   /** 要顯示的 Markdown 文字；未提供時顯示空白內容。 */

@@ -1,63 +1,58 @@
 "use client";
 
-import { Avatar, Card, List, Typography } from "antd";
+import List from "antd/es/list";
 import Link from "next/link";
 
 import type { Category } from "@/types/question";
 
+import "./index.css";
+
 export interface CategoryBankListProps {
   /** 要顯示的題庫（分類）。 */
   categories: Category[];
+  /** 編號起始值，讓首頁與題庫大全的代號連續。 */
+  indexOffset?: number;
 }
 
-/** 依題庫名稱取穩定的頭像底色，避免每次渲染跳色。 */
-const AVATAR_COLORS = [
-  "#1677ff",
-  "#13c2c2",
-  "#52c41a",
-  "#faad14",
-  "#eb2f96",
-  "#722ed1",
-];
+/** 依 slug 取穩定的強調色，避免每次渲染跳色。 */
+const ACCENTS = ["cyan", "violet", "lime", "amber", "rose"] as const;
 
-function avatarColor(slug: string): string {
+function accentOf(slug: string): (typeof ACCENTS)[number] {
   const sum = [...slug].reduce((total, char) => total + char.charCodeAt(0), 0);
-  return AVATAR_COLORS[sum % AVATAR_COLORS.length];
+  return ACCENTS[sum % ACCENTS.length];
 }
 
-/** 題庫列表：以卡片網格呈現各分類與題數。 */
-export function CategoryBankList({ categories }: CategoryBankListProps) {
+/** 題庫列表：以 HUD 模組卡呈現各分類與題數。 */
+export function CategoryBankList({
+  categories,
+  indexOffset = 0,
+}: CategoryBankListProps) {
   return (
-    <div className="category-bank-list">
-      <List
-        grid={{ gutter: 16, column: 4, xs: 1, sm: 2, md: 3, lg: 3 }}
-        dataSource={categories}
-        renderItem={(category) => (
-          <List.Item key={category.slug}>
-            <Card hoverable>
-              <Link href={`/category/${category.slug}/`}>
-                <Card.Meta
-                  avatar={
-                    <Avatar style={{ backgroundColor: avatarColor(category.slug) }}>
-                      {category.nameZh.slice(0, 1)}
-                    </Avatar>
-                  }
-                  title={category.nameZh}
-                  description={
-                    <Typography.Paragraph
-                      type="secondary"
-                      ellipsis={{ rows: 1 }}
-                      style={{ marginBottom: 0 }}
-                    >
-                      {category.questionCount ?? 0} 題
-                    </Typography.Paragraph>
-                  }
-                />
-              </Link>
-            </Card>
-          </List.Item>
-        )}
-      />
-    </div>
+    <List
+      className="bank-grid"
+      grid={{ gutter: 16, column: 4, xs: 1, sm: 2, md: 3, lg: 4 }}
+      dataSource={categories}
+      renderItem={(category, index) => (
+        <List.Item key={category.slug}>
+          <Link
+            className={`bank-card hud-panel hud-brackets bank-card--${accentOf(category.slug)}`}
+            href={`/category/${category.slug}/`}
+          >
+            <span className="bank-card__scan" aria-hidden />
+            <div className="bank-card__top">
+              <span className="hud-index">
+                MOD-{String(indexOffset + index + 1).padStart(2, "0")}
+              </span>
+              <span className="bank-card__count">
+                {category.questionCount ?? 0}
+                <small>題</small>
+              </span>
+            </div>
+            <h3 className="bank-card__title">{category.nameZh}</h3>
+            <span className="bank-card__cta">開始練習 →</span>
+          </Link>
+        </List.Item>
+      )}
+    />
   );
 }

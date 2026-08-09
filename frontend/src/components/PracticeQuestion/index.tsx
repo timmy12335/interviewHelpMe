@@ -1,6 +1,5 @@
 "use client";
 
-import { Button, Card, Collapse, Input, Space, Tag, Typography } from "antd";
 import { useEffect, useId, useState } from "react";
 
 import { DifficultyBadge } from "@/components/DifficultyBadge";
@@ -8,6 +7,8 @@ import { MdViewer } from "@/components/MdViewer";
 import { TagList } from "@/components/TagList";
 import { withBasePath } from "@/lib/paths";
 import type { FollowUp, Question } from "@/types/question";
+
+import "./index.css";
 
 function answerStorageKey(questionId: string) {
   return `ihm:answer-${questionId}`;
@@ -43,38 +44,68 @@ function relatedLabel(raw: string): string {
     .replace(/-/g, " ");
 }
 
-function AnswerSection({ title, value }: { title: string; value?: string }) {
+function AnswerSection({
+  title,
+  value,
+  variant = "default",
+}: {
+  title: string;
+  value?: string;
+  variant?: "default" | "core" | "tip";
+}) {
   if (!value) {
     return null;
   }
 
   return (
-    <section>
-      <Typography.Title level={5} style={{ marginTop: 0 }}>
-        {title}
-      </Typography.Title>
+    <section className={`answer-block answer-block--${variant}`}>
+      <h3 className="answer-block__title">{title}</h3>
       <MdViewer value={value} />
     </section>
   );
 }
 
-function followUpChildren(followUp: FollowUp) {
+function FollowUpItem({ followUp }: { followUp: FollowUp }) {
+  const [open, setOpen] = useState(false);
+  const panelId = useId();
+
   return (
-    <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-      <AnswerSection title="核心答案" value={followUp.coreAnswer} />
-      <AnswerSection title="詳細解析" value={followUp.detail} />
-      <AnswerSection title="面試回答方式" value={followUp.interviewTip} />
-    </Space>
+    <div className={`followup${open ? " is-open" : ""}`}>
+      <button
+        type="button"
+        className="followup__trigger"
+        aria-expanded={open}
+        aria-controls={panelId}
+        onClick={() => setOpen((value) => !value)}
+      >
+        <span className="followup__caret" aria-hidden>
+          ▸
+        </span>
+        <span className="followup__text">{followUp.title}</span>
+      </button>
+      {open ? (
+        <div className="followup__panel" id={panelId}>
+          <AnswerSection title="核心答案" value={followUp.coreAnswer} variant="core" />
+          <AnswerSection title="詳細解析" value={followUp.detail} />
+          <AnswerSection
+            title="面試回答方式"
+            value={followUp.interviewTip}
+            variant="tip"
+          />
+        </div>
+      ) : null}
+    </div>
   );
 }
 
 /**
- * 題目練習卡：預設隱藏答案，先作答再展開核心答案與詳細解析。
+ * 題目練習卡：答案預設封存，先作答再解鎖核心答案與詳細解析。
  */
 export function PracticeQuestion({ question }: { question: Question }) {
   const [draft, setDraft] = useState("");
   const [showAnswer, setShowAnswer] = useState(false);
   const inputId = useId();
+  const answerPanelId = useId();
 
   useEffect(() => {
     setShowAnswer(false);
@@ -91,101 +122,105 @@ export function PracticeQuestion({ question }: { question: Question }) {
     Boolean(question.interviewTip);
 
   return (
-    <div className="question-card">
-      <Card>
-        <Typography.Title level={1} style={{ fontSize: 24, marginTop: 0 }}>
-          {question.title}
-        </Typography.Title>
-        <Space size="small" wrap>
+    <article className="practice">
+      <div className="practice__card hud-panel hud-brackets">
+        <p className="hud-eyebrow">Unit // 題目</p>
+        <h1 className="practice__title">{question.title}</h1>
+        <div className="practice__meta">
           <DifficultyBadge difficulty={question.difficulty} />
           <TagList tags={question.tags} />
-        </Space>
-        <div style={{ marginBottom: 16 }} />
-        <MdViewer value={question.content} />
-        <div style={{ marginBottom: 24 }} />
-        <Typography.Text type="secondary">
-          <label htmlFor={inputId}>你的作答（先想再看答案）</label>
-        </Typography.Text>
-        <Input.TextArea
-          id={inputId}
-          rows={4}
-          placeholder="打字輸入你的回答…"
-          style={{ marginTop: 8 }}
-          value={draft}
-          onChange={(event) => {
-            const value = event.target.value;
-            setDraft(value);
-            try {
-              localStorage.setItem(answerStorageKey(question.id), value);
-            } catch {
-              // ignore quota / private mode
-            }
-          }}
-        />
-        <div style={{ marginBottom: 16 }} />
-        <Button type="primary" onClick={() => setShowAnswer((value) => !value)}>
-          {showAnswer ? "隱藏核心答案與詳細解析" : "顯示核心答案與詳細解析"}
-        </Button>
-      </Card>
+        </div>
+
+        <div className="practice__question">
+          <MdViewer value={question.content} />
+        </div>
+
+        <div className="practice__compose">
+          <label className="practice__label" htmlFor={inputId}>
+            你的作答（先想再看答案）
+          </label>
+          <textarea
+            id={inputId}
+            className="practice__input"
+            rows={5}
+            placeholder="在這裡寫下你的版本…"
+            value={draft}
+            onChange={(event) => {
+              const value = event.target.value;
+              setDraft(value);
+              try {
+                localStorage.setItem(answerStorageKey(question.id), value);
+              } catch {
+                // ignore quota / private mode
+              }
+            }}
+          />
+          <button
+            type="button"
+            className="practice__reveal"
+            aria-expanded={showAnswer}
+            aria-controls={answerPanelId}
+            onClick={() => setShowAnswer((value) => !value)}
+          >
+            <span className="practice__reveal-icon" aria-hidden>
+              {showAnswer ? "◈" : "◇"}
+            </span>
+            {showAnswer ? "隱藏核心答案與詳細解析" : "顯示核心答案與詳細解析"}
+          </button>
+        </div>
+      </div>
 
       {showAnswer ? (
-        <>
-          <div style={{ marginBottom: 16 }} />
-          <Card title="推薦答案">
-            <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-              {hasStructured ? (
-                <>
-                  <AnswerSection title="核心答案" value={question.coreAnswer} />
-                  <AnswerSection title="詳細解析" value={question.detail} />
-                  <AnswerSection
-                    title="面試回答方式"
-                    value={question.interviewTip}
-                  />
-                </>
-              ) : (
-                <AnswerSection title="核心答案" value={question.answer} />
-              )}
-            </Space>
-          </Card>
-        </>
+        <div className="practice__card hud-panel hud-brackets is-decrypted" id={answerPanelId}>
+          <p className="hud-eyebrow">Decrypted // 推薦答案</p>
+          {hasStructured ? (
+            <>
+              <AnswerSection title="核心答案" value={question.coreAnswer} variant="core" />
+              <AnswerSection title="詳細解析" value={question.detail} />
+              <AnswerSection
+                title="面試回答方式"
+                value={question.interviewTip}
+                variant="tip"
+              />
+            </>
+          ) : (
+            <AnswerSection title="核心答案" value={question.answer} variant="core" />
+          )}
+        </div>
       ) : null}
 
       {question.followUps && question.followUps.length > 0 ? (
-        <>
-          <div style={{ marginBottom: 16 }} />
-          <Card title="常見追問">
-            <Collapse
-              items={question.followUps.map((followUp, index) => ({
-                key: String(index),
-                label: followUp.title,
-                children: followUpChildren(followUp),
-              }))}
-            />
-          </Card>
-        </>
+        <div className="practice__card hud-panel hud-brackets">
+          <p className="hud-eyebrow">Follow-ups // 常見追問</p>
+          <div className="followup-list">
+            {question.followUps.map((followUp) => (
+              <FollowUpItem key={followUp.title} followUp={followUp} />
+            ))}
+          </div>
+        </div>
       ) : null}
 
       {question.related && question.related.length > 0 ? (
-        <>
-          <div style={{ marginBottom: 16 }} />
-          <Card title="相關題目">
-            <Space size="small" wrap>
-              {question.related.map((item) => {
-                const href = relatedHref(item, question.categorySlug);
-                const label = relatedLabel(item);
+        <div className="practice__card hud-panel hud-brackets">
+          <p className="hud-eyebrow">Linked // 相關題目</p>
+          <div className="related-row">
+            {question.related.map((item) => {
+              const href = relatedHref(item, question.categorySlug);
+              const label = relatedLabel(item);
 
-                return href ? (
-                  <a href={href} key={item}>
-                    <Tag color="blue">{label}</Tag>
-                  </a>
-                ) : (
-                  <Tag key={item}>{label}</Tag>
-                );
-              })}
-            </Space>
-          </Card>
-        </>
+              return href ? (
+                <a className="related-pill" href={href} key={item}>
+                  {label}
+                </a>
+              ) : (
+                <span className="related-pill is-plain" key={item}>
+                  {label}
+                </span>
+              );
+            })}
+          </div>
+        </div>
       ) : null}
-    </div>
+    </article>
   );
 }

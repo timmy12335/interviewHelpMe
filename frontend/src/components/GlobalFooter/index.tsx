@@ -4,8 +4,11 @@ export function GlobalFooter() {
 
   return (
     <div className="global-footer">
-      <div>© {currentYear} InterviewHelpMe 面試題練習</div>
-      <div>題庫內容來自本專案 content/ 目錄</div>
+      <span>© {currentYear} InterviewHelpMe</span>
+      <span className="global-footer__sep">{"//"}</span>
+      <span>面試題練習</span>
+      <span className="global-footer__sep">{"//"}</span>
+      <span>content/ 題庫驅動</span>
     </div>
   );
 }

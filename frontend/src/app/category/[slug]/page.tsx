@@ -1,9 +1,4 @@
-import Avatar from "antd/es/avatar";
-import Button from "antd/es/button";
-import Card from "antd/es/card";
-import Meta from "antd/es/card/Meta";
-import Paragraph from "antd/es/typography/Paragraph";
-import Title from "antd/es/typography/Title";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { QuestionList } from "@/components/QuestionList";
@@ -12,7 +7,6 @@ import {
   getQuestionsByCategory,
 } from "@/lib/content/loadContent";
 import { toListItems } from "@/lib/content/toListItems";
-import { withBasePath } from "@/lib/paths";
 
 type CategoryPageProps = {
   params: { slug: string };
@@ -22,9 +16,10 @@ export function generateStaticParams() {
   return getAllCategories().map((category) => ({ slug: category.slug }));
 }
 
-/** 題庫詳情頁：題庫資訊、開始刷題入口與題目列表。 */
+/** 題庫詳情頁：題庫簡報、開始練習入口與題目列表。 */
 export default function CategoryPage({ params }: CategoryPageProps) {
-  const category = getAllCategories().find((item) => item.slug === params.slug);
+  const categories = getAllCategories();
+  const category = categories.find((item) => item.slug === params.slug);
 
   if (!category) {
     notFound();
@@ -32,45 +27,51 @@ export default function CategoryPage({ params }: CategoryPageProps) {
 
   const questions = toListItems(getQuestionsByCategory(params.slug));
   const firstQuestionSlug = questions[0]?.slug;
+  const moduleIndex = categories.findIndex((item) => item.slug === params.slug);
+
+  const byDifficulty = {
+    easy: questions.filter((item) => item.difficulty === "easy").length,
+    medium: questions.filter((item) => item.difficulty === "medium").length,
+    hard: questions.filter((item) => item.difficulty === "hard").length,
+  };
 
   return (
     <div id="bankPage" className="max-width-content">
-      <Card>
-        <Meta
-          avatar={
-            <Avatar size={72} style={{ backgroundColor: "#1677ff" }}>
-              {category.nameZh.slice(0, 1)}
-            </Avatar>
-          }
-          title={
-            <Title level={3} style={{ marginBottom: 0 }}>
-              {category.nameZh}
-            </Title>
-          }
-          description={
-            <>
-              <Paragraph type="secondary">
-                共 {questions.length} 題。答案預設隱藏，先自己作答再展開比對。
-              </Paragraph>
-              <Button
-                type="primary"
-                shape="round"
-                disabled={!firstQuestionSlug}
-                href={
-                  firstQuestionSlug
-                    ? withBasePath(
-                        `/category/${params.slug}/question/${firstQuestionSlug}/`,
-                      )
-                    : undefined
-                }
-              >
-                開始刷題
-              </Button>
-            </>
-          }
-        />
-      </Card>
-      <div style={{ marginBottom: 16 }} />
+      <section className="bank-brief hud-panel hud-brackets">
+        <p className="hud-eyebrow">
+          {`Module ${String(moduleIndex + 1).padStart(2, "0")} // 題庫簡報`}
+        </p>
+        <h1 className="bank-brief__title">{category.nameZh}</h1>
+        <p className="page-lede">
+          共 {questions.length} 題。答案預設封存，先自己作答再解鎖比對。
+        </p>
+        <dl className="bank-stats">
+          <div className="bank-stat bank-stat--easy">
+            <dt>簡單</dt>
+            <dd>{byDifficulty.easy}</dd>
+          </div>
+          <div className="bank-stat bank-stat--medium">
+            <dt>中等</dt>
+            <dd>{byDifficulty.medium}</dd>
+          </div>
+          <div className="bank-stat bank-stat--hard">
+            <dt>困難</dt>
+            <dd>{byDifficulty.hard}</dd>
+          </div>
+        </dl>
+        {firstQuestionSlug ? (
+          <Link
+            className="hud-cta"
+            href={`/category/${params.slug}/question/${firstQuestionSlug}/`}
+          >
+            開始練習 →
+          </Link>
+        ) : null}
+      </section>
+
+      <div className="section-head">
+        <p className="hud-eyebrow">Units // 題目列表</p>
+      </div>
       <QuestionList
         questions={questions}
         title={`題目列表（${questions.length}）`}

@@ -1,4 +1,3 @@
-import Title from "antd/es/typography/Title";
 import { Suspense } from "react";
 
 import { QuestionSearchBoard } from "@/components/QuestionSearchBoard";
@@ -12,7 +11,15 @@ export default function QuestionsPage() {
 
   return (
     <div id="questionsPage" className="max-width-content">
-      <Title level={3}>題目大全</Title>
+      <header>
+        <p className="hud-eyebrow">Index // 題目大全</p>
+        <h1 className="page-title">
+          全部題目
+          <span className="page-title__sub font-display">
+            {questions.length} units indexed
+          </span>
+        </h1>
+      </header>
       <Suspense fallback={null}>
         <QuestionSearchBoard questions={questions} categories={categories} />
       </Suspense>

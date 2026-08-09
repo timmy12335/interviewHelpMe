@@ -16,12 +16,19 @@ import "./index.css";
 function Logo() {
   return (
     <span className="basic-layout__logo" aria-hidden>
-      <svg viewBox="0 0 32 32" width="32" height="32">
-        <rect width="32" height="32" rx="8" fill="#1677ff" />
+      <svg viewBox="0 0 32 32" width="30" height="30" fill="none">
         <path
-          d="M9 21.5V10.5h2.6v11zM14.4 21.5V10.5h2.5l4.2 6.6v-6.6H23v11h-2.4l-4.3-6.7v6.7z"
-          fill="#fff"
+          d="M16 2.4 28 9.2v13.6L16 29.6 4 22.8V9.2z"
+          stroke="#22d3ee"
+          strokeWidth="1.3"
         />
+        <path
+          d="M16 7.6 23.6 12v8L16 24.4 8.4 20v-8z"
+          stroke="#a855f7"
+          strokeWidth="1"
+          opacity="0.75"
+        />
+        <circle cx="16" cy="16" r="2.6" fill="#22d3ee" />
       </svg>
     </span>
   );
@@ -48,7 +55,8 @@ export function BasicLayout({ children }: { children: ReactNode }) {
             <SearchInput key="search" />,
             <a
               key="github"
-              href="https://github.com/"
+              className="basic-layout__github"
+              href="https://github.com/timmy12335/interviewHelpMe"
               target="_blank"
               rel="noreferrer"
               aria-label="GitHub"

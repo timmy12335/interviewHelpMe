@@ -1,0 +1,148 @@
+.bank-grid .ant-list-item {
+  border-block-end: none !important;
+}
+
+.bank-card {
+  --accent: var(--cyan);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 148px;
+  padding: 18px 18px 16px;
+  overflow: hidden;
+  color: var(--ink);
+  transition:
+    transform var(--normal) var(--ease),
+    border-color var(--fast) var(--ease),
+    box-shadow var(--fast) var(--ease);
+}
+
+.bank-card--cyan { --accent: var(--cyan); }
+.bank-card--violet { --accent: var(--violet); }
+.bank-card--lime { --accent: var(--lime); }
+.bank-card--amber { --accent: var(--amber); }
+.bank-card--rose { --accent: var(--rose); }
+
+/* 左緣能量條 */
+.bank-card::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 2px;
+  background: linear-gradient(180deg, transparent, var(--accent), transparent);
+  opacity: 0.7;
+  transition: opacity var(--fast) var(--ease);
+}
+
+/* hover 時掠過的掃描光 */
+.bank-card__scan {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: -60%;
+  width: 55%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgb(255 255 255 / 7%),
+    transparent
+  );
+  transform: translateX(0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bank-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 28px -8px var(--accent);
+}
+
+.bank-card:hover::before {
+  opacity: 1;
+}
+
+.bank-card:hover .bank-card__scan {
+  opacity: 1;
+  animation: bank-scan 900ms var(--ease);
+}
+
+.bank-card:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@keyframes bank-scan {
+  from { transform: translateX(0); }
+  to { transform: translateX(320%); }
+}
+
+.bank-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.bank-card__count {
+  font-family: var(--font-mono);
+  font-size: 17px;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+
+.bank-card__count small {
+  font-size: 10px;
+  margin-inline-start: 3px;
+  color: var(--ink-faint);
+  letter-spacing: 0.1em;
+}
+
+.bank-card__title {
+  flex: 1;
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 600;
+  line-height: 1.45;
+  text-wrap: balance;
+  color: var(--ink);
+  transition: color var(--fast) var(--ease);
+}
+
+.bank-card:hover .bank-card__title {
+  color: var(--accent);
+}
+
+.bank-card__cta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  transition:
+    color var(--fast) var(--ease),
+    transform var(--fast) var(--ease);
+}
+
+.bank-card:hover .bank-card__cta {
+  color: var(--accent);
+  transform: translateX(4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bank-card:hover {
+    transform: none;
+  }
+
+  .bank-card:hover .bank-card__scan {
+    animation: none;
+    opacity: 0;
+  }
+
+  .bank-card:hover .bank-card__cta {
+    transform: none;
+  }
+}

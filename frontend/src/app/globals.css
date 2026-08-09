@@ -1,3 +1,46 @@
+/* ================================================================== */
+/* InterviewHelpMe — deep-space HUD theme                              */
+/* ================================================================== */
+
+:root {
+  /* Surfaces */
+  --void: #04060e;
+  --deep: #070b18;
+  --panel: rgb(13 21 41 / 72%);
+  --panel-solid: #0b1226;
+  --panel-raised: rgb(20 32 58 / 82%);
+
+  /* Lines */
+  --line: rgb(94 234 212 / 14%);
+  --line-strong: rgb(34 211 238 / 42%);
+
+  /* Accents */
+  --cyan: #22d3ee;
+  --cyan-deep: #0891b2;
+  --violet: #a855f7;
+  --amber: #fbbf24;
+  --rose: #fb7185;
+  --lime: #4ade80;
+
+  /* Ink */
+  --ink: #dce7fb;
+  --ink-muted: #8ba3c9;
+  --ink-faint: #5f759b;
+
+  /* Motion */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --fast: 160ms;
+  --normal: 320ms;
+
+  /* Glows */
+  --glow-cyan: 0 0 24px -6px rgb(34 211 238 / 55%);
+  --glow-violet: 0 0 24px -6px rgb(168 85 247 / 55%);
+
+  --font-display: var(--font-orbitron), "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --hud-notch: 14px;
+}
+
 * {
   box-sizing: border-box;
   padding: 0;
@@ -7,16 +50,405 @@
 html,
 body {
   max-width: 100vw;
+  background: var(--void);
+  color: var(--ink);
+}
+
+/* ---------------------------------------------------------------- */
+/* Background: nebula wash + engineering grid + vignette             */
+/* ---------------------------------------------------------------- */
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+body::before {
+  background:
+    radial-gradient(900px 620px at 12% -8%, rgb(34 211 238 / 16%), transparent 62%),
+    radial-gradient(760px 560px at 88% 4%, rgb(168 85 247 / 14%), transparent 60%),
+    radial-gradient(1100px 800px at 50% 110%, rgb(14 116 144 / 14%), transparent 65%),
+    linear-gradient(180deg, var(--deep), var(--void) 70%);
+}
+
+body::after {
+  background-image:
+    linear-gradient(to right, rgb(94 234 212 / 6%) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(94 234 212 / 6%) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(1200px 780px at 50% 0%, #000 15%, transparent 78%);
+}
+
+#basicLayout {
+  position: relative;
+  z-index: 1;
 }
 
 .max-width-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 24px;
+  padding: 32px 24px 24px;
 }
 
 /* ---------------------------------------------------------------- */
-/* MdViewer：移除 bytemd 編輯器外殼，讓內容貼齊 antd Card             */
+/* HUD primitives                                                    */
+/* ---------------------------------------------------------------- */
+
+/** 切角面板：右上與左下削角，做出艙門／儀表板輪廓。 */
+.hud-panel {
+  position: relative;
+  background: var(--panel);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--line);
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--hud-notch)) 0,
+    100% var(--hud-notch),
+    100% 100%,
+    var(--hud-notch) 100%,
+    0 calc(100% - var(--hud-notch))
+  );
+}
+
+/** 角標：左上與右下的 L 形定位框。 */
+.hud-brackets::before,
+.hud-brackets::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--line-strong);
+  pointer-events: none;
+  transition: border-color var(--fast) var(--ease);
+}
+
+.hud-brackets::before {
+  top: 7px;
+  left: 7px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.hud-brackets::after {
+  right: 7px;
+  bottom: 7px;
+  border-top: none;
+  border-left: none;
+}
+
+/** 區塊眉標：MISSION // 主頁 這類前綴。 */
+.hud-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+.hud-eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: var(--cyan);
+  box-shadow: var(--glow-cyan);
+  transform: rotate(45deg);
+}
+
+.hud-eyebrow::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--line-strong), transparent);
+}
+
+.hud-index {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------------- */
+/* Typography                                                        */
+/* ---------------------------------------------------------------- */
+
+/* Orbitron 沒有中文字符，僅用於拉丁字與數字的展示元素。 */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+}
+
+.ant-typography,
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: var(--ink);
+}
+
+.page-title {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin: 14px 0 22px;
+  font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.1rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.page-title__sub {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+}
+
+.page-lede {
+  max-width: 62ch;
+  margin: -10px 0 26px;
+  color: var(--ink-muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 34px 0 14px;
+}
+
+.section-more {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  transition:
+    color var(--fast) var(--ease),
+    transform var(--fast) var(--ease);
+}
+
+.section-more:hover {
+  color: var(--cyan);
+  transform: translateX(3px);
+}
+
+/* ---------------------------------------------------------------- */
+/* Bank briefing panel                                               */
+/* ---------------------------------------------------------------- */
+
+.bank-brief {
+  padding: 26px 28px 28px;
+  margin-top: 16px;
+}
+
+.bank-brief__title {
+  margin: 12px 0 10px;
+  font-size: clamp(1.5rem, 1.1rem + 1.7vw, 2.15rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.bank-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 22px;
+}
+
+.bank-stat {
+  --stat: var(--cyan);
+
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 7px 14px;
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--stat);
+  background: rgb(4 6 14 / 45%);
+}
+
+.bank-stat--easy { --stat: var(--lime); }
+.bank-stat--medium { --stat: var(--amber); }
+.bank-stat--hard { --stat: var(--rose); }
+
+.bank-stat dt {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.bank-stat dd {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  color: var(--stat);
+}
+
+/* 主要行動按鈕：切角 + 發光 */
+.hud-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 24px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--void);
+  background: var(--cyan);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 10px) 0,
+    100% 10px,
+    100% 100%,
+    10px 100%,
+    0 calc(100% - 10px)
+  );
+  box-shadow: var(--glow-cyan);
+  transition:
+    background var(--fast) var(--ease),
+    box-shadow var(--fast) var(--ease),
+    transform var(--fast) var(--ease);
+}
+
+.hud-cta:hover {
+  color: var(--void);
+  background: #67e8f9;
+  box-shadow: 0 0 34px -6px var(--cyan);
+  transform: translateY(-1px);
+}
+
+.hud-cta:focus-visible {
+  outline: 1px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hud-cta:hover,
+  .section-more:hover {
+    transform: none;
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* Ant Design surface overrides                                      */
+/* ---------------------------------------------------------------- */
+
+.ant-card {
+  position: relative;
+  background: var(--panel) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--line) !important;
+  border-radius: 0 !important;
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--hud-notch)) 0,
+    100% var(--hud-notch),
+    100% 100%,
+    var(--hud-notch) 100%,
+    0 calc(100% - var(--hud-notch))
+  );
+  transition:
+    border-color var(--fast) var(--ease),
+    box-shadow var(--fast) var(--ease);
+}
+
+.ant-card-head {
+  border-bottom: 1px solid var(--line) !important;
+  background: linear-gradient(90deg, rgb(34 211 238 / 8%), transparent 60%);
+}
+
+.ant-card-head-title {
+  font-family: var(--font-mono);
+  font-size: 12px !important;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cyan) !important;
+}
+
+.ant-card.ant-card-hoverable:hover {
+  border-color: var(--line-strong) !important;
+  box-shadow: var(--glow-cyan);
+}
+
+.ant-list-item {
+  border-block-end: 1px solid var(--line) !important;
+  transition: background var(--fast) var(--ease);
+}
+
+.ant-list-item:hover {
+  background: rgb(34 211 238 / 6%);
+}
+
+.ant-list-item-meta-title > a {
+  color: var(--ink) !important;
+  transition: color var(--fast) var(--ease);
+}
+
+.ant-list-item-meta-title > a:hover {
+  color: var(--cyan) !important;
+  text-shadow: var(--glow-cyan);
+}
+
+.ant-tag {
+  border-radius: 0 !important;
+  font-family: var(--font-mono);
+  font-size: 11px !important;
+  letter-spacing: 0.06em;
+}
+
+.ant-btn {
+  border-radius: 0 !important;
+  font-family: var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ant-btn-primary {
+  box-shadow: var(--glow-cyan);
+}
+
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-select-selector {
+  border-radius: 0 !important;
+}
+
+.ant-input {
+  font-family: var(--font-mono);
+}
+
+.ant-collapse {
+  border-radius: 0 !important;
+}
+
+.ant-collapse-item {
+  border-radius: 0 !important;
+}
+
+.ant-menu-item {
+  border-radius: 0 !important;
+}
+
+/* ---------------------------------------------------------------- */
+/* MdViewer: strip bytemd chrome, tune github-markdown-dark          */
 /* ---------------------------------------------------------------- */
 
 .md-viewer .bytemd-toolbar,
@@ -38,8 +470,10 @@ body {
 }
 
 .md-viewer .markdown-body {
-  background: transparent;
+  background: transparent !important;
+  color: var(--ink) !important;
   font-size: 15px;
+  line-height: 1.78;
 }
 
 .md-viewer .markdown-body > :first-child {
@@ -48,4 +482,66 @@ body {
 
 .md-viewer .markdown-body > :last-child {
   margin-bottom: 0;
+}
+
+.md-viewer .markdown-body h1,
+.md-viewer .markdown-body h2,
+.md-viewer .markdown-body h3,
+.md-viewer .markdown-body h4 {
+  border-bottom: none !important;
+  color: var(--ink) !important;
+}
+
+.md-viewer .markdown-body a {
+  color: var(--cyan) !important;
+}
+
+.md-viewer .markdown-body code {
+  background: rgb(34 211 238 / 10%) !important;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  color: var(--cyan) !important;
+}
+
+.md-viewer .markdown-body pre {
+  background: rgb(4 6 14 / 72%) !important;
+  border: 1px solid var(--line);
+  border-radius: 0;
+}
+
+.md-viewer .markdown-body pre code {
+  background: transparent !important;
+  border: none;
+  color: var(--ink) !important;
+}
+
+.md-viewer .markdown-body blockquote {
+  border-left: 2px solid var(--cyan);
+  color: var(--ink-muted) !important;
+}
+
+.md-viewer .markdown-body table tr,
+.md-viewer .markdown-body table th,
+.md-viewer .markdown-body table td {
+  background: transparent !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+}
+
+.md-viewer .markdown-body hr {
+  background: var(--line);
+}
+
+/* ---------------------------------------------------------------- */
+/* Motion preferences                                                */
+/* ---------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
