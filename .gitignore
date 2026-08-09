@@ -11,3 +11,6 @@ dist/
 .next/
 *.log
 .DS_Store
+
+# Git worktrees (local isolation)
+.worktrees/
