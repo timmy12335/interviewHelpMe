@@ -6,6 +6,7 @@ import {
   getAllCategories,
   getQuestionsByCategory,
 } from "@/lib/content/loadContent";
+import type { QuestionListItem } from "@/types/question";
 
 type CategoryPageProps = {
   params: { slug: string };
@@ -24,7 +25,16 @@ export default function CategoryPage({ params }: CategoryPageProps) {
     notFound();
   }
 
-  const questions = getQuestionsByCategory(params.slug);
+  const questions: QuestionListItem[] = getQuestionsByCategory(params.slug).map(
+    ({ id, slug, title, difficulty, tags, categorySlug }) => ({
+      id,
+      slug,
+      title,
+      difficulty,
+      tags,
+      categorySlug,
+    }),
+  );
 
   return (
     <main>

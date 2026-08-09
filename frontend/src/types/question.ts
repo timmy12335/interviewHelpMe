@@ -13,6 +13,12 @@ export type Question = {
   categorySlug: string;
 };
 
+/** QuestionList 列表展示所需欄位（不含 answer / content）。 */
+export type QuestionListItem = Pick<
+  Question,
+  "id" | "slug" | "title" | "difficulty" | "tags" | "categorySlug"
+>;
+
 /** 與後端 schema 對齊的題目分類。 */
 export type Category = {
   slug: string;

@@ -7,7 +7,53 @@ import { CATEGORY_META, type CategoryMeta } from "./categories";
 import { parseQuestionMarkdown } from "./parseQuestionMarkdown";
 
 export function getContentRoot(): string {
-  return path.resolve(process.cwd(), "..", "content");
+  const root = path.resolve(process.cwd(), "..", "content");
+  assertContentRootExists(root);
+  return root;
+}
+
+function assertContentRootExists(contentRoot: string): void {
+  if (!fs.existsSync(contentRoot)) {
+    throw new Error(`Content root directory not found: ${contentRoot}`);
+  }
+}
+
+function listCategoryDirectoryNames(contentRoot: string): string[] {
+  return fs
+    .readdirSync(contentRoot, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort();
+}
+
+function assertCategoryDirectoriesMatchMeta(
+  contentRoot: string,
+  meta: CategoryMeta[],
+): void {
+  const expectedSlugs = [...meta].map(({ slug }) => slug).sort();
+  const actualSlugs = listCategoryDirectoryNames(contentRoot);
+
+  const expectedSet = new Set(expectedSlugs);
+  const actualSet = new Set(actualSlugs);
+
+  const missingInContent = expectedSlugs.filter((slug) => !actualSet.has(slug));
+  const extraInContent = actualSlugs.filter((slug) => !expectedSet.has(slug));
+
+  if (missingInContent.length === 0 && extraInContent.length === 0) {
+    return;
+  }
+
+  const parts: string[] = [];
+  if (missingInContent.length > 0) {
+    parts.push(`missing directories: ${missingInContent.join(", ")}`);
+  }
+  if (extraInContent.length > 0) {
+    parts.push(`unexpected directories: ${extraInContent.join(", ")}`);
+  }
+
+  throw new Error(
+    `Content directory structure does not match CATEGORY_META: ${parts.join("; ")}`,
+  );
 }
 
 function isQuestionMarkdownFile(name: string): boolean {
@@ -57,6 +103,9 @@ export function getAllCategoriesFromRoot(
   contentRoot: string,
   meta: CategoryMeta[] = CATEGORY_META,
 ): Category[] {
+  assertContentRootExists(contentRoot);
+  assertCategoryDirectoriesMatchMeta(contentRoot, meta);
+
   return [...meta]
     .sort((a, b) => a.sortOrder - b.sortOrder)
     .map(({ slug, nameZh }) => ({
@@ -80,6 +129,9 @@ export function getAllQuestionsFromRoot(
   contentRoot: string,
   meta: CategoryMeta[] = CATEGORY_META,
 ): Question[] {
+  assertContentRootExists(contentRoot);
+  assertCategoryDirectoriesMatchMeta(contentRoot, meta);
+
   return [...meta]
     .sort((a, b) => a.sortOrder - b.sortOrder)
     .flatMap(({ slug }) => loadQuestionsFromCategoryDir(contentRoot, slug));
