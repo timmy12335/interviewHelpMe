@@ -1,6 +1,5 @@
 "use client";
 
-import { Space, Typography } from "antd";
 import type { MouseEvent } from "react";
 
 import { withBasePath } from "@/lib/paths";
@@ -12,7 +11,7 @@ export interface CategoryNavProps {
   /** 目前所在分類的 slug。 */
   activeSlug?: string;
   /**
-   * 自訂分類連結；預設為 `withBasePath(\`/category/{slug}/\`)`。
+   * 自訂分類連結；預設為 withBasePath(`/category/{slug}/`)。
    * Server Component 請勿傳入（函式無法序列化）；Storybook 等 client 場景可覆寫。
    */
   getHref?: (category: Category) => string;
@@ -45,29 +44,34 @@ export function CategoryNav({
   };
 
   return (
-    <nav aria-label="題目分類">
-      <Space wrap>
-        {categories.map((category) => {
-          const isActive = category.slug === activeSlug;
-          const count =
-            category.questionCount === undefined
-              ? ""
-              : `（${category.questionCount}）`;
+    <nav aria-label="題目分類" className="category-nav">
+      {categories.map((category) => {
+        const isActive = category.slug === activeSlug;
+        const count =
+          category.questionCount === undefined
+            ? null
+            : category.questionCount;
 
-          return (
-            <Typography.Link
-              aria-current={isActive ? "page" : undefined}
-              href={getHref(category)}
-              key={category.slug}
-              onClick={(event) => handleClick(event, category)}
-              strong={isActive}
-            >
-              {category.nameZh}
-              {count}
-            </Typography.Link>
-          );
-        })}
-      </Space>
+        return (
+          <a
+            aria-current={isActive ? "page" : undefined}
+            aria-label={
+              count === null ? category.nameZh : `${category.nameZh}（${count}）`
+            }
+            className="category-chip"
+            href={getHref(category)}
+            key={category.slug}
+            onClick={(event) => handleClick(event, category)}
+          >
+            <span>{category.nameZh}</span>
+            {count !== null ? (
+              <span className="category-chip__count" aria-hidden>
+                {count}
+              </span>
+            ) : null}
+          </a>
+        );
+      })}
     </nav>
   );
 }

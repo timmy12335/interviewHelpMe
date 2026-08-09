@@ -1,0 +1,42 @@
+#basicLayout {
+  height: 100vh;
+  overflow: auto;
+}
+
+.ant-pro-layout .ant-pro-layout-content {
+  padding-bottom: 96px !important;
+}
+
+.ant-pro-layout-top {
+  height: 100%;
+}
+
+.basic-layout__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: inherit;
+}
+
+.basic-layout__logo {
+  display: inline-flex;
+  line-height: 0;
+}
+
+.search-input {
+  display: flex;
+  align-items: center;
+  width: 240px;
+  margin-inline-end: 24px;
+}
+
+.global-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 16px;
+  background: #efefef;
+  color: rgb(0 0 0 / 45%);
+  font-size: 14px;
+  text-align: center;
+}

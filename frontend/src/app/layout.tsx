@@ -3,7 +3,7 @@ import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ConfigProvider } from "antd";
 import zhTW from "antd/locale/zh_TW";
 
-import { SiteHeader } from "@/components/SiteHeader";
+import { BasicLayout } from "@/layouts/BasicLayout";
 
 import "./globals.css";
 
@@ -23,8 +23,7 @@ export default function RootLayout({
       <body>
         <AntdRegistry>
           <ConfigProvider locale={zhTW}>
-            <SiteHeader />
-            {children}
+            <BasicLayout>{children}</BasicLayout>
           </ConfigProvider>
         </AntdRegistry>
       </body>

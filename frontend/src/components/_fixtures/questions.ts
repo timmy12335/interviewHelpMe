@@ -9,6 +9,7 @@ export const sampleQuestion: Question = {
   tags: ["Java", "字串"],
   content: "請說明 `==` 與 `equals` 在比較物件時的差異。",
   answer: "`==` 比較參考是否相同，`equals` 則可比較物件內容。",
+  coreAnswer: "`==` 比較參考是否相同，`equals` 則可比較物件內容。",
   categorySlug: "java",
 };
 

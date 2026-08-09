@@ -33,7 +33,7 @@ export function QuestionCard({
   );
 
   return (
-    <Card title={title}>
+    <Card className="practice-card" title={title}>
       <Space direction="vertical" size="middle" style={{ width: "100%" }}>
         <Space size="small" wrap>
           <DifficultyBadge difficulty={question.difficulty} />

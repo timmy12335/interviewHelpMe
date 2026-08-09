@@ -16,7 +16,7 @@ export interface QuestionListProps {
   /** 無題目時顯示的文字，預設為「尚無題目」。 */
   emptyText?: string;
   /**
-   * 建立題目連結的函式；預設為 `withBasePath(\`/category/{slug}/question/{slug}/\`)`。
+   * 建立題目連結的函式；預設為 withBasePath(`/category/{slug}/question/{slug}/`)。
    * Server Component 請勿傳入（函式無法序列化）；Storybook 等 client 場景可覆寫。
    */
   getHref?: (question: QuestionListItem) => string;
@@ -28,7 +28,7 @@ const defaultGetHref = (question: QuestionListItem) =>
   );
 
 /**
- * 以卡片與清單呈現題目，並組合難度標籤、題目標籤及空狀態。
+ * 以 Ant Design 卡片與清單呈現題目，並組合難度標籤、題目標籤及空狀態。
  */
 export function QuestionList({
   questions,
@@ -37,21 +37,25 @@ export function QuestionList({
   getHref = defaultGetHref,
 }: QuestionListProps) {
   return (
-    <Card title={title}>
+    <Card className="question-list" title={title}>
       {questions.length === 0 ? (
         <EmptyState title={emptyText} />
       ) : (
         <List
           dataSource={questions}
           renderItem={(question) => (
-            <List.Item key={question.id}>
-              <Space direction="vertical" size="small">
-                <a href={getHref(question)}>{question.title}</a>
-                <Space size="small" wrap>
-                  <DifficultyBadge difficulty={question.difficulty} />
-                  <TagList tags={question.tags} max={3} />
-                </Space>
-              </Space>
+            <List.Item
+              key={question.id}
+              extra={<TagList tags={question.tags} max={3} />}
+            >
+              <List.Item.Meta
+                title={<a href={getHref(question)}>{question.title}</a>}
+                description={
+                  <Space size="small">
+                    <DifficultyBadge difficulty={question.difficulty} />
+                  </Space>
+                }
+              />
             </List.Item>
           )}
         />

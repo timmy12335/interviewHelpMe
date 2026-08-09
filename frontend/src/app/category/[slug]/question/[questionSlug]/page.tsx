@@ -1,12 +1,16 @@
-import Link from "next/link";
+import Flex from "antd/es/flex";
+import { Content } from "antd/es/layout/layout";
 import { notFound } from "next/navigation";
 
 import { PracticeQuestion } from "@/components/PracticeQuestion";
+import { QuestionSider } from "@/components/QuestionSider";
 import {
   getAllCategories,
   getAllQuestions,
   getQuestion,
+  getQuestionsByCategory,
 } from "@/lib/content/loadContent";
+import { toListItems } from "@/lib/content/toListItems";
 
 type QuestionPageProps = {
   params: { slug: string; questionSlug: string };
@@ -19,7 +23,7 @@ export function generateStaticParams() {
   }));
 }
 
-/** 單題練習頁：預設隱藏推薦答案，可手動切換顯示。 */
+/** 題庫題目詳情頁：左側題單，右側練習卡（答案預設隱藏）。 */
 export default function QuestionPage({ params }: QuestionPageProps) {
   const question = getQuestion(params.slug, params.questionSlug);
 
@@ -28,16 +32,21 @@ export default function QuestionPage({ params }: QuestionPageProps) {
   }
 
   const category = getAllCategories().find((item) => item.slug === params.slug);
+  const siblings = toListItems(getQuestionsByCategory(params.slug));
 
   return (
-    <main>
-      <p>
-        <Link href={`/category/${params.slug}/`}>
-          ← 返回{category ? category.nameZh : params.slug}
-        </Link>
-      </p>
-      <h1>{question.title}</h1>
-      <PracticeQuestion question={question} />
-    </main>
+    <div id="bankQuestionPage">
+      <Flex gap={24}>
+        <QuestionSider
+          categorySlug={params.slug}
+          categoryName={category?.nameZh ?? params.slug}
+          questions={siblings}
+          currentSlug={params.questionSlug}
+        />
+        <Content>
+          <PracticeQuestion question={question} />
+        </Content>
+      </Flex>
+    </div>
   );
 }
