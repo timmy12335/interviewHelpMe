@@ -1,0 +1,38 @@
+.progress-ring {
+  --ring: var(--cyan);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.progress-ring.is-due {
+  --ring: var(--amber);
+}
+
+.progress-ring__track {
+  stroke: rgb(94 234 212 / 16%);
+}
+
+.progress-ring__value {
+  stroke: var(--ring);
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--ring) 55%, transparent));
+  transition: stroke-dashoffset var(--normal) var(--ease);
+}
+
+.progress-ring__text {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-ring__value {
+    transition: none;
+  }
+}

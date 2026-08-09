@@ -31,6 +31,50 @@
   color: var(--cyan) !important;
 }
 
+.q-sider__stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.q-sider__stat-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.q-sider__due-count {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--amber);
+}
+
+.q-sider__keys {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  margin-top: 12px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+}
+
+.q-sider__keys kbd {
+  padding: 2px 5px;
+  border: 1px solid var(--line);
+  background: rgb(4 6 14 / 60%);
+  color: var(--ink-muted);
+  font-family: inherit;
+  font-size: 9.5px;
+}
+
 .q-sider__progress {
   display: flex;
   align-items: center;
@@ -136,6 +180,29 @@
   font-size: 10px;
   font-variant-numeric: tabular-nums;
   color: var(--ink-faint);
+}
+
+/* 已作答：題號換成實心方塊，不搶題目文字的注意力 */
+.q-nav-item.is-answered .q-nav-num {
+  color: var(--cyan);
+}
+
+.q-nav-item.is-answered .q-nav-title {
+  color: var(--ink);
+}
+
+.q-nav-flag {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
 }
 
 .q-nav-item.is-active .q-nav-num {

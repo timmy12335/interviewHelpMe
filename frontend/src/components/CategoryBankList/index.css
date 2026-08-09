@@ -116,6 +116,26 @@
   color: var(--accent);
 }
 
+.bank-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.bank-card__progress {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bank-card__progress-text {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-faint);
+}
+
 .bank-card__cta {
   font-family: var(--font-mono);
   font-size: 11px;

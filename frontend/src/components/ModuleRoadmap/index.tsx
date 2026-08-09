@@ -1,8 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 
+import { ProgressRing } from "@/components/ProgressRing";
+import { useProgress } from "@/hooks/useProgress";
+import { REVIEW_AFTER_DAYS } from "@/lib/progress";
 import type { QuestionListItem } from "@/types/question";
 
 import "./index.css";
@@ -37,24 +40,12 @@ function nodePosition(index: number) {
  * 節點顏色代表難度，實心代表本機已留下作答草稿。
  */
 export function ModuleRoadmap({ categorySlug, questions }: ModuleRoadmapProps) {
-  const [answeredIds, setAnsweredIds] = useState<ReadonlySet<string>>(
-    () => new Set(),
+  const ids = useMemo(
+    () => questions.map((question) => question.id),
+    [questions],
   );
-
-  // 進度只存在瀏覽器；SSR 先渲染未作答狀態，掛載後再補上，避免 hydration 不一致。
-  useEffect(() => {
-    try {
-      const answered = questions
-        .filter((question) => {
-          const value = localStorage.getItem(`ihm:answer-${question.id}`);
-          return Boolean(value && value.trim());
-        })
-        .map((question) => question.id);
-      setAnsweredIds(new Set(answered));
-    } catch {
-      setAnsweredIds(new Set());
-    }
-  }, [questions]);
+  const { answeredIds, dueIds, answeredCount, dueCount, total } =
+    useProgress(ids);
 
   const rows = Math.ceil(questions.length / COLS);
   const viewWidth = PAD_X * 2 + (COLS - 1) * CELL_W;
@@ -68,10 +59,21 @@ export function ModuleRoadmap({ categorySlug, questions }: ModuleRoadmapProps) {
 
   return (
     <section className="roadmap hud-panel hud-brackets" aria-label="題庫路線圖">
-      <p className="hud-eyebrow">Roadmap // 練習路線</p>
-      <p className="roadmap__lede">
-        依題庫順序由淺入深。點任一節點直接跳到該題，實心節點代表這台裝置已留下作答。
-      </p>
+      <div className="roadmap__head">
+        <div>
+          <p className="hud-eyebrow">Roadmap // 練習路線</p>
+          <p className="roadmap__lede">
+            依題庫順序排列。點節點直接跳到該題；實心代表已作答，
+            {`外環閃爍代表超過 ${REVIEW_AFTER_DAYS} 天沒回來看，建議複習。`}
+          </p>
+        </div>
+        <ProgressRing
+          value={answeredCount}
+          total={total}
+          size={48}
+          due={dueCount > 0}
+        />
+      </div>
 
       <svg
         className="roadmap__map"
@@ -96,6 +98,7 @@ export function ModuleRoadmap({ categorySlug, questions }: ModuleRoadmapProps) {
         {questions.map((question, index) => {
           const { x, y } = nodePosition(index);
           const answered = answeredIds.has(question.id);
+          const due = dueIds.has(question.id);
 
           return (
             <Link
@@ -103,10 +106,17 @@ export function ModuleRoadmap({ categorySlug, questions }: ModuleRoadmapProps) {
               href={`/category/${categorySlug}/question/${question.slug}/`}
               className={`roadmap__node roadmap__node--${question.difficulty}${
                 answered ? " is-answered" : ""
-              }`}
+              }${due ? " is-due" : ""}`}
               role="listitem"
             >
-              <title>{`${index + 1}. ${question.title}`}</title>
+              <title>
+                {`${index + 1}. ${question.title}${
+                  due ? "（建議複習）" : answered ? "（已作答）" : ""
+                }`}
+              </title>
+              {due ? (
+                <circle className="roadmap__due" cx={x} cy={y} r={NODE_R + 6} />
+              ) : null}
               <circle className="roadmap__halo" cx={x} cy={y} r={NODE_R + 5} />
               <circle className="roadmap__disc" cx={x} cy={y} r={NODE_R} />
               <text className="roadmap__num" x={x} y={y + 4}>
@@ -122,6 +132,7 @@ export function ModuleRoadmap({ categorySlug, questions }: ModuleRoadmapProps) {
         <li className="roadmap__key roadmap__key--medium">中等</li>
         <li className="roadmap__key roadmap__key--hard">困難</li>
         <li className="roadmap__key roadmap__key--done">已作答</li>
+        <li className="roadmap__key roadmap__key--due">待複習</li>
       </ul>
     </section>
   );

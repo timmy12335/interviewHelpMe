@@ -1,0 +1,105 @@
+.tagmap {
+  padding: 22px 24px 22px;
+  margin-top: 18px;
+}
+
+.tagmap__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.tagmap__clear {
+  flex-shrink: 0;
+  padding: 5px 12px;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition:
+    border-color var(--fast) var(--ease),
+    color var(--fast) var(--ease);
+}
+
+.tagmap__clear:hover {
+  border-color: var(--line-strong);
+  color: var(--cyan);
+}
+
+.tagmap__lede {
+  margin: 12px 0 16px;
+  color: var(--ink-muted);
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+.tagmap__cloud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 10px;
+}
+
+.tagmap__tag {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 4px 10px;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-muted);
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    border-color var(--fast) var(--ease),
+    color var(--fast) var(--ease),
+    background var(--fast) var(--ease),
+    box-shadow var(--fast) var(--ease);
+}
+
+.tagmap__tag--w1 { font-size: 12px; }
+.tagmap__tag--w2 { font-size: 13.5px; color: var(--ink); }
+.tagmap__tag--w3 {
+  font-size: 15px;
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+
+.tagmap__tag:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  background: rgb(34 211 238 / 8%);
+}
+
+.tagmap__tag:focus-visible {
+  outline: 1px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+.tagmap__tag.is-active {
+  border-color: var(--cyan);
+  background: rgb(34 211 238 / 16%);
+  color: var(--cyan);
+  box-shadow: var(--glow-cyan);
+}
+
+.tagmap__count {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-faint);
+}
+
+.tagmap__tag.is-active .tagmap__count {
+  color: var(--cyan);
+}
+
+.tagmap__more {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+}

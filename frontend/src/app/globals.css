@@ -251,30 +251,6 @@ h5 {
 /* Bank briefing panel                                               */
 /* ---------------------------------------------------------------- */
 
-/* 窄螢幕單欄；≥1180px 時左邊是簡報＋路線圖，右邊是題目列表 */
-.bank-layout__aside,
-.bank-layout__main {
-  min-width: 0;
-}
-
-@media (min-width: 1180px) {
-  .bank-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 24px;
-    align-items: start;
-  }
-
-  .bank-layout__aside {
-    position: sticky;
-    top: 12px;
-  }
-
-  .bank-layout__main .section-head {
-    margin-top: 16px;
-  }
-}
-
 .bank-brief {
   padding: 26px 28px 28px;
   margin-top: 16px;

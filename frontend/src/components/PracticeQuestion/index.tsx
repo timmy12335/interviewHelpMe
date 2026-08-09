@@ -5,14 +5,20 @@ import { useEffect, useId, useState } from "react";
 import { DifficultyBadge } from "@/components/DifficultyBadge";
 import { MdViewer } from "@/components/MdViewer";
 import { TagList } from "@/components/TagList";
+import { notifyProgressChanged } from "@/hooks/useProgress";
+import { isTypingTarget } from "@/lib/keyboard";
 import { withBasePath } from "@/lib/paths";
+import {
+  REVIEW_AFTER_DAYS,
+  answerAtKey,
+  getBrowserStorage,
+  isDueForReview,
+  readDraft,
+  saveDraft,
+} from "@/lib/progress";
 import type { FollowUp, Question } from "@/types/question";
 
 import "./index.css";
-
-function answerStorageKey(questionId: string) {
-  return `ihm:answer-${questionId}`;
-}
 
 /** 從 `[[002-foo.md]]` 或 `../ai-llm/022-bar.md` 推出站內題目連結。 */
 function relatedHref(raw: string, categorySlug: string): string | null {
@@ -104,17 +110,39 @@ function FollowUpItem({ followUp }: { followUp: FollowUp }) {
 export function PracticeQuestion({ question }: { question: Question }) {
   const [draft, setDraft] = useState("");
   const [showAnswer, setShowAnswer] = useState(false);
+  const [dueForReview, setDueForReview] = useState(false);
   const inputId = useId();
   const answerPanelId = useId();
 
   useEffect(() => {
     setShowAnswer(false);
-    try {
-      setDraft(localStorage.getItem(answerStorageKey(question.id)) ?? "");
-    } catch {
-      setDraft("");
-    }
+
+    const storage = getBrowserStorage();
+    setDraft(readDraft(storage, question.id));
+
+    const rawAt = storage?.getItem(answerAtKey(question.id));
+    setDueForReview(
+      isDueForReview(rawAt ? Number(rawAt) : undefined, Date.now()),
+    );
   }, [question.id]);
+
+  // A 鍵解鎖／收合答案。刻意不綁空白鍵：那會奪走鍵盤捲動頁面的能力。
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.metaKey || event.ctrlKey || event.altKey) {
+        return;
+      }
+      if (isTypingTarget(event.target) || event.key.toLowerCase() !== "a") {
+        return;
+      }
+
+      event.preventDefault();
+      setShowAnswer((value) => !value);
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   const hasStructured =
     Boolean(question.coreAnswer) ||
@@ -137,6 +165,11 @@ export function PracticeQuestion({ question }: { question: Question }) {
         </div>
 
         <div className="practice__compose">
+          {dueForReview ? (
+            <p className="practice__review-note" role="status">
+              這題超過 {REVIEW_AFTER_DAYS} 天沒回來看了。先別看舊草稿，重寫一次再比對。
+            </p>
+          ) : null}
           <label className="practice__label" htmlFor={inputId}>
             你的作答（先想再看答案）
           </label>
@@ -149,11 +182,9 @@ export function PracticeQuestion({ question }: { question: Question }) {
             onChange={(event) => {
               const value = event.target.value;
               setDraft(value);
-              try {
-                localStorage.setItem(answerStorageKey(question.id), value);
-              } catch {
-                // ignore quota / private mode
-              }
+              saveDraft(getBrowserStorage(), question.id, value, Date.now());
+              setDueForReview(false);
+              notifyProgressChanged();
             }}
           />
           <button

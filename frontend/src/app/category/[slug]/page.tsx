@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { ModuleRoadmap } from "@/components/ModuleRoadmap";
-import { QuestionList } from "@/components/QuestionList";
+import { BankBoard } from "@/components/BankBoard";
 import {
   getAllCategories,
   getQuestionsByCategory,
@@ -17,7 +16,7 @@ export function generateStaticParams() {
   return getAllCategories().map((category) => ({ slug: category.slug }));
 }
 
-/** 題庫詳情頁：題庫簡報、開始練習入口與題目列表。 */
+/** 題庫詳情頁：題庫簡報、路線圖、標籤星圖與題目列表。 */
 export default function CategoryPage({ params }: CategoryPageProps) {
   const categories = getAllCategories();
   const category = categories.find((item) => item.slug === params.slug);
@@ -37,8 +36,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   };
 
   return (
-    <div id="bankPage" className="max-width-content bank-layout">
-      <div className="bank-layout__aside">
+    <div id="bankPage" className="max-width-content">
       <section className="bank-brief hud-panel hud-brackets">
         <p className="hud-eyebrow">
           {`Module ${String(moduleIndex + 1).padStart(2, "0")} // 題庫簡報`}
@@ -71,18 +69,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
         ) : null}
       </section>
 
-      <ModuleRoadmap categorySlug={params.slug} questions={questions} />
-      </div>
-
-      <div className="bank-layout__main">
-        <div className="section-head">
-          <p className="hud-eyebrow">Units // 題目列表</p>
-        </div>
-        <QuestionList
-          questions={questions}
-          title={`題目列表（${questions.length}）`}
-        />
-      </div>
+      <BankBoard categorySlug={params.slug} questions={questions} />
     </div>
   );
 }

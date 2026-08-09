@@ -1,0 +1,25 @@
+.bank-board__aside,
+.bank-board__main {
+  min-width: 0;
+}
+
+.bank-board__filter {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+}
+
+@media (min-width: 1180px) {
+  .bank-board {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+
+  .bank-board__main .section-head {
+    margin-top: 34px;
+  }
+}

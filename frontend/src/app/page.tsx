@@ -2,15 +2,17 @@ import Link from "next/link";
 
 import { CategoryBankList } from "@/components/CategoryBankList";
 import { QuestionList } from "@/components/QuestionList";
-import { getAllCategories, getAllQuestions } from "@/lib/content/loadContent";
+import { SiteProgressMap } from "@/components/SiteProgressMap";
+import { getAllQuestions } from "@/lib/content/loadContent";
+import { getModuleSummaries } from "@/lib/content/modules";
 import { toListItems } from "@/lib/content/toListItems";
 
 const HOME_BANK_LIMIT = 8;
 const HOME_QUESTION_LIMIT = 12;
 
-/** 主頁：精選題庫與最新題目。 */
+/** 主頁：學習地圖、精選題庫與最新題目。 */
 export default function HomePage() {
-  const allCategories = getAllCategories();
+  const modules = getModuleSummaries();
   const allQuestions = toListItems(getAllQuestions());
 
   return (
@@ -20,7 +22,7 @@ export default function HomePage() {
         <h1 className="page-title">
           面試題庫
           <span className="page-title__sub font-display">
-            {allQuestions.length} units / {allCategories.length} modules
+            {allQuestions.length} units / {modules.length} modules
           </span>
         </h1>
         <p className="page-lede">
@@ -28,13 +30,15 @@ export default function HomePage() {
         </p>
       </header>
 
+      <SiteProgressMap modules={modules} />
+
       <div className="section-head">
         <p className="hud-eyebrow">Modules // 精選題庫</p>
         <Link className="section-more" href="/categories/">
           全部題庫 →
         </Link>
       </div>
-      <CategoryBankList categories={allCategories.slice(0, HOME_BANK_LIMIT)} />
+      <CategoryBankList modules={modules.slice(0, HOME_BANK_LIMIT)} />
 
       <div className="section-head">
         <p className="hud-eyebrow">Latest // 最新題目</p>
