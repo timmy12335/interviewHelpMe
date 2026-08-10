@@ -20,6 +20,11 @@ export interface QuestionListProps {
    * Server Component 請勿傳入（函式無法序列化）；Storybook 等 client 場景可覆寫。
    */
   getHref?: (question: QuestionListItem) => string;
+  /**
+   * 題目 id → 題號。捲到後段時仍看得出這是第幾題。
+   * 傳入固定的對照表而非用陣列索引，篩選後題號才不會跟著重編。
+   */
+  numbers?: Record<string, number>;
 }
 
 const defaultGetHref = (question: QuestionListItem) =>
@@ -35,6 +40,7 @@ export function QuestionList({
   title = "題目列表",
   emptyText = "尚無題目",
   getHref = defaultGetHref,
+  numbers,
 }: QuestionListProps) {
   return (
     <Card className="question-list" title={title}>
@@ -49,6 +55,13 @@ export function QuestionList({
               extra={<TagList tags={question.tags} max={3} />}
             >
               <List.Item.Meta
+                avatar={
+                  numbers?.[question.id] === undefined ? undefined : (
+                    <span className="question-list__num">
+                      {String(numbers[question.id]).padStart(3, "0")}
+                    </span>
+                  )
+                }
                 title={<a href={getHref(question)}>{question.title}</a>}
                 description={
                   <Space size="small">

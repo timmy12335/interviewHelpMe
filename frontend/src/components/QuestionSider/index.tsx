@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import { ProgressRing } from "@/components/ProgressRing";
 import { useProgress } from "@/hooks/useProgress";
@@ -31,6 +31,8 @@ export function QuestionSider({
   onToggleCollapse,
 }: QuestionSiderProps) {
   const router = useRouter();
+  const listRef = useRef<HTMLElement | null>(null);
+  const activeRef = useRef<HTMLAnchorElement | null>(null);
   const ids = useMemo(
     () => questions.map((question) => question.id),
     [questions],
@@ -45,6 +47,29 @@ export function QuestionSider({
       ? questions[index + 1]
       : undefined;
   const position = index >= 0 ? index + 1 : 0;
+
+  /*
+   * 換題後題單會重新掛載並捲回頂端，第 25 題就看不到自己在哪了。
+   * 只捲動題單容器（不用 scrollIntoView，那會連整頁一起捲），把目前這題置中。
+   */
+  useEffect(() => {
+    const list = listRef.current;
+    const active = activeRef.current;
+    if (!list || !active) {
+      return;
+    }
+
+    /*
+     * 用 rect 差值而非 offsetTop：offsetTop 是相對於最近的「定位祖先」，
+     * 而 .q-sider 是 position: sticky，會把題單標頭的高度也算進去。
+     */
+    const listRect = list.getBoundingClientRect();
+    const activeRect = active.getBoundingClientRect();
+    const offsetInList = activeRect.top - listRect.top;
+    const centred = list.clientHeight / 2 - activeRect.height / 2;
+
+    list.scrollTop += offsetInList - centred;
+  }, [currentSlug, collapsed]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -173,7 +198,7 @@ export function QuestionSider({
         </p>
       </div>
 
-      <nav className="q-sider__list" aria-label="本題庫題目">
+      <nav className="q-sider__list" aria-label="本題庫題目" ref={listRef}>
         {questions.map((question, itemIndex) => {
           const active = question.slug === currentSlug;
           const answered = answeredIds.has(question.id);
@@ -187,6 +212,7 @@ export function QuestionSider({
               }${due ? " is-due" : ""}`}
               href={`/category/${categorySlug}/question/${question.slug}/`}
               key={question.id}
+              ref={active ? activeRef : undefined}
             >
               <span className="q-nav-num">
                 {String(itemIndex + 1).padStart(3, "0")}

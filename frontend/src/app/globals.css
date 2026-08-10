@@ -24,8 +24,12 @@
 
   /* Ink */
   --ink: #dce7fb;
-  --ink-muted: #8ba3c9;
-  --ink-faint: #5f759b;
+  --ink-muted: #a3b8d6;
+  /*
+   * 深底上的小字若對比不足會很吃力。原本的 #5f759b 對 #04060e 約 4.3:1，
+   * 剛好卡在 WCAG AA 小字門檻上；提亮到約 6.5:1 讓圖例、標籤這類小字可讀。
+   */
+  --ink-faint: #8299bd;
 
   /* Motion */
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
@@ -398,6 +402,16 @@ h5 {
   background: rgb(34 211 238 / 6%);
 }
 
+.question-list__num {
+  display: inline-block;
+  min-width: 2.6em;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+}
+
 .ant-list-item-meta-title > a {
   color: var(--ink) !important;
   transition: color var(--fast) var(--ease);
@@ -411,8 +425,18 @@ h5 {
 .ant-tag {
   border-radius: 0 !important;
   font-family: var(--font-mono);
-  font-size: 11px !important;
+  font-size: 12.5px !important;
+  line-height: 1.9;
   letter-spacing: 0.06em;
+}
+
+/* 難度標籤是掃視時的主要訊號，再放大一級並加重字重 */
+.ant-tag.ant-tag-success,
+.ant-tag.ant-tag-warning,
+.ant-tag.ant-tag-error {
+  font-size: 13px !important;
+  font-weight: 600;
+  padding-inline: 9px;
 }
 
 .ant-btn {
@@ -474,7 +498,36 @@ h5 {
   background: transparent !important;
   color: var(--ink) !important;
   font-size: 15px;
-  line-height: 1.78;
+  line-height: 1.95;
+}
+
+/*
+ * 題庫內容是長段中文，預設的段距讓整塊看起來像一大團。
+ * 拉開段距、限制每行字數，讓眼睛有落點。
+ */
+.md-viewer .markdown-body p {
+  margin: 0 0 1.15em;
+  max-width: 42em;
+}
+
+.md-viewer .markdown-body p:last-child {
+  margin-bottom: 0;
+}
+
+.md-viewer .markdown-body ul,
+.md-viewer .markdown-body ol {
+  margin: 0 0 1.15em;
+  padding-left: 1.4em;
+  max-width: 42em;
+}
+
+.md-viewer .markdown-body li {
+  margin-bottom: 0.5em;
+  line-height: 1.9;
+}
+
+.md-viewer .markdown-body li:last-child {
+  margin-bottom: 0;
 }
 
 .md-viewer .markdown-body > :first-child {

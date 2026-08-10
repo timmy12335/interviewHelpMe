@@ -142,7 +142,7 @@
   align-items: center;
   gap: 7px;
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-faint);

@@ -294,20 +294,18 @@ export function PracticeQuestion({ question }: { question: Question }) {
       ) : (
         <div className="practice__card hud-panel hud-brackets practice__locked">
           <p className="hud-eyebrow">Sealed // 答案封存中</p>
+          {/*
+            這裡刻意不放第二顆解鎖按鈕：兩顆按鈕做同一件事，但只有左邊那顆
+            能再次收合，容易讓人以為解鎖後就收不回去了。
+          */}
           <p className="practice__locked-text">
-            先在左邊寫下你的版本，再解鎖對照。解鎖後答案會固定在這一欄，
-            捲動題目時仍看得到，不必來回滑動比對。
+            先在左邊寫下你的版本，再用左欄的
+            <b>「顯示核心答案與詳細解析」</b>
+            解鎖對照。解鎖後答案會固定在這一欄，捲動題目時仍看得到，不必來回滑動。
           </p>
-          <button
-            type="button"
-            className="practice__reveal"
-            onClick={() => setShowAnswer(true)}
-          >
-            <span className="practice__reveal-icon" aria-hidden>
-              ◇
-            </span>
-            解鎖對照
-          </button>
+          <p className="practice__locked-hint">
+            也可以直接按 <kbd>A</kbd> 解鎖或收合。
+          </p>
         </div>
       )}
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import type { QuestionListItem } from "@/types/question";
 
@@ -55,8 +55,9 @@ export function TagConstellation({
   onClear,
   max = 28,
 }: TagConstellationProps) {
+  const [expanded, setExpanded] = useState(false);
   const tags = useMemo(() => countTags(questions), [questions]);
-  const visible = tags.slice(0, max);
+  const visible = expanded ? tags : tags.slice(0, max);
   const hidden = tags.length - visible.length;
   const topCount = tags[0]?.count ?? 1;
 
@@ -97,8 +98,24 @@ export function TagConstellation({
             </button>
           );
         })}
+        {/* 旁邊每個標籤都可點，所以 +N 也必須可點，否則看起來像壞掉的按鈕 */}
         {hidden > 0 ? (
-          <span className="tagmap__more">+{hidden}</span>
+          <button
+            type="button"
+            className="tagmap__more"
+            onClick={() => setExpanded(true)}
+          >
+            +{hidden} 展開全部
+          </button>
+        ) : null}
+        {expanded && tags.length > max ? (
+          <button
+            type="button"
+            className="tagmap__more"
+            onClick={() => setExpanded(false)}
+          >
+            收合
+          </button>
         ) : null}
       </div>
     </section>

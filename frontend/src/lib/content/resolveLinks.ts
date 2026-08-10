@@ -1,6 +1,7 @@
 import { withBasePath } from "@/lib/paths";
 import type { FollowUp, Question } from "@/types/question";
 
+import { emphasizeQuotedPhrases } from "./emphasizeQuotes";
 import {
   fallbackLabel,
   replaceWikiLinks,
@@ -75,6 +76,16 @@ function replaceIn(
     : replaceWikiLinks(value, categorySlug, resolve);
 }
 
+/** 面試回答方式額外把「」短句轉成粗體，讓「要講的話」在總結卡裡跳出來。 */
+function resolveTip(
+  value: string | undefined,
+  categorySlug: string,
+  resolve: WikiLinkResolver,
+): string | undefined {
+  const linked = replaceIn(value, categorySlug, resolve);
+  return linked === undefined ? undefined : emphasizeQuotedPhrases(linked);
+}
+
 function resolveFollowUp(
   followUp: FollowUp,
   categorySlug: string,
@@ -84,7 +95,7 @@ function resolveFollowUp(
     ...followUp,
     coreAnswer: replaceIn(followUp.coreAnswer, categorySlug, resolve),
     detail: replaceIn(followUp.detail, categorySlug, resolve),
-    interviewTip: replaceIn(followUp.interviewTip, categorySlug, resolve),
+    interviewTip: resolveTip(followUp.interviewTip, categorySlug, resolve),
   };
 }
 
@@ -106,7 +117,7 @@ export function withResolvedLinks(
     answer: replaceIn(question.answer, categorySlug, resolve),
     coreAnswer: replaceIn(question.coreAnswer, categorySlug, resolve),
     detail: replaceIn(question.detail, categorySlug, resolve),
-    interviewTip: replaceIn(question.interviewTip, categorySlug, resolve),
+    interviewTip: resolveTip(question.interviewTip, categorySlug, resolve),
     followUps: question.followUps?.map((followUp) =>
       resolveFollowUp(followUp, categorySlug, resolve),
     ),

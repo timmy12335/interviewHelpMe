@@ -99,7 +99,24 @@
 }
 
 .tagmap__more {
+  padding: 4px 10px;
+  background: transparent;
+  border: 1px dashed var(--line-strong);
+  color: var(--cyan);
   font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--ink-faint);
+  font-size: 11.5px;
+  cursor: pointer;
+  transition:
+    background var(--fast) var(--ease),
+    border-style var(--fast) var(--ease);
+}
+
+.tagmap__more:hover {
+  border-style: solid;
+  background: rgb(34 211 238 / 10%);
+}
+
+.tagmap__more:focus-visible {
+  outline: 1px solid var(--cyan);
+  outline-offset: 2px;
 }

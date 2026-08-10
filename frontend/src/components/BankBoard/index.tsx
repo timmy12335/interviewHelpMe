@@ -42,6 +42,15 @@ export function BankBoard({ categorySlug, questions }: BankBoardProps) {
     [questions, selectedTags],
   );
 
+  // 題號固定對應題庫順序，篩選後不重編，才能對照左側題單與路線圖。
+  const numbers = useMemo(
+    () =>
+      Object.fromEntries(
+        questions.map((question, index) => [question.id, index + 1]),
+      ),
+    [questions],
+  );
+
   return (
     <div className="bank-board">
       <div className="bank-board__aside">
@@ -67,6 +76,7 @@ export function BankBoard({ categorySlug, questions }: BankBoardProps) {
           questions={filtered}
           title={`題目列表（${filtered.length}）`}
           emptyText="沒有符合所選標籤的題目"
+          numbers={numbers}
         />
       </div>
     </div>
