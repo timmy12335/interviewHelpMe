@@ -7,9 +7,10 @@ import { MdViewer } from "@/components/MdViewer";
 import { TagList } from "@/components/TagList";
 import { usePersistentFlag } from "@/hooks/usePersistentFlag";
 import { notifyProgressChanged } from "@/hooks/useProgress";
+import { questionHref } from "@/lib/content/resolveLinks";
+import { fallbackLabel, parseWikiTarget } from "@/lib/content/wikiLinks";
 import { isTypingTarget } from "@/lib/keyboard";
 import { DETAIL_OPEN_KEY, REF_COLLAPSED_KEY } from "@/lib/uiPrefs";
-import { withBasePath } from "@/lib/paths";
 import {
   REVIEW_AFTER_DAYS,
   answerAtKey,
@@ -22,34 +23,24 @@ import type { FollowUp, Question } from "@/types/question";
 
 import "./index.css";
 
-/** 從 `[[002-foo.md]]` 或 `../ai-llm/022-bar.md` 推出站內題目連結。 */
-function relatedHref(raw: string, categorySlug: string): string | null {
-  const wiki = raw.match(/\[\[([^\]]+)\]\]/);
-  const target = (wiki ? wiki[1] : raw).trim();
+/**
+ * 「相關」清單的連結。
+ * 內文的 `[[...]]` 在建置時就已經換成 Markdown 連結，這裡只處理清單項目，
+ * 且共用同一套解析規則，避免兩邊的路徑推導長期漂移。
+ */
+function relatedLink(
+  raw: string,
+  categorySlug: string,
+): { href: string; label: string } | null {
+  const target = parseWikiTarget(raw, categorySlug);
   if (!target) {
     return null;
   }
 
-  const fileName = target.split("/").pop() ?? target;
-  const slug = fileName.replace(/\.md$/i, "").replace(/^\d+-/, "");
-  if (target.includes("../")) {
-    const parts = target.replace(/\.md$/i, "").split("/");
-    const otherCategory = parts.find((part) => part !== ".." && part !== ".");
-    const otherSlug = (parts[parts.length - 1] ?? "").replace(/^\d+-/, "");
-    if (otherCategory && otherSlug && otherCategory !== otherSlug) {
-      return withBasePath(`/category/${otherCategory}/question/${otherSlug}/`);
-    }
-  }
-
-  return withBasePath(`/category/${categorySlug}/question/${slug}/`);
-}
-
-function relatedLabel(raw: string): string {
-  const stripped = raw.replace(/^\[\[|\]\]$/g, "").trim();
-  return (stripped.split("/").pop() ?? stripped)
-    .replace(/\.md$/i, "")
-    .replace(/^\d+-/, "")
-    .replace(/-/g, " ");
+  return {
+    href: questionHref(target),
+    label: fallbackLabel(target),
+  };
 }
 
 function AnswerSection({
@@ -336,16 +327,15 @@ export function PracticeQuestion({ question }: { question: Question }) {
           <p className="hud-eyebrow">Linked // 相關題目</p>
           <div className="related-row">
             {question.related.map((item) => {
-              const href = relatedHref(item, question.categorySlug);
-              const label = relatedLabel(item);
+              const link = relatedLink(item, question.categorySlug);
 
-              return href ? (
-                <a className="related-pill" href={href} key={item}>
-                  {label}
+              return link ? (
+                <a className="related-pill" href={link.href} key={item}>
+                  {link.label}
                 </a>
               ) : (
                 <span className="related-pill is-plain" key={item}>
-                  {label}
+                  {item}
                 </span>
               );
             })}

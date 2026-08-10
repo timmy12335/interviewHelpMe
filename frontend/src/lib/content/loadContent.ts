@@ -5,6 +5,11 @@ import type { Category, Question } from "@/types/question";
 
 import { CATEGORY_META, type CategoryMeta } from "./categories";
 import { parseQuestionMarkdown } from "./parseQuestionMarkdown";
+import {
+  buildLinkIndex,
+  withResolvedLinks,
+  type LinkIndex,
+} from "./resolveLinks";
 
 export function getContentRoot(): string {
   const root = path.resolve(process.cwd(), "..", "content");
@@ -137,21 +142,53 @@ export function getAllQuestionsFromRoot(
     .flatMap(({ slug }) => loadQuestionsFromCategoryDir(contentRoot, slug));
 }
 
+/**
+ * 標題索引供內文的 `[[...]]` 連結解析成題目標題。
+ * 建立一次要讀完整個題庫，而靜態匯出會跑數百頁，所以在單次執行內快取；
+ * 開發模式不快取，否則改了 content 要重啟才看得到。
+ */
+let cachedLinkIndex: { root: string; index: LinkIndex } | undefined;
+
+function getLinkIndex(contentRoot: string): LinkIndex {
+  if (
+    process.env.NODE_ENV !== "development" &&
+    cachedLinkIndex?.root === contentRoot
+  ) {
+    return cachedLinkIndex.index;
+  }
+
+  const index = buildLinkIndex(getAllQuestionsFromRoot(contentRoot));
+  cachedLinkIndex = { root: contentRoot, index };
+  return index;
+}
+
+function resolveAll(contentRoot: string, questions: Question[]): Question[] {
+  const index = getLinkIndex(contentRoot);
+  return questions.map((question) => withResolvedLinks(question, index));
+}
+
 export function getAllCategories(): Category[] {
   return getAllCategoriesFromRoot(getContentRoot());
 }
 
 export function getQuestionsByCategory(categorySlug: string): Question[] {
-  return getQuestionsByCategoryFromRoot(getContentRoot(), categorySlug);
+  const root = getContentRoot();
+  return resolveAll(root, getQuestionsByCategoryFromRoot(root, categorySlug));
 }
 
 export function getQuestion(
   categorySlug: string,
   questionSlug: string,
 ): Question | undefined {
-  return getQuestionFromRoot(getContentRoot(), categorySlug, questionSlug);
+  const root = getContentRoot();
+  const question = getQuestionFromRoot(root, categorySlug, questionSlug);
+
+  return question
+    ? withResolvedLinks(question, getLinkIndex(root))
+    : undefined;
 }
 
 export function getAllQuestions(): Question[] {
-  return getAllQuestionsFromRoot(getContentRoot());
+  const root = getContentRoot();
+  return resolveAll(root, getAllQuestionsFromRoot(root));
 }

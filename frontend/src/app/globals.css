@@ -493,8 +493,27 @@ h5 {
   color: var(--ink) !important;
 }
 
+/*
+ * 站內連結。重點詞也是青色，所以連結必須有自己的可點擊訊號——
+ * 用虛線底線區隔，避免和 **粗體** 的重點標記混淆。
+ */
 .md-viewer .markdown-body a {
   color: var(--cyan) !important;
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cyan) 55%, transparent);
+  transition:
+    border-bottom-color var(--fast) var(--ease),
+    background var(--fast) var(--ease);
+}
+
+.md-viewer .markdown-body a:hover {
+  border-bottom-color: var(--cyan);
+  background: rgb(34 211 238 / 10%);
+}
+
+.md-viewer .markdown-body a:focus-visible {
+  outline: 1px solid var(--cyan);
+  outline-offset: 2px;
 }
 
 .md-viewer .markdown-body code {
