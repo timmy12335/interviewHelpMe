@@ -10,7 +10,7 @@ source: original
 
 # 題目
 
-什麼是「ReAct（Reasoning + Acting）」模式？它，是，如何，把，前面(見 [[../ai-llm/021-chain-of-thought.md]])已經討論過的Chain of Thought,推理能力，和，Agent,實際執行行動的能力，結合，在一起的？
+什麼是「ReAct（Reasoning + Acting）」模式？它是如何把前面（見 [[../ai-llm/021-chain-of-thought.md]]）已經討論過的 Chain of Thought 推理能力，和 Agent 實際執行行動的能力結合在一起的？
 
 ## 核心答案
 

@@ -10,7 +10,7 @@ source: original
 
 # 題目
 
-什麼是「Prompt Injection（提示注入）」攻擊？為什麼，這個問題，特別，難以，被，徹底、完美地解決？結合，前面，已經，討論過的Function Calling能力，這種攻擊，可能，帶來,什麼樣的實際風險？
+什麼是「Prompt Injection（提示注入）」攻擊？為什麼這個問題特別難以被徹底、完美地解決？結合前面已經討論過的 Function Calling 能力，這種攻擊可能帶來什麼樣的實際風險？
 
 ## 核心答案
 
