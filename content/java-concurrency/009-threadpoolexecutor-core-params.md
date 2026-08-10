@@ -10,11 +10,11 @@ source: original
 
 # 題目
 
-`ThreadPoolExecutor` 的核心參數有哪些？提交一個任務後，執行緒池內部的執行流程是什麼？
+`ThreadPoolExecutor` 的核心參數有哪些？提交一個任務後，執行緒池（Thread Pool）內部的執行流程是什麼？
 
 ## 核心答案
 
-`ThreadPoolExecutor` 有 7 個核心建構參數：`corePoolSize`、`maximumPoolSize`、`keepAliveTime`、`unit`、`workQueue`、`threadFactory`、`handler`（拒絕策略）。提交任務時，執行流程依序是：先看核心執行緒數是否已滿，未滿則建立新執行緒執行；已滿則嘗試放入佇列；佇列也滿了才嘗試建立非核心執行緒（直到 `maximumPoolSize`）；連最大執行緒數都用完，才觸發拒絕策略。
+`ThreadPoolExecutor` 有 7 個核心建構參數：`corePoolSize`、`maximumPoolSize`、`keepAliveTime`、`unit`、`workQueue`、`threadFactory`、`handler`（拒絕策略（Rejection Policy））。提交任務時，執行流程依序是：先看核心執行緒數是否已滿，未滿則建立新執行緒執行；已滿則嘗試放入佇列；佇列也滿了才嘗試建立非核心執行緒（直到 `maximumPoolSize`）；連最大執行緒數都用完，才觸發拒絕策略。
 
 ## 詳細解析
 

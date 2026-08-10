@@ -58,7 +58,7 @@ source: original
 
 ### record 可以做參數驗證嗎？緊湊建構子是什麼？
 
-**核心答案**：可以。record 支援「緊湊建構子（compact constructor）」——一種特殊的建構子語法，不需要寫參數列表和欄位賦值（那些由編譯器自動處理），你只需在其中寫驗證或正規化邏輯。例如在 `record Range(int start, int end)` 中寫一個緊湊建構子，檢查 `start <= end`，不合法就拋例外，這樣就能保證每個建立出來的 Range 都是合法的。
+**核心答案**：可以。record 支援「緊湊建構子（compact constructor）」——一種特殊的建構子語法，不需要寫參數列表和欄位賦值（那些由編譯器自動處理），你只需在其中寫驗證或正規化（Normalization）邏輯。例如在 `record Range(int start, int end)` 中寫一個緊湊建構子，檢查 `start <= end`，不合法就拋例外，這樣就能保證每個建立出來的 Range 都是合法的。
 
 **詳細解析**：緊湊建構子的語法是 `Range { if (start > end) throw new IllegalArgumentException(...); }`——注意它沒有參數列表（直接 `Range {` 而非 `Range(int start, int end) {`），也不需要手動寫 `this.start = start`（編譯器會在你的驗證邏輯之後自動加上欄位賦值）。這讓 record 不只是「無腦的資料容器」，還能維護自己的不變性（invariant）——確保不會存在「非法狀態」的 record 實例（例如 end 小於 start 的 Range）。你也可以在緊湊建構子中做正規化（例如把字串欄位 trim、把負數修正為 0），這些調整會反映到最終賦值的欄位上。這個能力讓 record 能安全地用於需要驗證的值物件，而不失其簡潔性。
 

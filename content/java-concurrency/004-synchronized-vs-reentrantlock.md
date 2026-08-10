@@ -27,7 +27,7 @@ source: original
 
 | 面向 | synchronized | ReentrantLock |
 |------|---------------|----------------|
-| 鎖釋放 | JVM 自動釋放，即使拋出例外也會釋放 | 必須手動在 `finally` 中呼叫 `unlock()`，否則死鎖 |
+| 鎖釋放 | JVM 自動釋放，即使拋出例外也會釋放 | 必須手動在 `finally` 中呼叫 `unlock()`，否則死鎖（Deadlock） |
 | 可中斷 | 不支援，執行緒阻塞後無法被中斷 | 支援 `lockInterruptibly()`，等待鎖過程中可回應中斷 |
 | 逾時等待 | 不支援 | 支援 `tryLock(timeout, unit)` |
 | 公平性 | 不保證公平（重量級鎖狀態下由 OS 排程） | 可選擇公平鎖或非公平鎖（建構子參數） |

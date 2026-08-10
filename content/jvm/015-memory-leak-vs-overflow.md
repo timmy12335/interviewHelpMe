@@ -29,7 +29,7 @@ source: original
 
 1. **靜態集合類持有物件**：把物件放入一個 static 的 List/Map 卻忘記移除，因為 static 變數是 GC Root，這些物件永遠可達、無法回收。
 2. **監聽器和回呼未註銷**：註冊了監聽器/觀察者卻在不需要時沒有移除，被事件源持有。
-3. **ThreadLocal 未 remove**：執行緒池場景下用完 ThreadLocal 不 remove，value 一直殘留（見 Java 併發 ThreadLocal 題）。
+3. **ThreadLocal 未 remove**：執行緒池（Thread Pool）場景下用完 ThreadLocal 不 remove，value 一直殘留（見 Java 併發 ThreadLocal 題）。
 4. **資源未關閉**：資料庫連線、檔案流、Socket 等未關閉，佔用的資源和相關物件無法釋放。
 5. **內部類別/匿名類別隱式持有外部類別引用**：非靜態內部類別會隱式持有外部類別實例的引用，如果內部類別物件生命週期比外部類別長，會導致外部類別無法回收。
 6. **快取無限增長**：自己實現的快取沒有大小限制或過期策略，物件只進不出。
@@ -43,7 +43,7 @@ source: original
 
 ### 為什麼非靜態內部類別容易導致記憶體洩漏？
 
-**核心答案**：因為非靜態內部類別（包括匿名內部類別）會「隱式持有」它所在的外部類別實例的引用（這樣它才能存取外部類別的成員）。如果這個內部類別的物件被一個生命週期很長的東西持有（例如一個非靜態的 Handler 匿名類別被一個長生命週期的訊息佇列持有），那麼透過「內部類別 → 外部類別」的隱式引用鏈，外部類別實例也會被一直持有、無法回收，即使外部類別本身早已不再被業務需要，造成洩漏。解法是——如果內部類別不需要存取外部類別的實例成員，就把它宣告為 static（靜態內部類別不持有外部類別引用）。
+**核心答案**：因為非靜態內部類別（包括匿名內部類別）會「隱式持有」它所在的外部類別實例的引用（這樣它才能存取外部類別的成員）。如果這個內部類別的物件被一個生命週期很長的東西持有（例如一個非靜態的 Handler 匿名類別被一個長生命週期的訊息佇列（Message Queue）持有），那麼透過「內部類別 → 外部類別」的隱式引用鏈，外部類別實例也會被一直持有、無法回收，即使外部類別本身早已不再被業務需要，造成洩漏。解法是——如果內部類別不需要存取外部類別的實例成員，就把它宣告為 static（靜態內部類別不持有外部類別引用）。
 
 **詳細解析**：這是 Android 開發中極其經典的洩漏場景（如 Activity 洩漏），在一般 Java 中同樣存在。關鍵機制是——非靜態內部類別的實例中，編譯器會自動加一個指向外部類別實例的引用欄位（通常叫 `this$0`），這是它能寫 `外部欄位` 直接存取外部成員的原因。這個隱式引用意味著「只要內部類別物件活著，外部類別物件就活著」。當內部類別物件被一個長命的東西（靜態集合、長期存活的執行緒、未取消的非同步任務）持有，就會連累外部類別無法回收。Android 中典型的例子是——在 Activity 中 new 一個匿名的 Runnable 丟給一個延遲執行的 Handler，這個 Runnable 隱式持有 Activity，如果 Activity 已經該銷毀但 Handler 的延遲任務還沒執行，Activity 就洩漏了。解法一是用 static 內部類別 + 弱引用持有外部類別（需要時才存取），二是及時取消/移除這些持有內部類別的長命引用。
 
@@ -53,7 +53,7 @@ source: original
 
 **核心答案**：不一定。`OutOfMemoryError` 有多種類型，對應不同的記憶體區域耗盡——最常見的 `OutOfMemoryError: Java heap space`（堆不足）；`OutOfMemoryError: Metaspace`（元空間不足，通常是載入了太多類別，如 classloader 洩漏）；`OutOfMemoryError: unable to create new native thread`（無法建立新執行緒，通常是執行緒數過多或系統執行緒資源耗盡）；`OutOfMemoryError: Direct buffer memory`（堆外的直接記憶體不足，NIO DirectByteBuffer 相關）；`StackOverflowError`（嚴格說是 Error 不是 OOM，但屬於棧記憶體問題）。所以看到 OOM 一定要看清楚具體的錯誤訊息，才能判斷是哪塊記憶體出問題、對症下藥。
 
-**詳細解析**：這是一個很能區分「有沒有實際排查過 OOM」的問題。不同的 OOM 訊息指向完全不同的問題和解法——`Java heap space` 是堆問題（調堆或查洩漏）；`Metaspace` 是類別元資料太多（常見於動態生成大量類別、classloader 洩漏，如某些反射/動態代理/熱部署場景，解法是查類別載入或調 MaxMetaspaceSize）；`unable to create new native thread` 是執行緒問題（執行緒建立太多，可能是執行緒池配置不當或執行緒洩漏，也可能是系統的執行緒數限制 ulimit，解法是查執行緒數或調系統限制/減小 `-Xss`）；`Direct buffer memory` 是堆外記憶體問題（NIO 用的直接記憶體，不受 `-Xmx` 控制，解法是查 DirectByteBuffer 的使用或調 `-XX:MaxDirectMemorySize`）。所以「看到 OOM 先看訊息類型」是排查的第一步，盲目地調大堆對非堆的 OOM 完全無效。
+**詳細解析**：這是一個很能區分「有沒有實際排查過 OOM」的問題。不同的 OOM 訊息指向完全不同的問題和解法——`Java heap space` 是堆問題（調堆或查洩漏）；`Metaspace` 是類別元資料太多（常見於動態生成大量類別、classloader 洩漏，如某些反射（Reflection）/動態代理（Dynamic Proxy）/熱部署場景，解法是查類別載入或調 MaxMetaspaceSize）；`unable to create new native thread` 是執行緒問題（執行緒建立太多，可能是執行緒池配置不當或執行緒洩漏，也可能是系統的執行緒數限制 ulimit，解法是查執行緒數或調系統限制/減小 `-Xss`）；`Direct buffer memory` 是堆外記憶體問題（NIO 用的直接記憶體，不受 `-Xmx` 控制，解法是查 DirectByteBuffer 的使用或調 `-XX:MaxDirectMemorySize`）。所以「看到 OOM 先看訊息類型」是排查的第一步，盲目地調大堆對非堆的 OOM 完全無效。
 
 **面試回答方式**：明確回答「不一定」，並列出幾種 OOM 類型（heap space、Metaspace、unable to create native thread、Direct buffer memory）及各自的常見原因和解法方向。強調「看到 OOM 先看具體訊息類型再對症下藥、盲目調堆對非堆 OOM 無效」，展現你有實際排查各種 OOM 的經驗，而非只知道「堆滿了」這一種。
 

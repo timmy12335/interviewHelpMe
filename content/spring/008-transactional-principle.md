@@ -14,7 +14,7 @@ source: original
 
 ## 核心答案
 
-`@Transactional` 是 Spring 的「宣告式交易」——透過 AOP 動態代理實現。當一個類別/方法標了 `@Transactional`，Spring 會為它生成一個代理物件，代理在呼叫目標方法時，用一個「交易攔截器」在方法前後織入交易管理邏輯——方法執行前開啟交易（獲取資料庫連線、關閉自動提交）、方法正常返回後提交交易、方法拋出異常時回滾交易。底層依賴 `PlatformTransactionManager`（交易管理器）來實際執行開啟/提交/回滾操作，並用 `ThreadLocal` 綁定當前執行緒的資料庫連線，保證同一個交易內的所有操作用同一個連線。
+`@Transactional` 是 Spring 的「宣告式交易」——透過 AOP 動態代理（Dynamic Proxy）實現。當一個類別/方法標了 `@Transactional`，Spring 會為它生成一個代理物件，代理在呼叫目標方法時，用一個「交易攔截器」在方法前後織入交易管理邏輯——方法執行前開啟交易（獲取資料庫連線、關閉自動提交）、方法正常返回後提交交易、方法拋出異常時回滾交易。底層依賴 `PlatformTransactionManager`（交易管理器）來實際執行開啟/提交/回滾操作，並用 `ThreadLocal` 綁定當前執行緒的資料庫連線，保證同一個交易內的所有操作用同一個連線。
 
 ## 詳細解析
 
@@ -56,7 +56,7 @@ source: original
 
 **核心答案**：因為資料庫交易是「連線層級」的概念——一個交易的開啟（begin）、其中的所有 SQL 操作、以及最終的提交/回滾，必須在「同一條資料庫連線」上進行才有意義（不同連線是不同的交易上下文，在連線 A 開的交易無法提交連線 B 上的操作）。Spring 用 `ThreadLocal`（透過 `TransactionSynchronizationManager`）把「當前交易使用的連線」綁定到當前執行緒，這樣同一個執行緒內、同一個交易中的所有資料存取操作（不管在哪個方法、哪個 DAO），去獲取連線時都會拿到 ThreadLocal 裡綁定的這同一條連線，保證它們都在同一個交易裡。
 
-**詳細解析**：這是理解 @Transactional 如何讓「散落在不同方法/DAO 的多個 DB 操作」處於同一個交易的關鍵。資料庫交易的本質——`BEGIN` 一個交易後，這條連線上的所有操作都屬於這個交易，直到 `COMMIT`/`ROLLBACK`。所以要讓 Service 方法裡呼叫的多個 DAO 操作（可能 DAO1.insert、DAO2.update）在同一個交易，就必須讓它們都用同一條連線。Spring 的解法是 ThreadLocal 綁定——交易開始時，把獲取的連線放進 ThreadLocal；之後 MyBatis/JdbcTemplate 等在執行 SQL 前，會先透過 Spring 的 `DataSourceUtils.getConnection()` 檢查「當前執行緒的 ThreadLocal 裡有沒有已綁定的交易連線」，有就用那條（而不是從連線池新拿一條），這樣所有操作自然都在同一條連線、同一個交易裡。交易結束時解除綁定、歸還連線。這也解釋了為什麼「交易和執行緒綁定」——如果一個 @Transactional 方法內部把工作丟到另一個執行緒去做（如用 @Async 或線程池），那個新執行緒沒有綁定的交易連線，它的 DB 操作就不在原交易裡了（這是一個常見的交易失效場景）。理解 ThreadLocal 綁定連線，能把交易、連線、執行緒的關係串起來。
+**詳細解析**：這是理解 @Transactional 如何讓「散落在不同方法/DAO 的多個 DB 操作」處於同一個交易的關鍵。資料庫交易的本質——`BEGIN` 一個交易後，這條連線上的所有操作都屬於這個交易，直到 `COMMIT`/`ROLLBACK`。所以要讓 Service 方法裡呼叫的多個 DAO 操作（可能 DAO1.insert、DAO2.update）在同一個交易，就必須讓它們都用同一條連線。Spring 的解法是 ThreadLocal 綁定——交易開始時，把獲取的連線放進 ThreadLocal；之後 MyBatis/JdbcTemplate 等在執行 SQL 前，會先透過 Spring 的 `DataSourceUtils.getConnection()` 檢查「當前執行緒的 ThreadLocal 裡有沒有已綁定的交易連線」，有就用那條（而不是從連線池（Connection Pool）新拿一條），這樣所有操作自然都在同一條連線、同一個交易裡。交易結束時解除綁定、歸還連線。這也解釋了為什麼「交易和執行緒綁定」——如果一個 @Transactional 方法內部把工作丟到另一個執行緒去做（如用 @Async 或線程池），那個新執行緒沒有綁定的交易連線，它的 DB 操作就不在原交易裡了（這是一個常見的交易失效場景）。理解 ThreadLocal 綁定連線，能把交易、連線、執行緒的關係串起來。
 
 **面試回答方式**：講出「交易是連線層級的、同一交易的所有操作必須在同一條連線上、Spring 用 ThreadLocal 綁定連線讓同執行緒同交易的操作都拿到同一條連線」。能延伸「所以把工作丟到別的執行緒（@Async）會導致新執行緒不在原交易裡、交易失效」，展現你把交易和執行緒綁定的關係理解透徹，也連結到失效場景。
 

@@ -26,7 +26,7 @@ source: original
 
 **`PriorityBlockingQueue`**：底層用二元堆實作，元素出列順序由 `Comparable`/`Comparator` 決定，而非先進先出。
 
-**選型速查表**：需要嚴格控制記憶體用 `ArrayBlockingQueue`；高吞吐讀寫分離用 `LinkedBlockingQueue`；需要立即交接用 `SynchronousQueue`；需要按優先級處理用 `PriorityBlockingQueue`。
+**選型速查表**：需要嚴格控制記憶體用 `ArrayBlockingQueue`；高吞吐讀寫分離（Read-Write Splitting）用 `LinkedBlockingQueue`；需要立即交接用 `SynchronousQueue`；需要按優先級處理用 `PriorityBlockingQueue`。
 
 ## 面試回答方式
 

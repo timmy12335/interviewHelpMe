@@ -14,7 +14,7 @@ source: original
 
 ## 核心答案
 
-常見的 OOM 類型對應不同的記憶體區域耗盡:`Java heap space`(堆不足,最常見,原因是記憶體洩漏或容量不足)、`GC overhead limit exceeded`(GC 花了大量時間卻回收很少,通常是堆快滿了的前兆)、`Metaspace`(元空間不足,類別載入過多或 classloader 洩漏)、`unable to create new native thread`(無法建立新執行緒,執行緒過多或系統限制)、`Direct buffer memory`(堆外直接記憶體不足,NIO 相關)。看到 OOM 的第一步永遠是「看清楚具體是哪種類型」,因為不同類型的成因和解法完全不同,盲目調大堆對非堆的 OOM 無效。
+常見的 OOM 類型對應不同的記憶體區域耗盡:`Java heap space`(堆不足,最常見,原因是記憶體洩漏（Memory Leak）或容量不足)、`GC overhead limit exceeded`(GC 花了大量時間卻回收很少,通常是堆快滿了的前兆)、`Metaspace`(元空間不足,類別載入過多或 classloader 洩漏)、`unable to create new native thread`(無法建立新執行緒,執行緒過多或系統限制)、`Direct buffer memory`(堆外直接記憶體不足,NIO 相關)。看到 OOM 的第一步永遠是「看清楚具體是哪種類型」,因為不同類型的成因和解法完全不同,盲目調大堆對非堆的 OOM 無效。
 
 ## 詳細解析
 
@@ -30,12 +30,12 @@ source: original
 
 **3. `Metaspace`(或 JDK 7 的 `PermGen space`)**:
 
-- 成因:元空間(類別元資料)不足。原因是——載入了過多類別(動態代理/CGLIB 大量生成類別、反射)、或 classloader 洩漏(舊載入器和類別卸載不掉,見 [[017-metaspace-vs-permgen.md]])。
+- 成因:元空間(類別元資料)不足。原因是——載入了過多類別(動態代理（Dynamic Proxy）/CGLIB 大量生成類別、反射（Reflection）)、或 classloader 洩漏(舊載入器和類別卸載不掉,見 [[017-metaspace-vs-permgen.md]])。
 - 排查:看類別數量是否異常增長、是否有大量重複的動態生成類別、是否有載入器洩漏。可調 `-XX:MaxMetaspaceSize`,但若是洩漏調大只是拖延。
 
 **4. `unable to create new native thread`**:
 
-- 成因:無法建立新的作業系統執行緒。原因是——執行緒建立太多(執行緒池配置不當、執行緒洩漏)、或系統的執行緒數/記憶體限制(ulimit)、或 `-Xss` 設太大導致每個執行緒佔用過多記憶體、湊不出空間建立新執行緒。
+- 成因:無法建立新的作業系統執行緒。原因是——執行緒建立太多(執行緒池（Thread Pool）配置不當、執行緒洩漏)、或系統的執行緒數/記憶體限制(ulimit)、或 `-Xss` 設太大導致每個執行緒佔用過多記憶體、湊不出空間建立新執行緒。
 - 排查:用 jstack 看執行緒數和狀態,查是否有執行緒洩漏(大量同類執行緒);檢查系統 ulimit 和 `-Xss` 設定。
 
 **5. `Direct buffer memory`**:

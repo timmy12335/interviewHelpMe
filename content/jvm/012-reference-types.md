@@ -22,7 +22,7 @@ Java 的四種引用（強引用、軟引用、弱引用、虛引用）有什麼
 
 - 就是最普通的引用，如 `Object o = new Object()`。
 - 只要強引用還存在（可從 GC Roots 到達），垃圾收集器就絕不會回收被引用的物件，寧可拋 OOM。
-- 大部分記憶體洩漏都是「本該釋放的物件仍被某個強引用持有」導致的。
+- 大部分記憶體洩漏（Memory Leak）都是「本該釋放的物件仍被某個強引用持有」導致的。
 
 **軟引用（SoftReference）**：
 
@@ -56,7 +56,7 @@ Java 的四種引用（強引用、軟引用、弱引用、虛引用）有什麼
 
 ### 為什麼 ThreadLocalMap 的 key 用弱引用，這解決了什麼、又帶來了什麼問題？
 
-**核心答案**：`ThreadLocalMap` 的 key（即 `ThreadLocal` 物件）用弱引用，解決的是「當 `ThreadLocal` 物件本身不再被外部強引用時，能讓它被 GC 回收」——避免 `ThreadLocal` 物件本身洩漏。但它帶來一個問題——key 被回收後變成 null，但對應的 value 仍是強引用不會被自動回收，如果執行緒長期存活（如執行緒池）且不呼叫 `remove()`，這些 key 為 null 的 value 會一直堆積造成記憶體洩漏。所以用弱引用 key 是「兩害相權取其輕」，並非完全解決洩漏，仍需開發者主動 `remove()`。
+**核心答案**：`ThreadLocalMap` 的 key（即 `ThreadLocal` 物件）用弱引用，解決的是「當 `ThreadLocal` 物件本身不再被外部強引用時，能讓它被 GC 回收」——避免 `ThreadLocal` 物件本身洩漏。但它帶來一個問題——key 被回收後變成 null，但對應的 value 仍是強引用不會被自動回收，如果執行緒長期存活（如執行緒池（Thread Pool））且不呼叫 `remove()`，這些 key 為 null 的 value 會一直堆積造成記憶體洩漏。所以用弱引用 key 是「兩害相權取其輕」，並非完全解決洩漏，仍需開發者主動 `remove()`。
 
 **詳細解析**：這題完整連結到 Java 併發的 [[../java-concurrency/008-threadlocal-memory-leak.md]]。核心邏輯是——如果 key 用強引用，那麼只要執行緒還活著，`ThreadLocalMap` 就一直強引用著 `ThreadLocal` 物件，即使程式其他地方早已不用這個 `ThreadLocal` 了，它也無法被回收，洩漏更嚴重。用弱引用 key 至少保證「`ThreadLocal` 物件本身能被回收」（當外部不再強引用它時）。但這只解決了 key 的洩漏，value 因為是強引用仍然會殘留，這就是為什麼強烈建議「用完 ThreadLocal 一定要 remove」。理解這個設計，能看到弱引用在實際框架中如何被用來「盡量減少洩漏」，也理解它的局限——弱引用不是萬能藥，它只能讓「弱引用指向的東西」被回收，管不了那個東西關聯的其他強引用資料。
 

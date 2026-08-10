@@ -54,7 +54,7 @@ source: original
 
 ### BeanFactoryPostProcessor 和 BeanDefinitionRegistryPostProcessor 有什麼關係？
 
-**核心答案**：`BeanDefinitionRegistryPostProcessor` 是 `BeanFactoryPostProcessor` 的「子介面」，它擴展了一個更強的能力——「動態註冊新的 BeanDefinition」。普通的 BeanFactoryPostProcessor 能「修改已存在的 Bean 定義」（改屬性、改作用域等），但 `BeanDefinitionRegistryPostProcessor` 額外提供了 `postProcessBeanDefinitionRegistry` 方法，讓你能在更早的時機「往容器裡動態註冊全新的 Bean 定義」（憑空增加 Bean）。它執行的時機比普通 BeanFactoryPostProcessor 更早（先執行完所有的 registry 後置處理、再執行普通的 factory 後置處理）。很多框架整合（如 MyBatis 的 Mapper 掃描、動態代理生成的 Bean）就是靠它動態註冊 Bean 定義的。
+**核心答案**：`BeanDefinitionRegistryPostProcessor` 是 `BeanFactoryPostProcessor` 的「子介面」，它擴展了一個更強的能力——「動態註冊新的 BeanDefinition」。普通的 BeanFactoryPostProcessor 能「修改已存在的 Bean 定義」（改屬性、改作用域等），但 `BeanDefinitionRegistryPostProcessor` 額外提供了 `postProcessBeanDefinitionRegistry` 方法，讓你能在更早的時機「往容器裡動態註冊全新的 Bean 定義」（憑空增加 Bean）。它執行的時機比普通 BeanFactoryPostProcessor 更早（先執行完所有的 registry 後置處理、再執行普通的 factory 後置處理）。很多框架整合（如 MyBatis 的 Mapper 掃描、動態代理（Dynamic Proxy）生成的 Bean）就是靠它動態註冊 Bean 定義的。
 
 **詳細解析**：這題是 BeanFactoryPostProcessor 的進階延伸。兩者的能力差異——普通 `BeanFactoryPostProcessor.postProcessBeanFactory` 拿到的是 `ConfigurableListableBeanFactory`，主要用於「修改已註冊的 Bean 定義」（改現有藍圖）。`BeanDefinitionRegistryPostProcessor.postProcessBeanDefinitionRegistry` 拿到的是 `BeanDefinitionRegistry`，能「往裡面註冊全新的 BeanDefinition」（增加新藍圖）。這個「動態註冊 Bean」的能力對框架整合極其重要——典型例子是 MyBatis 的 `MapperScannerConfigurer`：MyBatis 的 Mapper 是介面（沒有實作類別），Spring 正常無法為介面建立 Bean，MyBatis 就用 `BeanDefinitionRegistryPostProcessor` 掃描所有 Mapper 介面、為每個介面「動態註冊一個 BeanDefinition」（這個定義指向一個 FactoryBean，會為介面生成動態代理實作），這樣你才能 `@Autowired` 注入 Mapper 介面。很多需要「根據掃描結果動態生成一批 Bean」的框架整合都靠這個機制。理解 `BeanDefinitionRegistryPostProcessor` 的「動態註冊 Bean」能力和它在框架整合中的應用（如 MyBatis Mapper），展現你對 Spring 擴展機制的理解達到了能解釋「第三方框架如何整合進 Spring」的深度。
 

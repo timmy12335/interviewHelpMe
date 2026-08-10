@@ -50,7 +50,7 @@ JDK 7 用「分段鎖（Segment）」把整個 Map 切成多個獨立加鎖的�
 
 ### ConcurrentHashMap 的 computeIfAbsent 在高並發下需要注意什麼陷阱？
 
-**核心答案**：如果傳入 `computeIfAbsent` 的映射函式（mapping function）內部又遞迴呼叫了同一個 `ConcurrentHashMap` 的 `computeIfAbsent`（或其他會修改該 Map 的方法），且剛好命中同一個桶，可能因為同一個執行緒試圖對同一把鎖重複加鎖但邏輯上形成循環依賴而導致死鎖或無限迴圈。
+**核心答案**：如果傳入 `computeIfAbsent` 的映射函式（mapping function）內部又遞迴呼叫了同一個 `ConcurrentHashMap` 的 `computeIfAbsent`（或其他會修改該 Map 的方法），且剛好命中同一個桶，可能因為同一個執行緒試圖對同一把鎖重複加鎖但邏輯上形成循環依賴而導致死鎖（Deadlock）或無限迴圈。
 
 **詳細解析**：JDK 8 的 `computeIfAbsent` 在計算過程中，會對目標桶的頭節點持有 `synchronized` 鎖以保證原子性；如果映射函式的邏輯不小心（通常是無意間）又對同一個 `ConcurrentHashMap` 執行了寫入操作，且這個操作嘗試存取到同一個桶，就可能因為「同一個邏輯執行流程中，內層操作依賴外層操作已經持有但尚未釋放的鎖狀態」而產生問題——雖然 `synchronized` 本身是可重入的（同一執行緒可以重複進入），但 `computeIfAbsent` 的原始碼實作中有額外的邏輯檢查（例如偵測到遞迴呼叫會拋出 `IllegalStateException` 以防止資料結構被破壞），因此實務上應該避免在 `computeIfAbsent` 的映射函式內對同一個 Map 做任何寫入操作，包含遞迴呼叫自己。
 

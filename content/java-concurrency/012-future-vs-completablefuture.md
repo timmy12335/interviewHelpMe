@@ -42,7 +42,7 @@ source: original
 
 ### thenApply 和 thenApplyAsync 的差異是什麼？什麼時候該用帶 Async 的版本？
 
-**核心答案**：`thenApply` 預設會在「完成上一步的那個執行緒」上直接執行回呼（如果呼叫時上一步已經完成，則由呼叫執行緒本身執行）；`thenApplyAsync` 則會把回呼提交到一個執行緒池（預設是 `ForkJoinPool.commonPool()`，或指定的自訂 `Executor`）中非同步執行，不會佔用原本的執行緒。
+**核心答案**：`thenApply` 預設會在「完成上一步的那個執行緒」上直接執行回呼（如果呼叫時上一步已經完成，則由呼叫執行緒本身執行）；`thenApplyAsync` 則會把回呼提交到一個執行緒池（Thread Pool）（預設是 `ForkJoinPool.commonPool()`，或指定的自訂 `Executor`）中非同步執行，不會佔用原本的執行緒。
 
 **詳細解析**：這個差異在實務上很重要：如果回呼邏輯很輕量（例如簡單的資料轉換），用 `thenApply` 讓它直接在原執行緒執行沒什麼問題，甚至能省去一次執行緒切換的開銷；但如果回呼邏輯本身比較耗時（例如涉及網路呼叫或複雜運算），繼續用 `thenApply` 可能導致這個回呼「意外地」佔用了原本負責完成上一步任務的執行緒（可能是重要的 I/O 執行緒或 `ForkJoinPool.commonPool()` 中的執行緒），阻塞了其他任務。這種情況應該用 `thenApplyAsync` 並傳入自訂的 `Executor`，明確地把耗時的回呼邏輯調度到獨立的執行緒池，避免互相搶佔資源。
 

@@ -10,7 +10,7 @@ source: original
 
 # 題目
 
-`ThreadLocal` 的原理是什麼？為什麼常說它可能導致記憶體洩漏？在執行緒池場景下要注意什麼？
+`ThreadLocal` 的原理是什麼？為什麼常說它可能導致記憶體洩漏（Memory Leak）？在執行緒池（Thread Pool）場景下要注意什麼？
 
 ## 核心答案
 

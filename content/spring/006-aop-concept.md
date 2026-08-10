@@ -14,7 +14,7 @@ source: original
 
 ## 核心答案
 
-AOP（Aspect-Oriented Programming，面向切面程式設計）是一種把「橫切關注點（cross-cutting concerns）」——那些散落在多個模組中、和核心業務無關但又必須處理的通用邏輯（如日誌、交易、權限、快取）——從業務程式碼中抽離出來、集中管理的程式設計思想。它解決的是「橫切邏輯散落各處、重複、和業務耦合」的問題。Spring AOP 的底層是「動態代理」——透過 JDK 動態代理（目標有介面）或 CGLIB（目標無介面）在執行期生成代理物件，在目標方法前後織入橫切邏輯。
+AOP（Aspect-Oriented Programming，面向切面程式設計）是一種把「橫切關注點（cross-cutting concerns）」——那些散落在多個模組中、和核心業務無關但又必須處理的通用邏輯（如日誌、交易、權限、快取）——從業務程式碼中抽離出來、集中管理的程式設計思想。它解決的是「橫切邏輯散落各處、重複、和業務耦合」的問題。Spring AOP 的底層是「動態代理（Dynamic Proxy）」——透過 JDK 動態代理（目標有介面）或 CGLIB（目標無介面）在執行期生成代理物件，在目標方法前後織入橫切邏輯。
 
 ## 詳細解析
 
@@ -42,7 +42,7 @@ AOP（Aspect-Oriented Programming，面向切面程式設計）是一種把「�
 
 ### Spring AOP 和 AspectJ 有什麼區別？
 
-**核心答案**：主要區別在「織入時機和能力」——Spring AOP 是「執行期」的動態代理織入（在 Bean 建立時生成代理），實現簡單、無需特殊編譯器，但只能代理「Spring 容器管理的 Bean 的方法呼叫」、且有自我呼叫失效等限制；AspectJ 是更強大、更底層的 AOP 框架，支援「編譯期織入（CTW）」和「載入期織入（LTW）」，直接修改目標類別的位元組碼，能織入任何方法（包括 final、private、建構子、欄位存取、非 Spring 管理的物件），功能完整但配置更複雜。Spring AOP 適合大多數常見場景（且 Spring AOP 借用了 AspectJ 的註解和切入點表達式語法），需要更強能力時才用 AspectJ 的織入。
+**核心答案**：主要區別在「織入時機和能力」——Spring AOP 是「執行期」的動態代理織入（在 Bean 建立時生成代理），實現簡單、無需特殊編譯器，但只能代理「Spring 容器管理的 Bean 的方法呼叫」、且有自我呼叫失效等限制；AspectJ 是更強大、更底層的 AOP 框架，支援「編譯期織入（CTW）」和「載入期織入（LTW）」，直接修改目標類別的位元組碼（Bytecode），能織入任何方法（包括 final、private、建構子、欄位存取、非 Spring 管理的物件），功能完整但配置更複雜。Spring AOP 適合大多數常見場景（且 Spring AOP 借用了 AspectJ 的註解和切入點表達式語法），需要更強能力時才用 AspectJ 的織入。
 
 **詳細解析**：這是一個容易混淆的點——Spring AOP「使用了 AspectJ 的註解」（如 `@Aspect`、`@Before`、切入點表達式），但它的「織入機制」不是 AspectJ 的，而是自己的動態代理。所以說「Spring AOP 用了 AspectJ 的語法、但用自己的代理實現」。兩者的能力差異源於織入時機——Spring AOP 在執行期用代理「從外面包一層」，所以只能攔截「透過代理的方法呼叫」，這帶來限制（見自我呼叫失效題）：無法攔截同類別內部的方法呼叫（self-invocation）、無法代理 final 類別/方法、只能作用於 Spring 管理的 Bean。AspectJ 的編譯期/載入期織入是「直接改目標類別的位元組碼」，把切面邏輯真正嵌進去，所以沒有這些限制——能織入任何方法、任何物件、任何連接點（甚至欄位讀寫）。實務上——絕大多數業務場景（給 Service 方法加交易、日誌）Spring AOP 足夠，且更輕量；只有需要突破 Spring AOP 限制（如攔截 self-invocation、代理非 Spring 物件）時才引入 AspectJ 的織入。理解「Spring AOP 借用 AspectJ 語法但用自己的代理、兩者織入機制和能力不同」，展現你對 AOP 實現有清晰的區分。
 

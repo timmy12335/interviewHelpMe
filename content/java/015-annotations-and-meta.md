@@ -30,7 +30,7 @@ Java 的註解是什麼？元註解有哪些？`@Retention` 的三種保留策�
 **`@Retention` 的三種保留策略**：
 
 - **`SOURCE`**：只在原始碼階段存在，編譯後就被丟棄，不會進入 class 檔。用於「只給編譯器或原始碼工具看」的註解，例如 `@Override`、`@SuppressWarnings`、Lombok 的註解（編譯期生成程式碼後就不需要了）。
-- **`CLASS`**（預設）：保留到 class 檔案中，但 JVM 載入類別時不會讀入，執行期反射看不到。用於「編譯後的位元組碼工具」場景。
+- **`CLASS`**（預設）：保留到 class 檔案中，但 JVM 載入類別時不會讀入，執行期反射看不到。用於「編譯後的位元組碼（Bytecode）工具」場景。
 - **`RUNTIME`**：保留到執行期，JVM 載入類別時會保留，可以透過反射讀取。這是框架最常用的策略——Spring、JUnit、Jackson 等都需要在執行期用反射讀取註解來決定行為（如 `@Autowired`、`@Test`、`@JsonProperty`）。
 
 ## 面試回答方式

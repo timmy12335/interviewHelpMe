@@ -30,7 +30,7 @@ JMM 定義了多執行緒程式中，一個執行緒對共享變數的寫入何�
 6. **傳遞性**：若 A happens-before B，且 B happens-before C，則 A happens-before C。
 7. **中斷規則**：對執行緒 `interrupt()` 方法的呼叫 happens-before 被中斷執行緒偵測到中斷事件。
 
-**與具體實作的關係**：`synchronized`、`volatile`、`java.util.concurrent` 中的鎖與工具類（如 `CountDownLatch`、執行緒池的任務提交與執行）背後都是靠建立 happens-before 關係來保證可見性，面試時最好能舉出「執行緒池任務提交 happens-before 任務內部執行」這種具體例子，而不只是背規則。
+**與具體實作的關係**：`synchronized`、`volatile`、`java.util.concurrent` 中的鎖與工具類（如 `CountDownLatch`、執行緒池（Thread Pool）的任務提交與執行）背後都是靠建立 happens-before 關係來保證可見性，面試時最好能舉出「執行緒池任務提交 happens-before 任務內部執行」這種具體例子，而不只是背規則。
 
 **常見誤區**：happens-before 不代表「時間上先發生」，而是一種可見性保證的偏序關係；兩個操作即使時間上 A 先於 B 執行，若沒有建立 happens-before 關係，B 依然可能看不到 A 的寫入結果。
 

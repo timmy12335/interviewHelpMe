@@ -10,7 +10,7 @@ source: original
 
 # 題目
 
-怎麼用 Redis 實現分散式鎖？有哪些要注意的點（原子性、防死鎖、防誤刪、鎖續期）？
+怎麼用 Redis 實現分散式鎖（Distributed Lock）？有哪些要注意的點（原子性、防死鎖（Deadlock）、防誤刪、鎖續期）？
 
 ## 核心答案
 

@@ -62,7 +62,7 @@ source: original
 
 ### @Transactional 標在 private 方法上為什麼無效？
 
-**核心答案**：因為 Spring AOP 的交易增強是透過「代理」實現的——JDK 動態代理只能代理介面中的方法（介面方法都是 public），CGLIB 透過生成子類別覆寫方法來增強、而 private 方法無法被子類別覆寫（private 方法不參與繼承/多型）。所以無論哪種代理方式，都無法攔截 private 方法的呼叫，@Transactional 標在 private 方法上就不會生效（Spring 會直接忽略）。此外 protected 和 default（package-private）方法在 CGLIB 下技術上可能被覆寫，但 Spring 的交易處理明確限定只作用於 public 方法。
+**核心答案**：因為 Spring AOP 的交易增強是透過「代理」實現的——JDK 動態代理（Dynamic Proxy）只能代理介面中的方法（介面方法都是 public），CGLIB 透過生成子類別覆寫方法來增強、而 private 方法無法被子類別覆寫（private 方法不參與繼承/多型）。所以無論哪種代理方式，都無法攔截 private 方法的呼叫，@Transactional 標在 private 方法上就不會生效（Spring 會直接忽略）。此外 protected 和 default（package-private）方法在 CGLIB 下技術上可能被覆寫，但 Spring 的交易處理明確限定只作用於 public 方法。
 
 **詳細解析**：這個限制的根源是「代理只能增強能被攔截的方法」。CGLIB 的原理是「生成目標類別的子類別、覆寫方法、在覆寫的方法中插入增強邏輯」（見 Java 核心的動態代理題）——但 private 方法是「類別私有的、不參與繼承」的，子類別根本無法覆寫它（子類別甚至看不到父類別的 private 方法），所以 CGLIB 無法攔截 private 方法。JDK 代理更是只能代理介面方法（都是 public）。因此 private 方法上的 @Transactional 從機制上就不可能生效。Spring 為了行為的一致和明確，直接規定交易只作用於 public 方法（即使 protected/default 在 CGLIB 下技術上可覆寫，Spring 也不對它們套用交易，避免「JDK 代理和 CGLIB 行為不一致」的困惑）。這也提醒——如果你發現一個標了 @Transactional 的方法交易沒生效，檢查它是不是 private（或被 private 方法內部呼叫），是排查交易失效的一個常見點。理解「代理無法攔截 private 方法所以交易失效」，展現你把交易失效和代理機制的限制連結起來理解。
 

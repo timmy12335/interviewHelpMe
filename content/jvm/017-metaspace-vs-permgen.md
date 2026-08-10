@@ -26,7 +26,7 @@ source: original
 **永久代（PermGen，JDK 7 及之前）**：
 
 - 位於 JVM 堆記憶體中，大小由 `-XX:PermSize` / `-XX:MaxPermSize` 控制、固定。
-- 問題：大小固定且預設偏小，動態載入大量類別（反射、動態代理、熱部署、大型應用）容易撐爆，拋 `OutOfMemoryError: PermGen space`；且它的 GC 效率不高、與堆的 GC 耦合。
+- 問題：大小固定且預設偏小，動態載入大量類別（反射（Reflection）、動態代理（Dynamic Proxy）、熱部署、大型應用）容易撐爆，拋 `OutOfMemoryError: PermGen space`；且它的 GC 效率不高、與堆的 GC 耦合。
 
 **元空間（Metaspace，JDK 8 起）**：
 

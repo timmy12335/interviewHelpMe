@@ -10,7 +10,7 @@ source: original
 
 # 題目
 
-訊息佇列常說的「至少一次（At Least Once）」、「最多一次（At Most Once）」、「精確一次（Exactly Once）」投遞語義分別是什麼意思？為什麼「精確一次」在分散式系統裡特別難以真正做到？
+訊息佇列（Message Queue）常說的「至少一次（At Least Once）」、「最多一次（At Most Once）」、「精確一次（Exactly Once）」投遞語義分別是什麼意思？為什麼「精確一次」在分散式系統裡特別難以真正做到？
 
 ## 核心答案
 
