@@ -16,6 +16,9 @@ export interface QuestionSiderProps {
   categoryName: string;
   questions: QuestionListItem[];
   currentSlug: string;
+  /** 收合成窄軌；狀態由 PracticeShell 持有，因為它會影響整頁 grid。 */
+  collapsed?: boolean;
+  onToggleCollapse?: () => void;
 }
 
 /** 題庫題目側欄：題單、進度與上一題／下一題導覽（支援 J / K 快捷鍵）。 */
@@ -24,6 +27,8 @@ export function QuestionSider({
   categoryName,
   questions,
   currentSlug,
+  collapsed = false,
+  onToggleCollapse,
 }: QuestionSiderProps) {
   const router = useRouter();
   const ids = useMemo(
@@ -66,8 +71,42 @@ export function QuestionSider({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [categorySlug, next, prev, router]);
 
+  const toggle = onToggleCollapse ? (
+    <button
+      type="button"
+      className="q-sider__collapse"
+      onClick={onToggleCollapse}
+      aria-expanded={!collapsed}
+      title={collapsed ? "展開題單" : "收合題單"}
+    >
+      <span aria-hidden>{collapsed ? "»" : "«"}</span>
+      <span className="sr-only">{collapsed ? "展開題單" : "收合題單"}</span>
+    </button>
+  ) : null;
+
+  if (collapsed) {
+    return (
+      <aside className="q-sider q-sider--collapsed" aria-label="題庫題目導覽">
+        {toggle}
+        <div className="q-sider__rail">
+          <ProgressRing
+            value={answeredCount}
+            total={total}
+            size={34}
+            due={dueCount > 0}
+          />
+          <span className="q-sider__rail-pos">
+            {String(position).padStart(3, "0")}
+          </span>
+          <span className="q-sider__rail-name">{categoryName}</span>
+        </div>
+      </aside>
+    );
+  }
+
   return (
     <aside className="q-sider" aria-label="題庫題目導覽">
+      {toggle}
       <div className="q-sider__head">
         <p className="hud-eyebrow">Module</p>
         <Link className="q-sider__title" href={`/category/${categorySlug}/`}>

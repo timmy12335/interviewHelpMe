@@ -3,6 +3,24 @@
   grid-template-columns: 280px minmax(0, 1fr);
   gap: 0;
   align-items: start;
+  transition: grid-template-columns var(--normal) var(--ease);
+}
+
+.practice-shell.is-sider-collapsed {
+  grid-template-columns: 52px minmax(0, 1fr);
+}
+
+/* 螢幕閱讀器專用文字：收合按鈕只有符號，需要可讀的名稱 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .practice-main {
@@ -12,8 +30,62 @@
   min-width: 0;
 }
 
+.practice {
+  position: relative;
+}
+
 .practice__col {
   min-width: 0;
+}
+
+/* ---------------------------------------------------------------- */
+/* 答案欄收合鈕（只在寬螢幕雙欄時出現）                                */
+/* ---------------------------------------------------------------- */
+
+.practice__ref-toggle {
+  display: none;
+}
+
+@media (min-width: 1400px) {
+  .practice__ref-toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    background: rgb(7 11 24 / 88%);
+    border: 1px solid var(--line-strong);
+    color: var(--cyan);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    cursor: pointer;
+    transition:
+      background var(--fast) var(--ease),
+      box-shadow var(--fast) var(--ease);
+  }
+
+  .practice__ref-toggle:hover {
+    background: rgb(34 211 238 / 16%);
+    box-shadow: var(--glow-cyan);
+  }
+
+  .practice__ref-toggle:focus-visible {
+    outline: 1px solid var(--cyan);
+    outline-offset: 2px;
+  }
+
+  /* 收合後答案欄退場，題目欄吃滿寬度 */
+  .practice.is-ref-collapsed {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .practice.is-ref-collapsed .practice__col--ref {
+    display: none;
+  }
 }
 
 .practice__card {
@@ -217,6 +289,165 @@
 }
 
 /* ---------------------------------------------------------------- */
+/* 重點標記：內容本來就用 **粗體** 標關鍵詞，這裡讓它真的跳出來        */
+/* ---------------------------------------------------------------- */
+
+.answer-block .markdown-body strong,
+.answer-fold__panel .markdown-body strong,
+.answer-summary .markdown-body strong,
+.followup__panel .markdown-body strong {
+  color: var(--accent, var(--cyan));
+  font-weight: 650;
+  /* 用底線光暈而非整片背景色，長段落裡才不會變成一片螢光 */
+  background: linear-gradient(
+    transparent 82%,
+    color-mix(in srgb, var(--accent, var(--cyan)) 30%, transparent) 82%
+  );
+}
+
+.answer-summary .markdown-body strong {
+  --accent: var(--violet);
+}
+
+/*
+ * 段落開頭的粗體是「這段在講什麼」的引導詞，不是句中的關鍵詞，
+ * 所以改用左側標記而非底線——底線會讓每段開頭都糊成一片。
+ * 注意不能加 :only-child：有些段落中間還有其他粗體，加了會讓
+ * 同樣是段落開頭的引導詞，因為後面有沒有別的粗體而樣式不一致。
+ */
+.answer-block .markdown-body p > strong:first-child,
+.answer-fold__panel .markdown-body p > strong:first-child,
+.answer-summary .markdown-body p > strong:first-child,
+.followup__panel .markdown-body p > strong:first-child {
+  display: inline-block;
+  padding-left: 9px;
+  border-left: 2px solid var(--accent, var(--cyan));
+  background: none;
+}
+
+/* ---------------------------------------------------------------- */
+/* 可收合的詳細解析                                                  */
+/* ---------------------------------------------------------------- */
+
+.answer-fold {
+  margin-top: 18px;
+  border: 1px solid var(--line);
+  background: rgb(4 6 14 / 40%);
+  transition: border-color var(--fast) var(--ease);
+}
+
+.answer-fold.is-open {
+  border-color: var(--line-strong);
+}
+
+.answer-fold__trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 14px;
+  background: transparent;
+  border: none;
+  color: var(--ink-muted);
+  font-family: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition:
+    background var(--fast) var(--ease),
+    color var(--fast) var(--ease);
+}
+
+.answer-fold__trigger:hover {
+  background: rgb(34 211 238 / 8%);
+  color: var(--ink);
+}
+
+.answer-fold__trigger:focus-visible {
+  outline: 1px solid var(--cyan);
+  outline-offset: -2px;
+}
+
+.answer-fold__caret {
+  font-size: 9px;
+  color: var(--cyan);
+  transition: transform var(--fast) var(--ease);
+}
+
+.answer-fold__trigger[aria-expanded="true"] .answer-fold__caret {
+  transform: rotate(90deg);
+}
+
+.answer-fold__title {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.answer-fold__hint {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+}
+
+.answer-fold__panel {
+  padding: 4px 16px 16px;
+  border-top: 1px solid var(--line);
+}
+
+/* ---------------------------------------------------------------- */
+/* 總結卡：面試這樣答                                                */
+/* ---------------------------------------------------------------- */
+
+.answer-summary {
+  --accent: var(--violet);
+
+  position: relative;
+  margin-top: 20px;
+  padding: 16px 18px 16px 20px;
+  border: 1px solid color-mix(in srgb, var(--violet) 40%, transparent);
+  border-left: 3px solid var(--violet);
+  background: rgb(168 85 247 / 9%);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 12px) 0,
+    100% 12px,
+    100% 100%,
+    12px 100%,
+    0 calc(100% - 12px)
+  );
+}
+
+.answer-summary__title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.answer-summary__badge {
+  padding: 2px 8px;
+  background: var(--violet);
+  color: #0b0518;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.answer-summary .markdown-body {
+  font-size: 14.5px;
+}
+
+/* ---------------------------------------------------------------- */
 /* Follow-ups                                                        */
 /* ---------------------------------------------------------------- */
 
@@ -374,7 +605,12 @@
 }
 
 @media (max-width: 900px) {
-  .practice-shell {
+  /*
+   * 單欄堆疊。收合狀態也要一起覆寫，否則 .is-sider-collapsed 特異性較高，
+   * 會在手機上留下一條 52px 的直立軌道，白白吃掉窄螢幕的寬度。
+   */
+  .practice-shell,
+  .practice-shell.is-sider-collapsed {
     /* auto 最小尺寸會被題單的 nowrap 標題撐開，必須用 minmax(0, 1fr) */
     grid-template-columns: minmax(0, 1fr);
   }

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { PracticeQuestion } from "@/components/PracticeQuestion";
-import { QuestionSider } from "@/components/QuestionSider";
+import { PracticeShell } from "@/components/PracticeShell";
 import {
   getAllCategories,
   getAllQuestions,
@@ -33,16 +33,13 @@ export default function QuestionPage({ params }: QuestionPageProps) {
   const siblings = toListItems(getQuestionsByCategory(params.slug));
 
   return (
-    <div id="bankQuestionPage" className="practice-shell">
-      <QuestionSider
-        categorySlug={params.slug}
-        categoryName={category?.nameZh ?? params.slug}
-        questions={siblings}
-        currentSlug={params.questionSlug}
-      />
-      <main className="practice-main">
-        <PracticeQuestion question={question} />
-      </main>
-    </div>
+    <PracticeShell
+      categorySlug={params.slug}
+      categoryName={category?.nameZh ?? params.slug}
+      questions={siblings}
+      currentSlug={params.questionSlug}
+    >
+      <PracticeQuestion question={question} />
+    </PracticeShell>
   );
 }

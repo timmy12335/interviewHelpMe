@@ -11,8 +11,79 @@
   backdrop-filter: blur(10px);
 }
 
+.q-sider {
+  position: sticky;
+}
+
+/* ---------------------------------------------------------------- */
+/* 收合                                                              */
+/* ---------------------------------------------------------------- */
+
+.q-sider__collapse {
+  position: absolute;
+  top: 10px;
+  right: -1px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: rgb(7 11 24 / 88%);
+  border: 1px solid var(--line-strong);
+  color: var(--cyan);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  cursor: pointer;
+  transition:
+    background var(--fast) var(--ease),
+    box-shadow var(--fast) var(--ease);
+}
+
+.q-sider__collapse:hover {
+  background: rgb(34 211 238 / 16%);
+  box-shadow: var(--glow-cyan);
+}
+
+.q-sider__collapse:focus-visible {
+  outline: 1px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+.q-sider--collapsed {
+  align-items: center;
+  padding-top: 44px;
+}
+
+.q-sider__rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 0 16px;
+}
+
+.q-sider__rail-pos {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: var(--cyan);
+}
+
+/* 收合時題庫名稱直立顯示，保留脈絡又不佔寬度 */
+.q-sider__rail-name {
+  writing-mode: vertical-rl;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+  max-height: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .q-sider__head {
-  padding: 22px 18px 16px;
+  padding: 22px 42px 16px 18px;
   border-block-end: 1px solid var(--line);
 }
 
@@ -248,5 +319,23 @@
 
   .q-sider__list {
     max-height: 260px;
+  }
+
+  /* 手機上是上下堆疊，收合應該變成一條水平細列，而不是直立軌道 */
+  .q-sider--collapsed {
+    align-items: stretch;
+    padding-top: 0;
+  }
+
+  .q-sider--collapsed .q-sider__rail {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 46px 10px 16px;
+  }
+
+  .q-sider--collapsed .q-sider__rail-name {
+    writing-mode: horizontal-tb;
+    max-height: none;
   }
 }

@@ -5,8 +5,10 @@ import { useEffect, useId, useState } from "react";
 import { DifficultyBadge } from "@/components/DifficultyBadge";
 import { MdViewer } from "@/components/MdViewer";
 import { TagList } from "@/components/TagList";
+import { usePersistentFlag } from "@/hooks/usePersistentFlag";
 import { notifyProgressChanged } from "@/hooks/useProgress";
 import { isTypingTarget } from "@/lib/keyboard";
+import { DETAIL_OPEN_KEY, REF_COLLAPSED_KEY } from "@/lib/uiPrefs";
 import { withBasePath } from "@/lib/paths";
 import {
   REVIEW_AFTER_DAYS,
@@ -71,6 +73,68 @@ function AnswerSection({
   );
 }
 
+/**
+ * 可收合的答案分區。詳細解析預設收起，避免一解鎖就是一整片文字。
+ */
+function CollapsibleAnswerSection({
+  title,
+  value,
+  storageKey,
+  hint,
+}: {
+  title: string;
+  value?: string;
+  storageKey: string;
+  hint: string;
+}) {
+  const [open, setOpen] = usePersistentFlag(storageKey);
+  const panelId = useId();
+
+  if (!value) {
+    return null;
+  }
+
+  return (
+    <section className={`answer-fold${open ? " is-open" : ""}`}>
+      <button
+        type="button"
+        className="answer-fold__trigger"
+        aria-expanded={open}
+        aria-controls={panelId}
+        onClick={() => setOpen()}
+      >
+        <span className="answer-fold__caret" aria-hidden>
+          ▸
+        </span>
+        <span className="answer-fold__title">{title}</span>
+        <span className="answer-fold__hint">{open ? "收起" : hint}</span>
+      </button>
+      {open ? (
+        <div className="answer-fold__panel" id={panelId}>
+          <MdViewer value={value} />
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+/** 面試回答方式獨立成總結卡，放在最後、樣式與前面的解析明顯區隔。 */
+function AnswerSummary({ value }: { value?: string }) {
+  if (!value) {
+    return null;
+  }
+
+  return (
+    <section className="answer-summary">
+      <h3 className="answer-summary__title">
+        <span className="answer-summary__badge">總結</span>
+        面試這樣答
+      </h3>
+      <MdViewer value={value} />
+    </section>
+  );
+}
+
 function FollowUpItem({ followUp }: { followUp: FollowUp }) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
@@ -93,11 +157,7 @@ function FollowUpItem({ followUp }: { followUp: FollowUp }) {
         <div className="followup__panel" id={panelId}>
           <AnswerSection title="核心答案" value={followUp.coreAnswer} variant="core" />
           <AnswerSection title="詳細解析" value={followUp.detail} />
-          <AnswerSection
-            title="面試回答方式"
-            value={followUp.interviewTip}
-            variant="tip"
-          />
+          <AnswerSummary value={followUp.interviewTip} />
         </div>
       ) : null}
     </div>
@@ -111,6 +171,7 @@ export function PracticeQuestion({ question }: { question: Question }) {
   const [draft, setDraft] = useState("");
   const [showAnswer, setShowAnswer] = useState(false);
   const [dueForReview, setDueForReview] = useState(false);
+  const [refCollapsed, setRefCollapsed] = usePersistentFlag(REF_COLLAPSED_KEY);
   const inputId = useId();
   const answerPanelId = useId();
 
@@ -150,7 +211,20 @@ export function PracticeQuestion({ question }: { question: Question }) {
     Boolean(question.interviewTip);
 
   return (
-    <article className="practice">
+    <article className={`practice${refCollapsed ? " is-ref-collapsed" : ""}`}>
+      <button
+        type="button"
+        className="practice__ref-toggle"
+        onClick={() => setRefCollapsed()}
+        aria-expanded={!refCollapsed}
+        title={refCollapsed ? "展開答案欄" : "收合答案欄"}
+      >
+        <span aria-hidden>{refCollapsed ? "«" : "»"}</span>
+        <span className="sr-only">
+          {refCollapsed ? "展開答案欄" : "收合答案欄"}
+        </span>
+      </button>
+
       <div className="practice__col">
       <div className="practice__card hud-panel hud-brackets">
         <p className="hud-eyebrow">Unit // 題目</p>
@@ -209,13 +283,18 @@ export function PracticeQuestion({ question }: { question: Question }) {
           <p className="hud-eyebrow">Decrypted // 推薦答案</p>
           {hasStructured ? (
             <>
-              <AnswerSection title="核心答案" value={question.coreAnswer} variant="core" />
-              <AnswerSection title="詳細解析" value={question.detail} />
               <AnswerSection
-                title="面試回答方式"
-                value={question.interviewTip}
-                variant="tip"
+                title="核心答案"
+                value={question.coreAnswer}
+                variant="core"
               />
+              <CollapsibleAnswerSection
+                title="詳細解析"
+                value={question.detail}
+                storageKey={DETAIL_OPEN_KEY}
+                hint="展開細節"
+              />
+              <AnswerSummary value={question.interviewTip} />
             </>
           ) : (
             <AnswerSection title="核心答案" value={question.answer} variant="core" />
