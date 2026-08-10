@@ -61,4 +61,4 @@ source: original
 - [[../backend-engineering/016-cap-theorem.md]]
 - [[../backend-engineering/017-consistent-hashing.md]]
 - [[028-quorum-consensus.md]]
-- [[033-lsm-tree-sstable.md]]
+- [[../database/025-lsm-tree-sstable.md]]
