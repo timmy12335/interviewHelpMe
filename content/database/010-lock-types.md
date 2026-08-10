@@ -2,7 +2,7 @@
 id: database-010
 category: database
 slug: lock-types
-title: 資料庫的鎖類型（共享鎖/排他鎖/意向鎖）
+title: 資料庫的鎖類型（Shared / Exclusive / Intention Lock）
 difficulty: medium
 tags: [共享鎖, 排他鎖, 意向鎖, 行鎖表鎖]
 source: original

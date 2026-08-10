@@ -2,7 +2,7 @@
 id: system-design-015
 category: system-design
 slug: inverted-index-search
-title: 倒排索引與搜尋引擎原理
+title: 倒排索引與搜尋引擎原理（Inverted Index）
 difficulty: medium
 tags: [倒排索引, 搜尋引擎, Elasticsearch, 全文搜尋]
 source: original

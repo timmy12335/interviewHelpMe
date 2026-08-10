@@ -2,7 +2,7 @@
 id: redis-010
 category: redis
 slug: cache-penetration
-title: 快取穿透
+title: 快取穿透（Cache Penetration）
 difficulty: medium
 tags: [快取穿透, 布隆過濾器, 快取空值]
 source: original

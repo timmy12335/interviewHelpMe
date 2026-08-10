@@ -2,7 +2,7 @@
 id: jvm-012
 category: jvm
 slug: reference-types
-title: 四種引用（強、軟、弱、虛）
+title: 四種引用（Strong / Soft / Weak / Phantom Reference）
 difficulty: medium
 tags: [強引用, 軟引用, 弱引用, 虛引用]
 source: original

@@ -2,7 +2,7 @@
 id: java-concurrency-017
 category: java-concurrency
 slug: deadlock-conditions-and-troubleshooting
-title: 死鎖的產生條件、案例與排查方法
+title: 死鎖（Deadlock）的產生條件、案例與排查方法
 difficulty: medium
 tags: [死鎖, jstack, 排查]
 source: original

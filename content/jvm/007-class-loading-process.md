@@ -2,7 +2,7 @@
 id: jvm-007
 category: jvm
 slug: class-loading-process
-title: 類別載入的過程（載入、連結、初始化）
+title: 類別載入的過程（Loading / Linking / Initialization）
 difficulty: medium
 tags: [類別載入, 連結, 初始化]
 source: original

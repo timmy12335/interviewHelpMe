@@ -2,7 +2,7 @@
 id: backend-engineering-012
 category: backend-engineering
 slug: message-delivery-semantics
-title: 訊息佇列的投遞語義（至少一次/最多一次/精確一次）
+title: 訊息佇列的投遞語義（At-Least-Once / At-Most-Once / Exactly-Once）
 difficulty: hard
 tags: [投遞語義, at-least-once, exactly-once, 訊息佇列]
 source: original

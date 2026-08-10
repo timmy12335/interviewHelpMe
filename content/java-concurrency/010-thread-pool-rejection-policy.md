@@ -2,7 +2,7 @@
 id: java-concurrency-010
 category: java-concurrency
 slug: thread-pool-rejection-policy
-title: 執行緒池的拒絕策略有哪些，該怎麼選
+title: 執行緒池的拒絕策略（Rejection Policy）該怎麼選
 difficulty: medium
 tags: [執行緒池, 拒絕策略, RejectedExecutionHandler]
 source: original

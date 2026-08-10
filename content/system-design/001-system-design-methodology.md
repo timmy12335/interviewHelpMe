@@ -2,7 +2,7 @@
 id: system-design-001
 category: system-design
 slug: system-design-methodology
-title: 系統設計面試方法論與流程
+title: 系統設計面試方法論與流程（System Design Framework）
 difficulty: easy
 tags: [系統設計方法論, 需求釐清, 容量估算, 面試技巧]
 source: original

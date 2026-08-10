@@ -2,7 +2,7 @@
 id: system-design-026
 category: system-design
 slug: distributed-rate-limiter-sync
-title: 分散式環境下的限流：競態條件與同步問題
+title: 分散式環境下的限流：競態條件與同步（Race Condition）
 difficulty: hard
 tags: [限流, 分散式, 競態條件, Redis, 系統設計]
 source: original

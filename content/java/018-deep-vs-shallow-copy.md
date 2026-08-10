@@ -2,7 +2,7 @@
 id: java-018
 category: java
 slug: deep-vs-shallow-copy
-title: 深拷貝與淺拷貝
+title: 深拷貝與淺拷貝（Deep / Shallow Copy）
 difficulty: medium
 tags: [深拷貝, 淺拷貝, Cloneable]
 source: original

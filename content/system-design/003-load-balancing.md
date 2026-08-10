@@ -2,7 +2,7 @@
 id: system-design-003
 category: system-design
 slug: load-balancing
-title: 負載平衡演算法與策略
+title: 負載平衡演算法與策略（Load Balancing）
 difficulty: medium
 tags: [負載平衡, load balancer, 輪詢, 一致性雜湊]
 source: original

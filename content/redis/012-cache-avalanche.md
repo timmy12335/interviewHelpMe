@@ -2,7 +2,7 @@
 id: redis-012
 category: redis
 slug: cache-avalanche
-title: 快取雪崩
+title: 快取雪崩（Cache Avalanche）
 difficulty: medium
 tags: [快取雪崩, 過期時間, 多級快取, 高可用]
 source: original

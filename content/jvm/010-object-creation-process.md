@@ -2,7 +2,7 @@
 id: jvm-010
 category: jvm
 slug: object-creation-process
-title: 物件的建立過程
+title: 物件的建立過程（Object Creation）
 difficulty: medium
 tags: [物件建立, 記憶體分配, TLAB]
 source: original

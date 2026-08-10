@@ -2,7 +2,7 @@
 id: ai-llm-009
 category: ai-llm
 slug: vector-database-similarity-search
-title: 向量資料庫與相似度搜尋
+title: 向量資料庫與相似度搜尋（Vector Database / Similarity Search）
 difficulty: medium
 tags: [向量資料庫, 相似度搜尋, HNSW, 近似最近鄰]
 source: original

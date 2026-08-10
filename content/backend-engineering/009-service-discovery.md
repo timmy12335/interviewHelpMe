@@ -2,7 +2,7 @@
 id: backend-engineering-009
 category: backend-engineering
 slug: service-discovery
-title: 微服務架構下的服務發現
+title: 微服務架構下的服務發現（Service Discovery）
 difficulty: medium
 tags: [服務發現, service discovery, 微服務, 負載平衡]
 source: original

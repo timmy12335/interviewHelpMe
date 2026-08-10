@@ -2,7 +2,7 @@
 id: spring-004
 category: spring
 slug: circular-dependency
-title: 循環依賴與三級快取
+title: 循環依賴（Circular Dependency）與三級快取
 difficulty: hard
 tags: [循環依賴, 三級快取, 提前曝光]
 source: original

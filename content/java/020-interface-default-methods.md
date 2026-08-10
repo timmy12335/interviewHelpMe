@@ -2,7 +2,7 @@
 id: java-020
 category: java
 slug: interface-default-methods
-title: 介面的預設方法與多重繼承衝突
+title: 介面的預設方法（Default Method）與多重繼承衝突
 difficulty: medium
 tags: [介面, default方法, 多重繼承]
 source: original

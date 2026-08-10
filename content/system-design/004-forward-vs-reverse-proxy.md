@@ -2,7 +2,7 @@
 id: system-design-004
 category: system-design
 slug: forward-vs-reverse-proxy
-title: 正向代理與反向代理
+title: 正向代理與反向代理（Forward / Reverse Proxy）
 difficulty: medium
 tags: [正向代理, 反向代理, Nginx, 代理伺服器]
 source: original

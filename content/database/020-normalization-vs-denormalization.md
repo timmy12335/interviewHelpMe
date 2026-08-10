@@ -2,7 +2,7 @@
 id: database-020
 category: database
 slug: normalization-vs-denormalization
-title: 資料庫範式與反範式設計
+title: 資料庫範式與反範式設計（Normalization / Denormalization）
 difficulty: easy
 tags: [範式, 反範式, schema設計, 資料庫設計]
 source: original

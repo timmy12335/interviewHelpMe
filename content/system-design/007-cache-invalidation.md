@@ -2,7 +2,7 @@
 id: system-design-007
 category: system-design
 slug: cache-invalidation
-title: 快取失效與快取一致性問題
+title: 快取失效與快取一致性問題（Cache Invalidation）
 difficulty: medium
 tags: [快取失效, 快取穿透, 快取雪崩, 快取一致性]
 source: original

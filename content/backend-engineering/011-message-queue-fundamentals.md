@@ -2,7 +2,7 @@
 id: backend-engineering-011
 category: backend-engineering
 slug: message-queue-fundamentals
-title: 訊息佇列的核心作用與應用場景
+title: 訊息佇列的核心作用與應用場景（Message Queue）
 difficulty: easy
 tags: [訊息佇列, MQ, 非同步, 解耦]
 source: original

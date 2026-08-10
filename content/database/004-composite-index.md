@@ -2,7 +2,7 @@
 id: database-004
 category: database
 slug: composite-index
-title: 聯合索引與最左前綴原則
+title: 聯合索引與最左前綴原則（Composite Index / Leftmost Prefix）
 difficulty: medium
 tags: [聯合索引, 最左前綴, 索引設計]
 source: original

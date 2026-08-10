@@ -2,7 +2,7 @@
 id: jvm-004
 category: jvm
 slug: gc-algorithms
-title: 垃圾回收演算法（標記清除／複製／標記整理）
+title: 垃圾回收演算法（Mark-Sweep／Copying／Mark-Compact）
 difficulty: medium
 tags: [標記清除, 複製演算法, 標記整理]
 source: original

@@ -2,7 +2,7 @@
 id: jvm-023
 category: jvm
 slug: bytecode-execution
-title: 位元組碼與執行引擎
+title: 位元組碼與執行引擎（Bytecode / Execution Engine）
 difficulty: medium
 tags: [位元組碼, 執行引擎, 運算元棧]
 source: original

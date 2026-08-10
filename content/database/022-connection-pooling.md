@@ -2,7 +2,7 @@
 id: database-022
 category: database
 slug: connection-pooling
-title: 資料庫連線池原理與調校
+title: 資料庫連線池原理與調校（Connection Pooling）
 difficulty: medium
 tags: [連線池, connection pool, HikariCP, 效能調校]
 source: original

@@ -2,7 +2,7 @@
 id: backend-engineering-006
 category: backend-engineering
 slug: rate-limiting-algorithms
-title: 限流演算法（令牌桶/漏桶）
+title: 限流演算法（Token Bucket / Leaky Bucket）
 difficulty: medium
 tags: [限流, rate limiting, 令牌桶, 漏桶, 滑動視窗]
 source: original

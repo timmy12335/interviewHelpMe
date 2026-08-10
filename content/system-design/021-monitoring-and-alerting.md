@@ -2,7 +2,7 @@
 id: system-design-021
 category: system-design
 slug: monitoring-and-alerting
-title: 系統監控與告警設計
+title: 系統監控與告警設計（Monitoring / Alerting）
 difficulty: easy
 tags: [監控, 告警, 可觀測性, SLA SLO SLI]
 source: original

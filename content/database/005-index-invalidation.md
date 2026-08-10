@@ -2,7 +2,7 @@
 id: database-005
 category: database
 slug: index-invalidation
-title: 索引失效的常見場景
+title: 索引失效的常見場景（Index Invalidation）
 difficulty: medium
 tags: [索引失效, 隱式轉換, 函式索引]
 source: original

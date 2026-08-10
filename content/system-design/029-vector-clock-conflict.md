@@ -2,7 +2,7 @@
 id: system-design-029
 category: system-design
 slug: vector-clock-conflict
-title: 向量時鐘與並發寫入衝突解決
+title: 向量時鐘（Vector Clock）與並發寫入衝突解決
 difficulty: hard
 tags: [向量時鐘, vector clock, 衝突解決, 最終一致, 系統設計]
 source: original

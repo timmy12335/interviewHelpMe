@@ -2,7 +2,7 @@
 id: database-019
 category: database
 slug: read-write-separation
-title: 讀寫分離與主從延遲一致性
+title: 讀寫分離與主從延遲一致性（Read-Write Splitting / Replication Lag）
 difficulty: medium
 tags: [讀寫分離, 主從延遲, 資料一致性]
 source: original

@@ -2,7 +2,7 @@
 id: redis-024
 category: redis
 slug: bloom-filter
-title: 布隆過濾器
+title: 布隆過濾器（Bloom Filter）
 difficulty: medium
 tags: [布隆過濾器, BloomFilter, 快取穿透, 去重]
 source: original

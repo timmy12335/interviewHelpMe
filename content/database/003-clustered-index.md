@@ -2,7 +2,7 @@
 id: database-003
 category: database
 slug: clustered-index
-title: 聚簇索引與非聚簇索引（回表）
+title: 聚簇索引與非聚簇索引（Clustered / Non-Clustered Index，回表）
 difficulty: hard
 tags: [聚簇索引, 二級索引, 回表, 覆蓋索引]
 source: original

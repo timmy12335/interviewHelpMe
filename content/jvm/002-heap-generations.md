@@ -2,7 +2,7 @@
 id: jvm-002
 category: jvm
 slug: heap-generations
-title: 堆的分代結構與物件晉升
+title: 堆的分代結構與物件晉升（Generational Heap / Promotion）
 difficulty: medium
 tags: [堆, 新生代, 老年代, 晉升]
 source: original

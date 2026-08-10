@@ -2,7 +2,7 @@
 id: system-design-013
 category: system-design
 slug: distributed-file-storage-design
-title: 設計分散式檔案儲存系統
+title: 設計分散式檔案儲存系統（Distributed File Storage）
 difficulty: medium
 tags: [檔案儲存, 系統設計案例, 物件儲存, 分塊上傳]
 source: original

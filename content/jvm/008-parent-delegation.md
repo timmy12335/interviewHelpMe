@@ -2,7 +2,7 @@
 id: jvm-008
 category: jvm
 slug: parent-delegation
-title: 雙親委派模型
+title: 雙親委派模型（Parent Delegation Model）
 difficulty: medium
 tags: [雙親委派, 類別載入器, 破壞雙親委派]
 source: original

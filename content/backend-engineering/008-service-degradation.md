@@ -2,7 +2,7 @@
 id: backend-engineering-008
 category: backend-engineering
 slug: service-degradation
-title: 服務降級策略
+title: 服務降級策略（Service Degradation）
 difficulty: medium
 tags: [服務降級, fallback, 高可用, 系統韌性]
 source: original

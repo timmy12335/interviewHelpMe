@@ -2,7 +2,7 @@
 id: database-015
 category: database
 slug: paging-optimization
-title: 深分頁問題與優化
+title: 深分頁問題與優化（Deep Pagination）
 difficulty: medium
 tags: [深分頁, LIMIT OFFSET, 效能優化, 覆蓋索引]
 source: original

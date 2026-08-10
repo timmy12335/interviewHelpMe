@@ -2,7 +2,7 @@
 id: system-design-002
 category: system-design
 slug: scaling-fundamentals
-title: 垂直擴展與水平擴展
+title: 垂直擴展與水平擴展（Vertical / Horizontal Scaling）
 difficulty: easy
 tags: [垂直擴展, 水平擴展, 可擴展性, 無狀態設計]
 source: original

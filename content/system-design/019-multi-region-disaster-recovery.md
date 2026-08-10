@@ -2,7 +2,7 @@
 id: system-design-019
 category: system-design
 slug: multi-region-disaster-recovery
-title: 多活架構與異地容災
+title: 多活架構與異地容災（Multi-Region / Disaster Recovery）
 difficulty: medium
 tags: [多活架構, 異地容災, 高可用, RTO RPO]
 source: original

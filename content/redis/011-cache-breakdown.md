@@ -2,7 +2,7 @@
 id: redis-011
 category: redis
 slug: cache-breakdown
-title: 快取擊穿
+title: 快取擊穿（Cache Breakdown）
 difficulty: medium
 tags: [快取擊穿, 熱點key, 互斥鎖]
 source: original

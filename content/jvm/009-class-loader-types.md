@@ -2,7 +2,7 @@
 id: jvm-009
 category: jvm
 slug: class-loader-types
-title: 類別載入器的種類與自訂類別載入器
+title: 類別載入器（ClassLoader）的種類與自訂載入器
 difficulty: medium
 tags: [類別載入器, 自訂載入器, 熱部署]
 source: original

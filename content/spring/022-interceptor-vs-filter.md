@@ -2,7 +2,7 @@
 id: spring-022
 category: spring
 slug: interceptor-vs-filter
-title: 攔截器與過濾器的區別
+title: 攔截器與過濾器的區別（Interceptor / Filter）
 difficulty: medium
 tags: [攔截器, 過濾器, Filter, Interceptor]
 source: original

@@ -2,7 +2,7 @@
 id: jvm-015
 category: jvm
 slug: memory-leak-vs-overflow
-title: 記憶體洩漏與記憶體溢位
+title: 記憶體洩漏與記憶體溢位（Memory Leak / OutOfMemoryError）
 difficulty: medium
 tags: [記憶體洩漏, 記憶體溢位, OOM]
 source: original

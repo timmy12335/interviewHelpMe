@@ -2,7 +2,7 @@
 id: redis-013
 category: redis
 slug: cache-consistency
-title: 快取與資料庫的一致性
+title: 快取與資料庫的一致性（Cache Consistency）
 difficulty: hard
 tags: [快取一致性, 雙寫, 旁路快取, 延遲雙刪]
 source: original

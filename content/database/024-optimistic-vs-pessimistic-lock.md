@@ -2,7 +2,7 @@
 id: database-024
 category: database
 slug: optimistic-vs-pessimistic-lock
-title: 樂觀鎖與悲觀鎖
+title: 樂觀鎖與悲觀鎖（Optimistic / Pessimistic Lock）
 difficulty: medium
 tags: [樂觀鎖, 悲觀鎖, 併發控制, version欄位]
 source: original

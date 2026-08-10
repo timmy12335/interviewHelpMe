@@ -2,7 +2,7 @@
 id: database-016
 category: database
 slug: slow-query-optimization
-title: 慢查詢排查與優化流程
+title: 慢查詢排查與優化流程（Slow Query Tuning）
 difficulty: medium
 tags: [慢查詢, slow query log, EXPLAIN, 效能調校]
 source: original

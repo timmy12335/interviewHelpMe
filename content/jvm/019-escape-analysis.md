@@ -2,7 +2,7 @@
 id: jvm-019
 category: jvm
 slug: escape-analysis
-title: 逃逸分析與棧上分配、鎖消除
+title: 逃逸分析（Escape Analysis）與棧上分配、鎖消除
 difficulty: hard
 tags: [逃逸分析, 標量替換, 鎖消除, 棧上分配]
 source: original

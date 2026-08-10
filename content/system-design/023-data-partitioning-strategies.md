@@ -2,7 +2,7 @@
 id: system-design-023
 category: system-design
 slug: data-partitioning-strategies
-title: 資料分區策略（系統設計視角）
+title: 資料分區策略（Data Partitioning，系統設計視角）
 difficulty: medium
 tags: [資料分區, 水平分區, 垂直分區, 系統設計]
 source: original

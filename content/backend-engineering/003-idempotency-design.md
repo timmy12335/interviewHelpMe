@@ -2,7 +2,7 @@
 id: backend-engineering-003
 category: backend-engineering
 slug: idempotency-design
-title: 冪等性設計
+title: 冪等性設計（Idempotency）
 difficulty: medium
 tags: [冪等性, idempotency, 重複請求, 分散式系統]
 source: original

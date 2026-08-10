@@ -2,7 +2,7 @@
 id: backend-engineering-018
 category: backend-engineering
 slug: retry-and-backoff
-title: 重試機制與退避演算法
+title: 重試機制與退避演算法（Retry / Exponential Backoff）
 difficulty: medium
 tags: [重試, 退避演算法, exponential backoff, 韌性設計]
 source: original

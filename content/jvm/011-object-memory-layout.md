@@ -2,7 +2,7 @@
 id: jvm-011
 category: jvm
 slug: object-memory-layout
-title: 物件的記憶體佈局
+title: 物件的記憶體佈局（Object Memory Layout）
 difficulty: hard
 tags: [物件頭, Mark Word, 對齊填充]
 source: original

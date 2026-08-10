@@ -2,7 +2,7 @@
 id: database-017
 category: database
 slug: sharding
-title: 分庫分表策略與挑戰
+title: 分庫分表策略與挑戰（Sharding / Partitioning）
 difficulty: hard
 tags: [分庫分表, sharding, 分散式資料庫, 水平擴展]
 source: original

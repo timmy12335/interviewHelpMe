@@ -2,7 +2,7 @@
 id: spring-010
 category: spring
 slug: transaction-propagation
-title: 交易的傳播行為
+title: 交易的傳播行為（Transaction Propagation）
 difficulty: hard
 tags: [交易傳播, propagation, REQUIRES_NEW, NESTED]
 source: original

@@ -2,7 +2,7 @@
 id: system-design-018
 category: system-design
 slug: blue-green-canary-deployment
-title: 藍綠部署與金絲雀發布
+title: 藍綠部署與金絲雀發布（Blue-Green / Canary Deployment）
 difficulty: medium
 tags: [藍綠部署, 金絲雀發布, 部署策略, 高可用]
 source: original

@@ -2,7 +2,7 @@
 id: system-design-027
 category: system-design
 slug: key-value-store-design
-title: 設計分散式鍵值儲存系統
+title: 設計分散式鍵值儲存系統（Distributed Key-Value Store）
 difficulty: hard
 tags: [鍵值儲存, key-value store, 分散式儲存, CAP, 系統設計]
 source: original

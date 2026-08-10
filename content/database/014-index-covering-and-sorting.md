@@ -2,7 +2,7 @@
 id: database-014
 category: database
 slug: index-covering-and-sorting
-title: 覆蓋索引與索引排序優化
+title: 覆蓋索引與索引排序優化（Covering Index）
 difficulty: medium
 tags: [覆蓋索引, 索引排序, filesort, 效能優化]
 source: original

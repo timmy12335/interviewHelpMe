@@ -2,7 +2,7 @@
 id: ai-llm-015
 category: ai-llm
 slug: long-context-handling
-title: 長文本與上下文視窗處理
+title: 長文本與上下文視窗處理（Context Window）
 difficulty: medium
 tags: [長上下文, 上下文視窗, Lost in the Middle, 大模型應用]
 source: original

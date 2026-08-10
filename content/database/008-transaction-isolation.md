@@ -2,7 +2,7 @@
 id: database-008
 category: database
 slug: transaction-isolation
-title: 交易隔離級別
+title: 交易隔離級別（Transaction Isolation Level）
 difficulty: medium
 tags: [隔離級別, 髒讀, 不可重複讀, 幻讀]
 source: original

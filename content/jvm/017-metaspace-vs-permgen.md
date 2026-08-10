@@ -2,7 +2,7 @@
 id: jvm-017
 category: jvm
 slug: metaspace-vs-permgen
-title: 元空間與永久代
+title: 元空間與永久代（Metaspace / PermGen）
 difficulty: medium
 tags: [元空間, 永久代, 方法區]
 source: original
