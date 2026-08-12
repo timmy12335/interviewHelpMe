@@ -24,7 +24,7 @@ source: original
 
 **`SynchronousQueue`**：本質上是「執行緒對執行緒」的直接交接點，不是真正的儲存容器。`Executors.newCachedThreadPool()` 就是用它。
 
-**`PriorityBlockingQueue`**：底層用二元堆實作，元素出列順序由 `Comparable`/`Comparator` 決定，而非先進先出。
+**`PriorityBlockingQueue`**：底層用二元堆實作，元素出列順序由 `Comparable`/`Comparator` 決定而非先進先出。
 
 **選型速查表**：需要嚴格控制記憶體用 `ArrayBlockingQueue`；高吞吐讀寫分離（Read-Write Splitting）用 `LinkedBlockingQueue`；需要立即交接用 `SynchronousQueue`；需要按優先級處理用 `PriorityBlockingQueue`。
 
