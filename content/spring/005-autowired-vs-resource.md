@@ -34,7 +34,7 @@ source: original
 
 **多實作時如何消除歧義**：
 
-假設 `PaymentService` 介面有 `AlipayService` 和 `WechatPayService` 兩個實作，直接 `@Autowired PaymentService` 會歧義。解法：
+假設 `PaymentService` 介面有 `AlipayService` 和 `WechatPayService` 兩個實作直接 `@Autowired PaymentService` 會歧義。解法：
 
 1. **`@Qualifier`**：`@Autowired @Qualifier("alipayService") PaymentService service;` 明確指定名稱。
 2. **`@Primary`**：在某個實作類別上標 `@Primary`，把它設為「預設首選」，`@Autowired` 歧義時優先選它。

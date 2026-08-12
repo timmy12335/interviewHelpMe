@@ -40,7 +40,7 @@ source: original
 
 **核心答案**：`@ComponentScan` 預設掃描「標註它的類別（即主類別）所在的包，以及該包的所有子包」。所以慣例是把主類別放在專案的根包（如 `com.example.myapp`），這樣它下面所有的子包（controller、service、dao 等）都在掃描範圍內。如果某些元件放在了掃描範圍外的包（例如引入的另一個模組的包），有幾種解法——（1）調整 `@ComponentScan(basePackages = "...")` 明確指定要掃描的包；（2）把主類別移到更外層的包以覆蓋這些元件；（3）用 `@Import` 顯式導入那些配置類別；（4）如果是第三方模組，通常它會提供自己的自動配置（透過 starter 機制）而不依賴你的元件掃描。
 
-**詳細解析**：這是一個高頻的實務坑——「明明寫了 @Service 為什麼注入不到/找不到 Bean」，很多時候答案是「這個類別不在元件掃描範圍內」。理解掃描範圍的規則——@ComponentScan 從「它所在的類別的包」開始、向下掃描所有子包。所以如果你的主類別在 `com.example.app`，那 `com.example.app.controller`、`com.example.app.service` 都會被掃到，但 `com.example.other`（不是 app 的子包）就掃不到。解決的核心是「讓需要的元件進入掃描範圍」——最常見是確保主類別在根包（大部分情況這樣就對了）；如果確實需要掃描其他包，用 `@ComponentScan(basePackages = {"com.example.app", "com.example.other"})` 明確指定；或用 `@Import` 導入特定配置。要注意——手動指定 basePackages 後就「覆蓋」了預設行為，要記得把原本的包也加進去（別漏了主包）。理解這個坑和解法，展現你有處理實際專案結構問題的經驗。
+**詳細解析**：這是一個高頻的實務坑——「明明寫了 @Service 為什麼注入不到/找不到 Bean」，很多時候答案是「這個類別不在元件掃描範圍內」。理解掃描範圍的規則——@ComponentScan 從「它所在的類別的包」開始、向下掃描所有子包。所以如果你的主類別在 `com.example.app`那 `com.example.app.controller`、`com.example.app.service` 都會被掃到，但 `com.example.other`（不是 app 的子包）就掃不到。解決的核心是「讓需要的元件進入掃描範圍」——最常見是確保主類別在根包（大部分情況這樣就對了）；如果確實需要掃描其他包，用 `@ComponentScan(basePackages = {"com.example.app", "com.example.other"})` 明確指定；或用 `@Import` 導入特定配置。要注意——手動指定 basePackages 後就「覆蓋」了預設行為，要記得把原本的包也加進去（別漏了主包）。理解這個坑和解法，展現你有處理實際專案結構問題的經驗。
 
 **面試回答方式**：講出「預設掃描主類別所在包及所有子包、所以主類別放根包」，並給出元件在範圍外的解法（@ComponentScan(basePackages) 指定、主類別移外層、@Import 導入）。能點出「這是『@Service 卻找不到 Bean』的常見原因」，展現你有排查實際專案結構問題的經驗。
 

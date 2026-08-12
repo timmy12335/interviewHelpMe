@@ -50,7 +50,7 @@ AOP（Aspect-Oriented Programming，面向切面程式設計）是一種把「�
 
 ### Spring AOP 中，一個類別內部方法 A 呼叫方法 B（B 有 AOP），B 的增強會生效嗎？
 
-**核心答案**：不會生效。這是 Spring AOP 著名的「自我呼叫（self-invocation）」失效問題——因為 AOP 增強靠代理物件攔截「外部進來的呼叫」，而類別內部 `A` 呼叫 `B` 用的是 `this.B()`，`this` 是原始的目標物件（不是代理物件），這個呼叫直接落在真實物件上、完全繞過了代理，所以 B 上的 AOP 增強（如 `@Transactional`、`@Cacheable`）不會被觸發。
+**核心答案**：不會生效。這是 Spring AOP 著名的「自我呼叫（self-invocation）」失效問題——因為 AOP 增強靠代理物件攔截「外部進來的呼叫」，而類別內部 `A` 呼叫 `B` 用的是 `this.B()``this` 是原始的目標物件（不是代理物件），這個呼叫直接落在真實物件上、完全繞過了代理，所以 B 上的 AOP 增強（如 `@Transactional`、`@Cacheable`）不會被觸發。
 
 **詳細解析**：這個坑的根源是「AOP 增強邏輯住在代理物件裡，而自我呼叫用的是原始物件」。詳細機制見 Java 核心的 [[../java/014-dynamic-proxy-jdk-vs-cglib.md]]。具體場景——外部呼叫 `service.A()` 時走的是代理，代理攔截後呼叫真實物件的 A；A 內部執行 `this.B()` 時，這個 this 就是真實物件本身（代理在呼叫真實物件的 A 時，A 裡的 this 指向真實物件而非代理），於是 B 的呼叫直接在真實物件上執行，沒經過代理的攔截，B 的 `@Transactional` 就不會開啟交易、`@Cacheable` 就不會走快取。這在實務中非常容易踩——例如你以為給某個方法加了 `@Transactional` 就有交易，但如果它是被同類別的另一個方法內部呼叫的，交易根本沒生效（而且不報錯，是靜默失效，很難發現）。解法包括——把 B 抽到另一個 Bean（讓呼叫經過代理）、透過 `AopContext.currentProxy()` 拿到代理再呼叫、或注入自己的代理引用（自注入）。理解這個坑及其解法，是 Spring AOP 實戰中極重要的知識。
 

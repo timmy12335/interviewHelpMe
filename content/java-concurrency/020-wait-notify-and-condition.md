@@ -32,7 +32,7 @@ synchronized (lock) {
 
 原因：虛假喚醒（JVM 規範允許）、`notifyAll()` 喚醒多個執行緒但條件只滿足一次、被喚醒後重新競爭鎖之前條件可能又被改變。
 
-**`Condition` 是什麼**：透過 `lock.newCondition()` 建立，提供 `await()`/`signal()`/`signalAll()`。一個 `Lock` 可以建立多個獨立的 `Condition`，比只有單一等待集合的內建 Monitor 更精細。
+**`Condition` 是什麼**：透過 `lock.newCondition()` 建立提供 `await()`/`signal()`/`signalAll()`。一個 `Lock` 可以建立多個獨立的 `Condition`，比只有單一等待集合的內建 Monitor 更精細。
 
 ## 面試回答方式
 

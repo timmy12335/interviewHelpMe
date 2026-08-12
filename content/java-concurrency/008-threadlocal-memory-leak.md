@@ -14,13 +14,13 @@ source: original
 
 ## 核心答案
 
-每個 `Thread` 物件內部持有一個 `ThreadLocalMap`，`ThreadLocalMap` 的 key 是 `ThreadLocal` 實例本身（以弱引用形式儲存），value 是實際存放的資料。記憶體洩漏的根源在於：key 是弱引用會被 GC 回收，但 value 是強引用不會被自動回收，若執行緒長期存活（例如執行緒池中的核心執行緒）且忘記呼叫 `remove()`，這些 value 就會一直佔用記憶體，形成洩漏。
+每個 `Thread` 物件內部持有一個 `ThreadLocalMap``ThreadLocalMap` 的 key 是 `ThreadLocal` 實例本身（以弱引用形式儲存），value 是實際存放的資料。記憶體洩漏的根源在於：key 是弱引用會被 GC 回收，但 value 是強引用不會被自動回收，若執行緒長期存活（例如執行緒池中的核心執行緒）且忘記呼叫 `remove()`，這些 value 就會一直佔用記憶體，形成洩漏。
 
 ## 詳細解析
 
-**資料結構**：`Thread` 類別內部有一個 `ThreadLocal.ThreadLocalMap threadLocals` 欄位。呼叫 `threadLocal.set(value)` 實際上是：取得目前執行緒，找到它的 `ThreadLocalMap`，以 `threadLocal` 自己作為 key、`value` 作為值存入這個 map。因此不同執行緒的資料天然隔離在各自的 `Thread` 物件裡，不需要額外加鎖。
+**資料結構**：`Thread` 類別內部有一個 `ThreadLocal.ThreadLocalMap threadLocals` 欄位。呼叫 `threadLocal.set(value)` 實際上是：取得目前執行緒，找到它的 `ThreadLocalMap`以 `threadLocal` 自己作為 key、`value` 作為值存入這個 map。因此不同執行緒的資料天然隔離在各自的 `Thread` 物件裡，不需要額外加鎖。
 
-**為什麼 key 用弱引用**：`ThreadLocalMap` 的 `Entry` 繼承自 `WeakReference<ThreadLocal<?>>`，這樣設計是為了讓外部不再持有 `ThreadLocal` 實例的強引用時，GC 能夠回收這個 `ThreadLocal` 物件本身，避免 `ThreadLocal` 實例洩漏。
+**為什麼 key 用弱引用**：`ThreadLocalMap` 的 `Entry` 繼承自 `WeakReference<ThreadLocal<?>>`，這樣設計是為了讓外部不再持有 `ThreadLocal` 實例的強引用時，GC 能夠回收這個 `ThreadLocal` 物件本身避免 `ThreadLocal` 實例洩漏。
 
 **洩漏是怎麼發生的**：
 
@@ -30,12 +30,12 @@ source: original
 
 **最佳實踐**：
 
-- 使用完 `ThreadLocal` 後，務必在 `finally` 區塊呼叫 `remove()`，尤其是在執行緒池、Web 請求過濾器這類執行緒會被重複使用的場景。
+- 使用完 `ThreadLocal` 後務必在 `finally` 區塊呼叫 `remove()`，尤其是在執行緒池、Web 請求過濾器這類執行緒會被重複使用的場景。
 - 部分框架（如 Spring 的 `RequestContextHolder`、日誌框架的 MDC）都是靠 `ThreadLocal` 實作請求上下文傳遞，這些框架通常在請求結束時的攔截器裡呼叫對應的清理方法。
 
 ## 面試回答方式
 
-先講資料結構（`Thread` 內部有 `ThreadLocalMap`，key 是 `ThreadLocal` 自己），這是理解後面所有問題的基礎。接著講「為什麼會洩漏」時，務必按「key 弱引用被回收 → value 強引用留下 → 執行緒長期存活時永遠不會被清理」這個因果鏈說清楚，而不是只說一句「因為忘記 remove」。最後一定要連結到執行緒池場景，講出「污染下一個請求資料」這個比記憶體洩漏本身更嚴重的實務風險，這是資深工程師才會主動提到的細節，也是這題的加分關鍵。
+先講資料結構（`Thread` 內部有 `ThreadLocalMap`key 是 `ThreadLocal` 自己），這是理解後面所有問題的基礎。接著講「為什麼會洩漏」時，務必按「key 弱引用被回收 → value 強引用留下 → 執行緒長期存活時永遠不會被清理」這個因果鏈說清楚，而不是只說一句「因為忘記 remove」。最後一定要連結到執行緒池場景，講出「污染下一個請求資料」這個比記憶體洩漏本身更嚴重的實務風險，這是資深工程師才會主動提到的細節，也是這題的加分關鍵。
 
 ## 常見追問
 

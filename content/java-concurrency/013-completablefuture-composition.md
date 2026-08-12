@@ -29,7 +29,7 @@ source: original
 **例外傳播機制**：
 
 - 鏈路中任何一步拋出例外，會被包裝並沿著後續方法「短路」傳播下去，直到遇到 `exceptionally` 或 `handle`。
-- 若整條鏈路都沒有例外處理節點，最終呼叫 `get()` 拋出 `ExecutionException`，呼叫 `join()` 拋出 `CompletionException`。
+- 若整條鏈路都沒有例外處理節點，最終呼叫 `get()` 拋出 `ExecutionException`呼叫 `join()` 拋出 `CompletionException`。
 - `whenComplete` 不會吞掉或恢復例外，只是「無論成功失敗都執行一段程式碼」。
 
 ## 面試回答方式
@@ -42,15 +42,15 @@ source: original
 
 **核心答案**：因為 `thenApply` 不會自動拆箱巢狀的 `CompletableFuture`，如果傳入的轉換函式本身回傳 `CompletableFuture<R>`，結果會變成 `CompletableFuture<CompletableFuture<R>>`，之後每次要取用真正的結果都要多一層 `.join()` 或 `.get()`，非常容易出錯且失去了非同步鏈的意義。
 
-**詳細解析**：舉例來說，如果有一個方法 `queryOrderAsync(userId)` 回傳 `CompletableFuture<Order>`，如果寫成 `userIdFuture.thenApply(id -> queryOrderAsync(id))`，得到的型別會是 `CompletableFuture<CompletableFuture<Order>>`——外層的 `CompletableFuture` 其實在「內層的非同步查詢還沒真正完成」時就已經完成了（因為它完成的定義只是「拿到了內層那個 `CompletableFuture` 物件的參照」，而不是「內層查詢真正跑完」），這會導致後續的鏈式呼叫（例如 `.thenAccept(order -> ...)`）拿到的其實是一個 `CompletableFuture<Order>` 物件而不是 `Order` 本身，型別完全對不上，編譯器會直接報錯，或者即使勉強繞過型別檢查，邏輯上也完全錯誤。正確做法是用 `thenCompose` 取代 `thenApply`，讓 API 自動把巢狀結構「拍平（flatten）」成 `CompletableFuture<Order>`。
+**詳細解析**：舉例來說，如果有一個方法 `queryOrderAsync(userId)` 回傳 `CompletableFuture<Order>`如果寫成 `userIdFuture.thenApply(id -> queryOrderAsync(id))`，得到的型別會是 `CompletableFuture<CompletableFuture<Order>>`——外層的 `CompletableFuture` 其實在「內層的非同步查詢還沒真正完成」時就已經完成了（因為它完成的定義只是「拿到了內層那個 `CompletableFuture` 物件的參照」，而不是「內層查詢真正跑完」），這會導致後續的鏈式呼叫（例如 `.thenAccept(order -> ...)`）拿到的其實是一個 `CompletableFuture<Order>` 物件而不是 `Order` 本身，型別完全對不上，編譯器會直接報錯，或者即使勉強繞過型別檢查，邏輯上也完全錯誤。正確做法是用 `thenCompose` 取代 `thenApply`，讓 API 自動把巢狀結構「拍平（flatten）」成 `CompletableFuture<Order>`。
 
 **面試回答方式**：用具體的型別推導（`CompletableFuture<CompletableFuture<Order>>`）來解釋為什麼會出錯，比抽象地說「會產生巢狀結構」更清楚，也更容易讓面試官確認你真的理解型別系統的運作，而不只是背「這種情況要用 `thenCompose`」這個結論。
 
 ### allOf(...).join() 之後要怎麼優雅地收集每個子任務的實際結果？
 
-**核心答案**：因為 `allOf` 回傳的是 `CompletableFuture<Void>`，不能直接拿到各子任務的結果，常見做法是先把所有 `CompletableFuture<T>` 存在一個 `List` 或陣列中，`allOf(...).join()` 完成後，再對這個 `List` 逐一呼叫已經完成的每個 `CompletableFuture` 的 `join()`（因為已經確定全部完成，這裡的 `join()` 不會再阻塞），通常搭配 Stream API 收集成一個結果列表。
+**核心答案**：因為 `allOf` 回傳的是 `CompletableFuture<Void>`，不能直接拿到各子任務的結果，常見做法是先把所有 `CompletableFuture<T>` 存在一個 `List` 或陣列中`allOf(...).join()` 完成後再對這個 `List` 逐一呼叫已經完成的每個 `CompletableFuture` 的 `join()`（因為已經確定全部完成，這裡的 `join()` 不會再阻塞），通常搭配 Stream API 收集成一個結果列表。
 
-**詳細解析**：典型寫法類似：`List<CompletableFuture<T>> futures = ...; CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join(); List<T> results = futures.stream().map(CompletableFuture::join).collect(Collectors.toList());`。這裡的關鍵理解是：`allOf` 本身只負責「等待」，不負責「收集」，因為 Java 的型別系統無法讓 `allOf` 這種可變參數方法知道每個 `CompletableFuture` 內部承載的具體型別並統一收集起來；因此收集結果的責任仍然落在呼叫方身上，透過保留原始的 `CompletableFuture` 物件清單，等 `allOf` 確認全部完成後再逐一取值，是最常見也最直接的做法。
+**詳細解析**：典型寫法類似：`List<CompletableFuture<T>> futures = ...; CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join(); List<T> results = futures.stream().map(CompletableFuture::join).collect(Collectors.toList());`。這裡的關鍵理解是：`allOf` 本身只負責「等待」，不負責「收集」，因為 Java 的型別系統無法讓 `allOf` 這種可變參數方法知道每個 `CompletableFuture` 內部承載的具體型別並統一收集起來；因此收集結果的責任仍然落在呼叫方身上，透過保留原始的 `CompletableFuture` 物件清單等 `allOf` 確認全部完成後再逐一取值，是最常見也最直接的做法。
 
 **面試回答方式**：把程式碼邏輯用口語清楚描述一次（先收集 Future 列表、等待全部完成、再逐一取值），即使不方便寫出完整程式碼，講清楚這個「先等待、後收集」的兩階段邏輯，就足以證明你真的實作過這個模式而不是憑印象猜測。
 

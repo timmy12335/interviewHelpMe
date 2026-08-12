@@ -26,7 +26,7 @@ JMM 定義了多執行緒程式中，一個執行緒對共享變數的寫入何�
 2. **監視器鎖規則**：對一個鎖的解鎖操作 happens-before 後續對這個鎖的加鎖操作（即 A 執行緒解鎖後，B 執行緒加鎖時能看到 A 在鎖內的所有寫入）。
 3. **volatile 變數規則**：對一個 `volatile` 變數的寫操作 happens-before 後續對這個變數的讀操作。
 4. **執行緒啟動規則**：`Thread.start()` 之前對變數的寫入，happens-before 該執行緒內的所有操作。
-5. **執行緒終止規則**：執行緒內的所有操作 happens-before 其他執行緒偵測到該執行緒已終止（如透過 `Thread.join()` 返回，或 `Thread.isAlive()` 返回 false）。
+5. **執行緒終止規則**：執行緒內的所有操作 happens-before 其他執行緒偵測到該執行緒已終止（如透過 `Thread.join()` 返回或 `Thread.isAlive()` 返回 false）。
 6. **傳遞性**：若 A happens-before B，且 B happens-before C，則 A happens-before C。
 7. **中斷規則**：對執行緒 `interrupt()` 方法的呼叫 happens-before 被中斷執行緒偵測到中斷事件。
 

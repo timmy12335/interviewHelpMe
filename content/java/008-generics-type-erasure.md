@@ -14,11 +14,11 @@ Java 泛型的型別擦除（Type Erasure）是什麼？它帶來了哪些限制
 
 ## 核心答案
 
-Java 泛型是「編譯期」的概念，編譯器用泛型資訊做型別檢查與自動轉型，但編譯完成後會把泛型型別參數「擦除」——`List<String>` 和 `List<Integer>` 在執行期都變成原始型別 `List`，型別參數 `T` 被替換成它的邊界（無邊界時是 `Object`）。這是為了與早期沒有泛型的 Java 版本保持二進位相容。型別擦除帶來了不能 `new T[]`、不能 `instanceof List<String>`、無法在執行期取得泛型型別等限制。
+Java 泛型是「編譯期」的概念，編譯器用泛型資訊做型別檢查與自動轉型，但編譯完成後會把泛型型別參數「擦除」——`List<String>` 和 `List<Integer>` 在執行期都變成原始型別 `List`型別參數 `T` 被替換成它的邊界（無邊界時是 `Object`）。這是為了與早期沒有泛型的 Java 版本保持二進位相容。型別擦除帶來了不能 `new T[]`、不能 `instanceof List<String>`、無法在執行期取得泛型型別等限制。
 
 ## 詳細解析
 
-**什麼是型別擦除**：泛型只存在於原始碼與編譯階段。編譯器利用泛型資訊確保型別安全（例如不讓你往 `List<String>` 塞 `Integer`），並自動插入轉型程式碼。但編譯後產生的位元組碼（Bytecode）中，泛型型別參數被移除——`List<String>`、`List<Integer>`、`List<Object>` 在執行期都是同一個原始型別 `List`，它們的 `getClass()` 完全相同。
+**什麼是型別擦除**：泛型只存在於原始碼與編譯階段。編譯器利用泛型資訊確保型別安全（例如不讓你往 `List<String>` 塞 `Integer`），並自動插入轉型程式碼。但編譯後產生的位元組碼（Bytecode）中，泛型型別參數被移除——`List<String>`、`List<Integer>`、`List<Object>` 在執行期都是同一個原始型別 `List`它們的 `getClass()` 完全相同。
 
 **為什麼要擦除**：泛型是 JDK 5 才引入的，為了讓新的泛型程式碼能和 JDK 5 之前的舊程式碼、舊的類別庫二進位相容（不需要重新編譯舊的 class 檔），Java 選擇了「擦除式」泛型——執行期不保留泛型資訊，讓泛型類別在位元組碼層面和原始型別相容。這與 C# 的「具體化泛型（reified generics，執行期保留型別資訊）」是不同的設計路線。
 
@@ -42,7 +42,7 @@ Java 泛型是「編譯期」的概念，編譯器用泛型資訊做型別檢查
 
 **核心答案**：一般的泛型變數（如區域變數 `List<String>`）在執行期確實無法取得型別參數；但如果泛型資訊被保留在「類別定義、欄位、方法簽章、父類別/介面的泛型宣告」中，這些是會被寫入 class 檔的元資料，可以透過反射（Reflection）（如 `getGenericSuperclass()`、`getGenericParameterTypes()`）取得。這也是很多框架（如 Gson、Spring）用「匿名子類別 + `TypeReference`」技巧取得泛型型別的原理。
 
-**詳細解析**：型別擦除擦掉的是「使用泛型的地方」的型別參數（例如 `new ArrayList<String>()` 中的 String），但「宣告泛型的地方」的資訊會保留在 class 檔的 Signature 屬性中。例如 `class MyList extends ArrayList<String>`，這個 `String` 會被保留，可以透過 `getGenericSuperclass()` 取得。這就是 Gson 的 `TypeToken`、Spring 的 `ParameterizedTypeReference` 的原理——它們讓你建立一個匿名子類別（如 `new TypeToken<List<User>>(){}`），把 `List<User>` 這個泛型資訊「錨定」在子類別的父類別宣告中，從而在執行期透過反射把它讀出來，繞過擦除的限制。
+**詳細解析**：型別擦除擦掉的是「使用泛型的地方」的型別參數（例如 `new ArrayList<String>()` 中的 String），但「宣告泛型的地方」的資訊會保留在 class 檔的 Signature 屬性中。例如 `class MyList extends ArrayList<String>`這個 `String` 會被保留可以透過 `getGenericSuperclass()` 取得。這就是 Gson 的 `TypeToken`、Spring 的 `ParameterizedTypeReference` 的原理——它們讓你建立一個匿名子類別（如 `new TypeToken<List<User>>(){}`）把 `List<User>` 這個泛型資訊「錨定」在子類別的父類別宣告中，從而在執行期透過反射把它讀出來，繞過擦除的限制。
 
 **面試回答方式**：先回答「一般變數不行，但保留在類別/欄位/方法簽章中的泛型可透過反射取得」，再舉出 Gson 的 `TypeToken` 這個實際框架應用，展現你不只理解擦除的限制，還知道業界如何巧妙繞過它，這種「知道限制也知道 workaround」的回答很有深度。
 

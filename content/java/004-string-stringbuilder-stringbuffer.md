@@ -26,15 +26,15 @@ source: original
 | `StringBuilder` | 可變 | 不安全 | 最好 | 單執行緒下頻繁拼接/修改 |
 | `StringBuffer` | 可變 | 安全（synchronized） | 較差（有鎖開銷） | 多執行緒共享同一個可變字串（實務少見） |
 
-**為什麼頻繁修改不該用 String**：因為 `String` 不可變，每次 `+=` 或 `concat` 都會產生新物件，在迴圈中拼接大量字串會產生大量臨時物件，造成記憶體與 GC 壓力，效能很差。
+**為什麼頻繁修改不該用 String**：因為 `String` 不可變每次 `+=` 或 `concat` 都會產生新物件，在迴圈中拼接大量字串會產生大量臨時物件，造成記憶體與 GC 壓力，效能很差。
 
-**StringBuilder vs StringBuffer**：兩者 API 幾乎完全相同（都繼承自 `AbstractStringBuilder`），差別只在 `StringBuffer` 的公開方法都加了 `synchronized`。在單執行緒場景下，`StringBuffer` 的同步是完全沒必要的開銷，所以應該用 `StringBuilder`。實務上真正需要「多執行緒共享同一個可變字串緩衝區」的場景非常罕見（通常會用其他更好的設計），所以 `StringBuffer` 現在很少被用到。
+**StringBuilder vs StringBuffer**：兩者 API 幾乎完全相同（都繼承自 `AbstractStringBuilder`）差別只在 `StringBuffer` 的公開方法都加了 `synchronized`。在單執行緒場景下，`StringBuffer` 的同步是完全沒必要的開銷，所以應該用 `StringBuilder`。實務上真正需要「多執行緒共享同一個可變字串緩衝區」的場景非常罕見（通常會用其他更好的設計），所以 `StringBuffer` 現在很少被用到。
 
-**經典建議**：在迴圈中拼接字串，一定要在迴圈外建立一個 `StringBuilder`，迴圈內 `append`，最後 `toString()`，而不是在迴圈內用 `String +=`。
+**經典建議**：在迴圈中拼接字串，一定要在迴圈外建立一個 `StringBuilder`迴圈內 `append`最後 `toString()`，而不是在迴圈內用 `String +=`。
 
 ## 面試回答方式
 
-這是基礎題，用一個對比表的結構回答最清楚——沿著「可變性、執行緒安全、效能」三個維度比較三者。核心結論是「單執行緒頻繁修改用 `StringBuilder`，`StringBuffer` 只是加了鎖的版本、實務少用，`String` 適合固定內容」。務必補上那個最經典的實務建議——「迴圈中拼接字串要用 `StringBuilder` 而非 `+=`」，這是面試官常會延伸追問的實戰點，主動講出來能展現你有實際的效能意識。
+這是基礎題，用一個對比表的結構回答最清楚——沿著「可變性、執行緒安全、效能」三個維度比較三者。核心結論是「單執行緒頻繁修改用 `StringBuilder``StringBuffer` 只是加了鎖的版本、實務少用，`String` 適合固定內容」。務必補上那個最經典的實務建議——「迴圈中拼接字串要用 `StringBuilder` 而非 `+=`」，這是面試官常會延伸追問的實戰點，主動講出來能展現你有實際的效能意識。
 
 ## 常見追問
 
@@ -56,7 +56,7 @@ source: original
 
 ### 有了 StringBuilder，StringBuffer 還有存在的必要嗎？
 
-**核心答案**：實務上必要性很低。`StringBuffer` 的唯一價值是「多執行緒共享同一個可變字串緩衝區時保證執行緒安全」，但這種場景本身就很罕見且通常有更好的設計（例如每個執行緒用自己的 `StringBuilder`，最後再合併），所以現代開發中幾乎都用 `StringBuilder`，`StringBuffer` 主要是歷史遺留（它比 `StringBuilder` 更早出現，JDK 5 才引入 `StringBuilder`）。
+**核心答案**：實務上必要性很低。`StringBuffer` 的唯一價值是「多執行緒共享同一個可變字串緩衝區時保證執行緒安全」，但這種場景本身就很罕見且通常有更好的設計（例如每個執行緒用自己的 `StringBuilder`，最後再合併），所以現代開發中幾乎都用 `StringBuilder``StringBuffer` 主要是歷史遺留（它比 `StringBuilder` 更早出現，JDK 5 才引入 `StringBuilder`）。
 
 **詳細解析**：`StringBuffer` 的執行緒安全是「方法級別」的——每個 `append` 等方法都是同步的，但這種細粒度的同步其實很少真正有用，因為多執行緒操作字串通常需要的是「一連串操作的整體原子性」（例如連續 append 多段內容不被打斷），而方法級同步保證不了這種複合操作的原子性，仍然需要外層自己加鎖。既然單一方法的同步既有效能開銷又解決不了真正的複合原子性需求，實務上更常見的做法是讓每個執行緒各自用 `StringBuilder` 處理、最後匯總，完全避開共享可變狀態。因此 `StringBuffer` 現在基本上是一個「知道它存在、知道為什麼不用它」的知識點。
 

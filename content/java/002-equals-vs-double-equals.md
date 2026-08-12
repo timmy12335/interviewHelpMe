@@ -34,7 +34,7 @@ source: original
 
 ### 為什麼比較字串內容建議用 Objects.equals() 而不是直接呼叫 equals()？
 
-**核心答案**：因為直接呼叫 `a.equals(b)` 時，如果 `a` 為 null 會拋出 `NullPointerException`；而 `Objects.equals(a, b)` 內部做了 null 檢查（兩者都為 null 回傳 true、其中一個為 null 回傳 false、都不為 null 才呼叫 `equals()`），能安全地處理 null，避免空指標例外。
+**核心答案**：因為直接呼叫 `a.equals(b)` 時如果 `a` 為 null 會拋出 `NullPointerException`；而 `Objects.equals(a, b)` 內部做了 null 檢查（兩者都為 null 回傳 true、其中一個為 null 回傳 false、都不為 null 才呼叫 `equals()`），能安全地處理 null，避免空指標例外。
 
 **詳細解析**：`Objects.equals(a, b)` 的實作邏輯大致是 `(a == b) || (a != null && a.equals(b))`——先用 `==` 快速判斷是否為同一引用（也順帶處理了兩者都為 null 的情況），再確認 `a` 不為 null 後才呼叫 `a.equals(b)`。這讓開發者不需要在每次比較前手動寫 null 檢查，程式碼更簡潔也更不容易因為疏忽而拋出 NPE。在處理可能為 null 的欄位比較（例如從資料庫或外部 API 拿到的可能為 null 的字串）時特別有用。
 
@@ -44,7 +44,7 @@ source: original
 
 **核心答案**：因為 Java 對 `Integer` 有「快取池」機制，`-128` 到 `127` 之間的值會被快取並重複使用同一個物件，所以這個範圍內用 `==` 比較兩個相同值的 `Integer` 會是 true（同一個物件）；超出這個範圍的值每次自動裝箱都會 `new` 一個新物件，`==` 比較就會是 false（不同物件）。
 
-**詳細解析**：這是自動裝箱（autoboxing）與 `Integer` 快取共同造成的經典陷阱，例如 `Integer a = 127, b = 127; a == b` 為 true，但 `Integer c = 128, d = 128; c == d` 為 false。完整的原理在 [[010-autoboxing-integer-cache.md]] 有詳細說明。核心是：這說明了對 `Integer`（以及其他包裝類別）永遠不該用 `==` 比較值，應該用 `.equals()` 或先拆箱成基本型別再比較，否則就會踩到這種「小數字碰巧相等、大數字卻不相等」的詭異 bug。
+**詳細解析**：這是自動裝箱（autoboxing）與 `Integer` 快取共同造成的經典陷阱，例如 `Integer a = 127, b = 127; a == b` 為 true，但 `Integer c = 128, d = 128; c == d` 為 false。完整的原理在 [[010-autoboxing-integer-cache.md]] 有詳細說明。核心是：這說明了對 `Integer`（以及其他包裝類別）永遠不該用 `==` 比較值應該用 `.equals()` 或先拆箱成基本型別再比較，否則就會踩到這種「小數字碰巧相等、大數字卻不相等」的詭異 bug。
 
 **面試回答方式**：直接點出「因為 -128~127 的 `Integer` 有快取池、超出範圍就是新物件」這個原因，並強調結論「包裝類別比較值一律用 `equals`」，這題是面試很愛考的陷阱題，能準確講出快取範圍（-128~127）會是明確的加分點。
 
@@ -52,7 +52,7 @@ source: original
 
 **核心答案**：`equals()` 必須滿足五個約定——自反性（`a.equals(a)` 為 true）、對稱性（`a.equals(b)` 與 `b.equals(a)` 結果一致）、傳遞性（a 等於 b、b 等於 c，則 a 等於 c）、一致性（多次呼叫結果不變，前提是物件未被修改）、以及與 null 比較必須回傳 false（`a.equals(null)` 為 false）。
 
-**詳細解析**：這些約定看似理所當然，但在繼承場景中很容易被無意破壞——最常見的是「對稱性」與「傳遞性」在父類別與子類別混合比較時出問題。例如父類別 `Point` 和多了一個顏色欄位的子類別 `ColorPoint`，如果 `ColorPoint.equals()` 要求顏色也相同，但 `Point.equals()` 只比較座標，就會出現 `point.equals(colorPoint)` 為 true（Point 只看座標）但 `colorPoint.equals(point)` 為 false（ColorPoint 還要看顏色）的對稱性破壞。這也是為什麼《Effective Java》建議「用組合（composition）取代繼承」來避免這類 equals 約定被破壞，或者對於值物件直接用 `record`（自動生成正確的 equals）。
+**詳細解析**：這些約定看似理所當然，但在繼承場景中很容易被無意破壞——最常見的是「對稱性」與「傳遞性」在父類別與子類別混合比較時出問題。例如父類別 `Point` 和多了一個顏色欄位的子類別 `ColorPoint`如果 `ColorPoint.equals()` 要求顏色也相同，但 `Point.equals()` 只比較座標，就會出現 `point.equals(colorPoint)` 為 true（Point 只看座標）但 `colorPoint.equals(point)` 為 false（ColorPoint 還要看顏色）的對稱性破壞。這也是為什麼《Effective Java》建議「用組合（composition）取代繼承」來避免這類 equals 約定被破壞，或者對於值物件直接用 `record`（自動生成正確的 equals）。
 
 **面試回答方式**：能列出「自反、對稱、傳遞、一致、非 null」五個約定是基本盤，若能進一步舉出「父類別與子類別混合比較時容易破壞對稱性/傳遞性」這個經典難點，並提到「用組合取代繼承」或「用 record」的解法，會明顯展現你讀過相關的深入資料（如《Effective Java》）而不只是背表面規則。
 

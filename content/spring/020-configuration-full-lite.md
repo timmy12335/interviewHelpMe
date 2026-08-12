@@ -28,7 +28,7 @@ class AppConfig {
 }
 ```
 
-問題——`a()` 內部呼叫 `b()`，這個 `b()` 是返回容器裡的那個單例 B，還是每次呼叫都 new 一個新 B？
+問題——`a()` 內部呼叫 `b()`這個 `b()` 是返回容器裡的那個單例 B，還是每次呼叫都 new 一個新 B？
 
 **full 模式（預設，proxyBeanMethods = true）**：
 
@@ -39,7 +39,7 @@ class AppConfig {
 **lite 模式（proxyBeanMethods = false，或 @Bean 定義在 @Component 等非 @Configuration 類別裡）**：
 
 - 不做 CGLIB 代理。
-- `a()` 內部呼叫 `b()` 就是「普通的 Java 方法呼叫」——真的執行 `b()` 方法體，每次都 `new B()`。
+- `a()` 內部呼叫 `b()` 就是「普通的 Java 方法呼叫」——真的執行 `b()` 方法體每次都 `new B()`。
 - 所以 `a` 裡用的 B 是一個「新 new 的 B」，和容器裡的單例 B「不是同一個」——破壞了單例語意（如果你依賴 a 裡的 B 和容器的 B 是同一個，就出 bug）。
 
 **proxyBeanMethods 的權衡**：

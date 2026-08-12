@@ -14,7 +14,7 @@ Spring Bean 有哪些作用域（scope）？singleton 和 prototype 有什麼區
 
 ## 核心答案
 
-Spring 內建的 Bean 作用域主要有：`singleton`（單例，預設，整個容器中只有一個實例）、`prototype`（原型，每次請求都建立新實例）、`request`（每個 HTTP 請求一個實例，僅 Web 環境）、`session`（每個 HTTP session 一個實例，僅 Web 環境）、`application`（每個 ServletContext 一個實例）。預設是 `singleton`。singleton 和 prototype 的核心區別是——singleton 全容器共享同一個實例、由容器全程管理生命週期；prototype 每次獲取都建立新實例、容器只負責建立不負責銷毀。
+Spring 內建的 Bean 作用域主要有：`singleton`（單例預設，整個容器中只有一個實例）、`prototype`（原型，每次請求都建立新實例）、`request`（每個 HTTP 請求一個實例，僅 Web 環境）、`session`（每個 HTTP session 一個實例，僅 Web 環境）、`application`（每個 ServletContext 一個實例）。預設是 `singleton`。singleton 和 prototype 的核心區別是——singleton 全容器共享同一個實例、由容器全程管理生命週期；prototype 每次獲取都建立新實例、容器只負責建立不負責銷毀。
 
 ## 詳細解析
 

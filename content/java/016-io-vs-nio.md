@@ -60,7 +60,7 @@ BIO（Blocking IO）是傳統的同步阻塞 IO——每個連線需要一個執
 
 **核心答案**：Buffer 有三個關鍵狀態——`capacity`（容量，Buffer 的總大小）、`position`（當前讀寫位置）、`limit`（讀寫的上限）。`flip()` 用於「從寫入模式切換到讀取模式」——它把 `limit` 設為當前的 `position`（標記「剛才寫到哪裡」作為讀取上限），再把 `position` 歸零（從頭開始讀），這樣就能把剛寫入的資料正確地讀出來。
 
-**詳細解析**：NIO 的 Buffer 是「讀寫共用同一塊空間、靠狀態切換模式」的設計，這是新手最容易搞混的地方。寫入時，`position` 隨著寫入不斷後移，`limit` 等於 `capacity`；當你寫完想讀時，直接讀是錯的（`position` 停在寫入的末尾、後面是空的），必須呼叫 `flip()`——它把 `limit` 定在「剛才寫入的末尾位置」（讀取不能超過這裡），把 `position` 拉回 0（從頭讀）。讀完後如果想再寫，用 `clear()`（position 歸零、limit 回到 capacity，覆蓋舊資料）或 `compact()`（保留未讀資料、繼續寫）。忘記 `flip()` 是 NIO 程式設計最常見的 bug 之一——寫完直接讀會讀到空資料或錯位資料。
+**詳細解析**：NIO 的 Buffer 是「讀寫共用同一塊空間、靠狀態切換模式」的設計，這是新手最容易搞混的地方。寫入時`position` 隨著寫入不斷後移，`limit` 等於 `capacity`；當你寫完想讀時，直接讀是錯的（`position` 停在寫入的末尾、後面是空的），必須呼叫 `flip()`——它把 `limit` 定在「剛才寫入的末尾位置」（讀取不能超過這裡），把 `position` 拉回 0（從頭讀）。讀完後如果想再寫，用 `clear()`（position 歸零、limit 回到 capacity，覆蓋舊資料）或 `compact()`（保留未讀資料、繼續寫）。忘記 `flip()` 是 NIO 程式設計最常見的 bug 之一——寫完直接讀會讀到空資料或錯位資料。
 
 **面試回答方式**：先講三個狀態（capacity/position/limit）的含義，再用「寫入後 position 在末尾、flip 把 limit 設到這末尾、position 歸零讓你從頭讀」清楚說明 flip 的作用。能點出「忘記 flip 是 NIO 常見 bug」展現你有實際寫過 NIO 程式碼，而不只是背概念。
 

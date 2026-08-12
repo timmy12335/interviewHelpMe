@@ -57,7 +57,7 @@ source: original
 
 **核心答案**：`CopyOnWriteArraySet` 內部直接用一個 `CopyOnWriteArrayList` 來儲存元素，並在新增元素時（`add`）先線性檢查是否已經存在相同元素以維持 Set 語意（不重複），本質上是 `CopyOnWriteArrayList` 的一層包裝，而不是獨立的實作。
 
-**詳細解析**：因為底層直接複用 `CopyOnWriteArrayList` 的寫入時複製機制，`CopyOnWriteArraySet` 具備完全一樣的效能特性與適用場景（讀多寫少、fail-safe 迭代）。但也因為「檢查重複」這個操作在底層是線性掃描整個陣列（`indexOf` 為 O(n)），`CopyOnWriteArraySet` 的新增操作比一般的 `HashSet` 慢得多，只適合元素數量不大、且同樣是讀遠多於寫的場景，例如維護一組事件監聽器、觀察者物件的集合，這也是 Java 官方文件中明確建議的典型用途。
+**詳細解析**：因為底層直接複用 `CopyOnWriteArrayList` 的寫入時複製機制，`CopyOnWriteArraySet` 具備完全一樣的效能特性與適用場景（讀多寫少、fail-safe 迭代）。但也因為「檢查重複」這個操作在底層是線性掃描整個陣列（`indexOf` 為 O(n)）`CopyOnWriteArraySet` 的新增操作比一般的 `HashSet` 慢得多，只適合元素數量不大、且同樣是讀遠多於寫的場景，例如維護一組事件監聽器、觀察者物件的集合，這也是 Java 官方文件中明確建議的典型用途。
 
 **面試回答方式**：直接點出「底層就是包了一層 `CopyOnWriteArrayList`，用線性掃描檢查重複」這個實作事實，並補上「所以新增操作是 O(n) 比 `HashSet` 慢很多，只適合小規模讀多寫少的集合」這個效能提醒，展現你不只知道兩者有關係，還知道這個關係帶來的效能後果。
 

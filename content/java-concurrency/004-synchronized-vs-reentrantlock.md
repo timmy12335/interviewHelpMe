@@ -14,7 +14,7 @@ source: original
 
 ## 核心答案
 
-兩者都提供互斥鎖語義且都支援可重入，但 `ReentrantLock` 是 API 層級（`java.util.concurrent.locks`）的顯式鎖，功能更豐富（可中斷、可設定逾時、可實作公平鎖、支援多個 `Condition`），需要手動 `lock()/unlock()`；`synchronized` 是 JVM 層級的關鍵字，由編譯器與 JVM 自動管理加解鎖，語法更簡潔且不會忘記釋放鎖。
+兩者都提供互斥鎖語義且都支援可重入，但 `ReentrantLock` 是 API 層級（`java.util.concurrent.locks`）的顯式鎖，功能更豐富（可中斷、可設定逾時、可實作公平鎖、支援多個 `Condition`）需要手動 `lock()/unlock()`；`synchronized` 是 JVM 層級的關鍵字，由編譯器與 JVM 自動管理加解鎖，語法更簡潔且不會忘記釋放鎖。
 
 ## 詳細解析
 
@@ -39,7 +39,7 @@ source: original
 - 大多數簡單同步場景，優先用 `synchronized`：語法簡潔、不會忘記釋放鎖、JVM 已充分優化。
 - 需要「嘗試取鎖但不阻塞」「可設定逾時」「可回應中斷」「需要公平鎖語意」「需要多組等待條件（例如生產者/消費者用不同 Condition 區分佇列滿/空）」時，選 `ReentrantLock`。
 
-**踩坑提醒**：使用 `ReentrantLock` 時，必須把 `unlock()` 放在 `finally` 區塊，且 `lock()` 呼叫要放在 `try` 之前（不能放進 `try` 裡），否則加鎖失敗時仍會嘗試釋放一把沒有持有的鎖，拋出 `IllegalMonitorStateException`。
+**踩坑提醒**：使用 `ReentrantLock` 時必須把 `unlock()` 放在 `finally` 區塊且 `lock()` 呼叫要放在 `try` 之前（不能放進 `try` 裡），否則加鎖失敗時仍會嘗試釋放一把沒有持有的鎖，拋出 `IllegalMonitorStateException`。
 
 ## 面試回答方式
 

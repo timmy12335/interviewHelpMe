@@ -29,8 +29,8 @@ source: original
 **錯誤用法**：
 
 1. **當作類別欄位**：`Optional` 沒有實作 `Serializable`、且會增加記憶體開銷，不該當欄位（欄位為空直接用 null 或設計上避免）。
-2. **當作方法參數**：讓呼叫方為了傳參還要包一層 `Optional.of(...)`，很彆扭；方法參數的可選性應該用方法多載或明確的 null 處理。
-3. **用 `get()` 不先檢查**：`optional.get()` 在為空時會拋 `NoSuchElementException`，直接 `get()` 而不先 `isPresent()` 檢查（或改用 `orElse`），等於把 NPE 換成另一種例外，失去了 Optional 的意義。
+2. **當作方法參數**：讓呼叫方為了傳參還要包一層 `Optional.of(...)`很彆扭；方法參數的可選性應該用方法多載或明確的 null 處理。
+3. **用 `get()` 不先檢查**：`optional.get()` 在為空時會拋 `NoSuchElementException`直接 `get()` 而不先 `isPresent()` 檢查（或改用 `orElse`），等於把 NPE 換成另一種例外，失去了 Optional 的意義。
 4. **`Optional.of(可能為 null 的值)`**：`of()` 遇到 null 會立刻拋 NPE，應該用 `Optional.ofNullable()` 處理可能為 null 的值。
 
 ## 面試回答方式
@@ -49,9 +49,9 @@ source: original
 
 ### 為什麼不建議把 Optional 當作類別的欄位或方法參數？
 
-**核心答案**：不建議當「欄位」是因為——`Optional` 沒有實作 `Serializable`（會讓包含它的類別無法序列化）、且每個 Optional 包裝都有額外的記憶體開銷（一個物件包一個值），欄位為空直接用 null 或在設計上避免更合適。不建議當「方法參數」是因為——這會逼呼叫方為了呼叫這個方法而把引數包成 `Optional.of(...)`，非常彆扭，可選參數應該用方法多載或直接接受可能為 null 的參數並在內部處理。`Optional` 的設計初衷就是「作為回傳值」表達可能的空結果。
+**核心答案**：不建議當「欄位」是因為——`Optional` 沒有實作 `Serializable`（會讓包含它的類別無法序列化）、且每個 Optional 包裝都有額外的記憶體開銷（一個物件包一個值），欄位為空直接用 null 或在設計上避免更合適。不建議當「方法參數」是因為——這會逼呼叫方為了呼叫這個方法而把引數包成 `Optional.of(...)`非常彆扭，可選參數應該用方法多載或直接接受可能為 null 的參數並在內部處理。`Optional` 的設計初衷就是「作為回傳值」表達可能的空結果。
 
-**詳細解析**：`Optional` 的設計者（Brian Goetz）明確說過它的定位是「作為方法回傳值，表達『沒有結果』的情況」，而不是一個通用的「可能為 null」的包裝工具。當欄位——除了序列化和記憶體問題，還會讓類別的內部狀態管理變複雜（每次存取欄位都要處理 Optional）。當參數——考慮 `void setName(Optional<String> name)`，呼叫方要寫 `setName(Optional.of("x"))` 或 `setName(Optional.empty())`，遠不如 `setName(String name)` 直接接受 null 或提供多載清晰，而且參數是 Optional 也不能阻止呼叫方傳 null 進來（`setName(null)` 仍然合法，反而多了一種空的表達方式造成混亂）。所以 Optional 應該專注在它擅長的地方——作為回傳值，讓呼叫方明確處理「可能沒有結果」。
+**詳細解析**：`Optional` 的設計者（Brian Goetz）明確說過它的定位是「作為方法回傳值，表達『沒有結果』的情況」，而不是一個通用的「可能為 null」的包裝工具。當欄位——除了序列化和記憶體問題，還會讓類別的內部狀態管理變複雜（每次存取欄位都要處理 Optional）。當參數——考慮 `void setName(Optional<String> name)`，呼叫方要寫 `setName(Optional.of("x"))` 或 `setName(Optional.empty())`遠不如 `setName(String name)` 直接接受 null 或提供多載清晰，而且參數是 Optional 也不能阻止呼叫方傳 null 進來（`setName(null)` 仍然合法，反而多了一種空的表達方式造成混亂）。所以 Optional 應該專注在它擅長的地方——作為回傳值，讓呼叫方明確處理「可能沒有結果」。
 
 **面試回答方式**：分別講欄位（不可序列化、記憶體開銷）和參數（逼呼叫方彆扭包裝、擋不住 null、不如多載清晰）的問題，並點出「Optional 的設計定位就是作為回傳值」。能引用「設計者明確說過它是給回傳值用的」展現你了解這個 API 的設計意圖，這種對「工具該用在哪」有清晰認識的回答很專業。
 

@@ -60,7 +60,7 @@ source: original
 
 ### 如何自訂一個 @Conditional 條件？
 
-**核心答案**：自訂條件需要——（1）實作 `Condition` 介面，覆寫 `matches(ConditionContext context, AnnotatedTypeMetadata metadata)` 方法，在裡面寫判斷邏輯（可以透過 context 拿到容器、環境、classpath 等資訊來判斷），返回 true（條件滿足、Bean 生效）或 false；（2）在 @Bean/@Configuration 上用 `@Conditional(你的Condition類別.class)` 引用它。例如寫一個「只在 Linux 作業系統上才生效」的條件——實作 Condition，在 matches 裡判斷 `System.getProperty("os.name")` 是否包含 "Linux"，然後用 `@Conditional(OnLinuxCondition.class)` 標在需要的 Bean 上。Spring Boot 的那些 @ConditionalOnXxx 註解，本質都是「預先寫好的 Condition 實作 + @Conditional 的組合」。
+**核心答案**：自訂條件需要——（1）實作 `Condition` 介面覆寫 `matches(ConditionContext context, AnnotatedTypeMetadata metadata)` 方法，在裡面寫判斷邏輯（可以透過 context 拿到容器、環境、classpath 等資訊來判斷），返回 true（條件滿足、Bean 生效）或 false；（2）在 @Bean/@Configuration 上用 `@Conditional(你的Condition類別.class)` 引用它。例如寫一個「只在 Linux 作業系統上才生效」的條件——實作 Condition，在 matches 裡判斷 `System.getProperty("os.name")` 是否包含 "Linux"，然後用 `@Conditional(OnLinuxCondition.class)` 標在需要的 Bean 上。Spring Boot 的那些 @ConditionalOnXxx 註解，本質都是「預先寫好的 Condition 實作 + @Conditional 的組合」。
 
 **詳細解析**：自訂 @Conditional 讓你能表達任意的「Bean 生效條件」。核心是實作 `Condition` 介面的 `matches` 方法——它能拿到 `ConditionContext`（透過它可以存取 BeanFactory、Environment 環境配置、ClassLoader、資源載入器等，用來做各種判斷）和 `AnnotatedTypeMetadata`（被標註元素的元資料）。在 matches 裡你可以做任何判斷——檢查某個配置屬性、檢查 classpath 上有沒有某個類別、檢查作業系統、檢查某個外部服務是否可用、檢查時間等等——返回 true 則被標註的 Bean 生效、false 則不生效。Spring Boot 的一系列 `@ConditionalOnXxx`（OnClass、OnMissingBean、OnProperty 等）就是官方預先寫好的一批常用 Condition 實作，用註解的形式封裝好方便使用（例如 @ConditionalOnClass 背後就是一個檢查 classpath 是否有指定類別的 Condition）。你可以組合使用官方的這些、也可以像上面那樣自訂全新的條件。自訂 @Conditional 的能力，讓你能實現「非常客製化的、基於任意執行期條件的裝配邏輯」。理解如何自訂條件（實作 Condition + @Conditional 引用），展現你不只會用現成的條件註解、還能造自己的，真正掌握了條件裝配這個機制。
 

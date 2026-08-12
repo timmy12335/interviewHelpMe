@@ -25,7 +25,7 @@ source: original
 - 取得類別資訊：`getFields()`、`getMethods()`、`getConstructors()`、`getAnnotations()` 等。
 - 動態建立實例：`clazz.getDeclaredConstructor().newInstance()`。
 - 動態呼叫方法：`method.invoke(obj, args)`。
-- 存取/修改欄位：`field.get(obj)`、`field.set(obj, value)`，配合 `setAccessible(true)` 甚至能存取私有成員。
+- 存取/修改欄位：`field.get(obj)`、`field.set(obj, value)`配合 `setAccessible(true)` 甚至能存取私有成員。
 
 **應用場景**：
 

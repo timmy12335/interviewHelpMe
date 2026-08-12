@@ -52,7 +52,7 @@ source: original
 
 ### CountDownLatch 的 await() 底層是 AQS 的共享模式，state 代表什麼？
 
-**核心答案**：`state` 代表「剩餘尚未完成的事件數量」，初始值等於建構子傳入的計數值，每次 `countDown()` 讓 `state` 減 1，`await()` 的執行緒會在 `state` 歸零之前持續等待。
+**核心答案**：`state` 代表「剩餘尚未完成的事件數量」，初始值等於建構子傳入的計數值，每次 `countDown()` 讓 `state` 減 1`await()` 的執行緒會在 `state` 歸零之前持續等待。
 
 **詳細解析**：`CountDownLatch` 是共享模式的典型應用：`tryAcquireShared` 的邏輯很簡單，直接檢查 `state` 是否已經是 0，是則返回成功（允許繼續執行），否則失敗（進入佇列等待）；`countDown()` 對應的是 `tryReleaseShared`，用 CAS 把 `state` 減 1，如果減到 0，就代表所有事件都已完成，這時需要喚醒所有在 `await()` 等待的執行緒（回傳 true 觸發喚醒後續佇列中的所有節點，而不是只喚醒一個，因為這是共享模式）。這也解釋了為什麼 `CountDownLatch` 一旦計數歸零就無法逆轉——沒有任何方法可以把 `state` 加回去。
 
@@ -62,7 +62,7 @@ source: original
 
 **核心答案**：`CyclicBarrier` 內部用一個 `Generation`（世代）物件標記「這一輪」的屏障狀態，當所有執行緒都到齊、屏障被打破時，會建立一個新的 `Generation` 物件並重置計數，讓下一輪的等待可以重新開始。
 
-**詳細解析**：`CyclicBarrier` 並非直接基於 AQS 實作，而是用一個 `ReentrantLock` + `Condition` 自行管理狀態。每一輪等待都關聯到一個 `Generation` 物件；當最後一個執行緒呼叫 `await()` 讓計數歸零時，會先執行建構時傳入的回呼 `Runnable`，然後呼叫 `nextGeneration()`：喚醒所有在這一輪 `Condition` 上等待的執行緒、把計數重置回初始的參與方數量、並建立一個新的 `Generation` 物件供下一輪使用。這個「世代」的設計也用來處理屏障被中斷或逾時的情況——如果某個執行緒在等待中被中斷或逾時，會將目前的 `Generation` 標記為「已破壞（broken）」，讓同一輪中其他還在等待的執行緒都能感知到屏障已失效並拋出 `BrokenBarrierException`，而不是無限期卡住。
+**詳細解析**：`CyclicBarrier` 並非直接基於 AQS 實作，而是用一個 `ReentrantLock` + `Condition` 自行管理狀態。每一輪等待都關聯到一個 `Generation` 物件；當最後一個執行緒呼叫 `await()` 讓計數歸零時，會先執行建構時傳入的回呼 `Runnable`然後呼叫 `nextGeneration()`：喚醒所有在這一輪 `Condition` 上等待的執行緒、把計數重置回初始的參與方數量、並建立一個新的 `Generation` 物件供下一輪使用。這個「世代」的設計也用來處理屏障被中斷或逾時的情況——如果某個執行緒在等待中被中斷或逾時，會將目前的 `Generation` 標記為「已破壞（broken）」，讓同一輪中其他還在等待的執行緒都能感知到屏障已失效並拋出 `BrokenBarrierException`，而不是無限期卡住。
 
 **面試回答方式**：能講出「用 `Generation` 世代物件標記每一輪」這個具體機制名稱是加分項；如果進一步能提到「屏障被破壞（broken）」的例外處理機制，展現你了解這個工具在異常情況下如何避免死等，會是更深入的回答。
 

@@ -18,9 +18,9 @@ JDK 7 用「分段鎖（Segment）」把整個 Map 切成多個獨立加鎖的�
 
 ## 詳細解析
 
-**JDK 7 的分段鎖設計**：整個 `ConcurrentHashMap` 由多個 `Segment` 組成，每個 `Segment` 內部是一個獨立的小型 HashMap，且 `Segment` 繼承自 `ReentrantLock`。寫入操作只需要鎖住資料所在的那個 `Segment`，預設併發度是 16。缺點是 `Segment` 數量初始化後基本固定，並行度上限被鎖死。
+**JDK 7 的分段鎖設計**：整個 `ConcurrentHashMap` 由多個 `Segment` 組成每個 `Segment` 內部是一個獨立的小型 HashMap，且 `Segment` 繼承自 `ReentrantLock`。寫入操作只需要鎖住資料所在的那個 `Segment`，預設併發度是 16。缺點是 `Segment` 數量初始化後基本固定，並行度上限被鎖死。
 
-**JDK 8 的重新設計**：拿掉 `Segment`，直接用 `Node[] table`。寫入時先透過 CAS 嘗試在空桶位直接放入節點（無鎖）；如果該桶已有節點，才對這個桶的頭節點加 `synchronized` 鎖，鎖的範圍只影響這一個桶。當某個桶內鏈結串列長度超過閾值（預設 8）且陣列容量達到一定大小，會轉換成紅黑樹，把查詢複雜度從 O(n) 降到 O(log n)。
+**JDK 8 的重新設計**：拿掉 `Segment`直接用 `Node[] table`。寫入時先透過 CAS 嘗試在空桶位直接放入節點（無鎖）；如果該桶已有節點，才對這個桶的頭節點加 `synchronized` 鎖，鎖的範圍只影響這一個桶。當某個桶內鏈結串列長度超過閾值（預設 8）且陣列容量達到一定大小，會轉換成紅黑樹，把查詢複雜度從 O(n) 降到 O(log n)。
 
 **讀操作為什麼不太需要加鎖**：`table` 陣列與 `Node` 的關鍵欄位都用 `volatile` 修飾，讀取大多數情況下可以無鎖進行。
 
@@ -34,7 +34,7 @@ JDK 7 用「分段鎖（Segment）」把整個 Map 切成多個獨立加鎖的�
 
 ### JDK 8 的 size() 方法是怎麼在不加全域鎖的情況下統計元素個數的？
 
-**核心答案**：透過一個 `baseCount` 基礎計數值加上一組 `CounterCell[]` 分段計數陣列，不同執行緒在高並發下盡量寫入不同的 `CounterCell` 分散競爭（類似 [[019-atomicinteger-vs-longadder.md]] 中 `LongAdder` 的思路），最終呼叫 `size()`/`mappingCount()` 時把 `baseCount` 與所有 `CounterCell` 的值加總得到近似總數。
+**核心答案**：透過一個 `baseCount` 基礎計數值加上一組 `CounterCell[]` 分段計數陣列，不同執行緒在高並發下盡量寫入不同的 `CounterCell` 分散競爭（類似 [[019-atomicinteger-vs-longadder.md]] 中 `LongAdder` 的思路）最終呼叫 `size()`/`mappingCount()` 時把 `baseCount` 與所有 `CounterCell` 的值加總得到近似總數。
 
 **詳細解析**：如果 `ConcurrentHashMap` 用一個全域的 `int count` 欄位並每次增刪都對它做 CAS 更新，在高並發寫入下這個計數欄位會變成新的效能瓶頸（所有執行緒都在競爭同一個計數器）。JDK 8 的解法與 `LongAdder` 完全一致：優先嘗試更新 `baseCount`，若競爭失敗（CAS 失敗）則退化為更新 `CounterCell[]` 陣列中的某個分散槽位，藉此避免所有執行緒集中競爭同一個記憶體位置。呼叫 `size()` 時把 `baseCount` 和所有 `CounterCell` 的值加總，因為求和過程中可能仍有其他執行緒在寫入，所以這個總數是一個「近似值」而非絕對即時精確值，這與 `LongAdder.sum()` 的弱一致性語意是同一套設計哲學。
 

@@ -58,7 +58,7 @@ Spring Boot 自動配置的核心是——`@EnableAutoConfiguration`（通常透
 
 ### 如何自己寫一個 Spring Boot Starter？
 
-**核心答案**：大致步驟——（1）建立一個模組，引入 `spring-boot-autoconfigure`（和你要整合的依賴）；（2）寫「自動配置類別」（`XxxAutoConfiguration`），用 `@Configuration` + `@Bean` 定義要自動註冊的 Bean，並用 `@Conditional` 系列註解（尤其 `@ConditionalOnMissingBean` 讓使用者可覆蓋、`@ConditionalOnClass` 判斷相關類別存在）控制生效條件；（3）通常配一個 `@ConfigurationProperties` 類別，把可配置項對應到 `application.yml` 的屬性，讓使用者能透過配置檔調整；（4）把自動配置類別註冊到 `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`（Spring Boot 3.x）或舊的 `spring.factories`（2.x）；（5）（可選）建立一個 starter 模組聚合這個 autoconfigure 模組和相關依賴，方便使用者一次引入。
+**核心答案**：大致步驟——（1）建立一個模組，引入 `spring-boot-autoconfigure`（和你要整合的依賴）；（2）寫「自動配置類別」（`XxxAutoConfiguration`）用 `@Configuration` + `@Bean` 定義要自動註冊的 Bean，並用 `@Conditional` 系列註解（尤其 `@ConditionalOnMissingBean` 讓使用者可覆蓋、`@ConditionalOnClass` 判斷相關類別存在）控制生效條件；（3）通常配一個 `@ConfigurationProperties` 類別，把可配置項對應到 `application.yml` 的屬性，讓使用者能透過配置檔調整；（4）把自動配置類別註冊到 `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`（Spring Boot 3.x）或舊的 `spring.factories`（2.x）；（5）（可選）建立一個 starter 模組聚合這個 autoconfigure 模組和相關依賴，方便使用者一次引入。
 
 **詳細解析**：寫自訂 starter 是「把自動配置的原理反過來用」——你要提供的正是前面講的那套機制：自動配置類別 + 條件註解 + 屬性綁定 + 註冊檔案。慣例上分兩個模組——`xxx-spring-boot-autoconfigure`（放自動配置的邏輯：配置類別、屬性類別、註冊檔案）和 `xxx-spring-boot-starter`（一個「空殼」聚合模組，它只是把 autoconfigure 模組和 xxx 本身的依賴打包在一起，讓使用者引入一個 starter 就把所有需要的都帶進來）。核心是自動配置類別的設計——用 `@ConditionalOnClass` 保證「只在使用者引入了相關依賴時才生效」、用 `@ConditionalOnMissingBean` 保證「使用者能覆蓋你的預設」、用 `@ConfigurationProperties` 讓使用者能透過 `application.yml` 配置。這樣使用者引入你的 starter 後，只要滿足條件就自動配好、且能透過配置檔調整、還能定義自己的 Bean 覆蓋。理解如何寫 starter，證明你真正吃透了自動配置的原理（能造而不只是用），是很有說服力的加分。
 

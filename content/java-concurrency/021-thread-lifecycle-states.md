@@ -14,7 +14,7 @@ Java 執行緒有哪些狀態？`BLOCKED` 和 `WAITING` 有什麼區別？
 
 ## 核心答案
 
-`Thread.State` 定義了 6 種狀態：`NEW`、`RUNNABLE`、`BLOCKED`（等待取得 `synchronized` 鎖）、`WAITING`（無限期等待，需要其他執行緒明確喚醒）、`TIMED_WAITING`（限時等待）、`TERMINATED`。`BLOCKED` 專指「等待進入 `synchronized` 臨界區」，`WAITING`/`TIMED_WAITING` 則涵蓋 `wait()`、`join()`、`LockSupport.park()` 等更廣泛的主動等待場景。
+`Thread.State` 定義了 6 種狀態：`NEW`、`RUNNABLE`、`BLOCKED`（等待取得 `synchronized` 鎖）、`WAITING`（無限期等待，需要其他執行緒明確喚醒）、`TIMED_WAITING`（限時等待）、`TERMINATED`。`BLOCKED` 專指「等待進入 `synchronized` 臨界區」`WAITING`/`TIMED_WAITING` 則涵蓋 `wait()`、`join()`、`LockSupport.park()` 等更廣泛的主動等待場景。
 
 ## 詳細解析
 
@@ -22,7 +22,7 @@ Java 執行緒有哪些狀態？`BLOCKED` 和 `WAITING` 有什麼區別？
 
 **`BLOCKED` 與 `WAITING` 的核心差異**：觸發原因不同（`BLOCKED` 只在競爭 synchronized 鎖失敗時出現，`WAITING` 是主動呼叫等待方法）；能否被中斷不同（`BLOCKED` 無法回應 interrupt，`WAITING` 可以）。
 
-**排查應用**：分析 `jstack` 堆疊時，大量 `BLOCKED` 通常代表鎖競爭激烈或死鎖；長時間 `WAITING`/`TIMED_WAITING` 則要看在等待什麼條件。
+**排查應用**：分析 `jstack` 堆疊時大量 `BLOCKED` 通常代表鎖競爭激烈或死鎖；長時間 `WAITING`/`TIMED_WAITING` 則要看在等待什麼條件。
 
 ## 面試回答方式
 
@@ -48,7 +48,7 @@ Java 執行緒有哪些狀態？`BLOCKED` 和 `WAITING` 有什麼區別？
 
 ### 執行緒被 interrupt() 之後，狀態會如何變化？
 
-**核心答案**：如果執行緒當時正處於 `WAITING`/`TIMED_WAITING` 狀態（例如在 `wait()`、`sleep()`、`join()` 中），`interrupt()` 會讓它立即從等待中甦醒並拋出 `InterruptedException`，狀態轉為 `RUNNABLE`（進入例外處理邏輯）；如果執行緒當時是 `RUNNABLE` 狀態正在執行普通程式碼，`interrupt()` 只會把該執行緒的「中斷旗標」設為 true，狀態本身不會立即改變，需要程式碼自行檢查 `Thread.isInterrupted()` 或呼叫會檢查中斷狀態的阻塞方法才會感知到；如果執行緒是 `BLOCKED` 狀態正在等待 `synchronized` 鎖，`interrupt()` 完全不會有作用，執行緒會繼續阻塞直到真正取得鎖為止。
+**核心答案**：如果執行緒當時正處於 `WAITING`/`TIMED_WAITING` 狀態（例如在 `wait()`、`sleep()`、`join()` 中）`interrupt()` 會讓它立即從等待中甦醒並拋出 `InterruptedException`狀態轉為 `RUNNABLE`（進入例外處理邏輯）；如果執行緒當時是 `RUNNABLE` 狀態正在執行普通程式碼，`interrupt()` 只會把該執行緒的「中斷旗標」設為 true，狀態本身不會立即改變，需要程式碼自行檢查 `Thread.isInterrupted()` 或呼叫會檢查中斷狀態的阻塞方法才會感知到；如果執行緒是 `BLOCKED` 狀態正在等待 `synchronized` 鎖`interrupt()` 完全不會有作用，執行緒會繼續阻塞直到真正取得鎖為止。
 
 **詳細解析**：這題延續了「`BLOCKED` 無法回應中斷」這個核心差異點的實務應用。理解這個機制對正確設計「可取消的任務」非常重要：如果任務內部大量使用普通迴圈進行 CPU 密集運算而完全不檢查中斷狀態，即使呼叫了 `interrupt()`，這個任務也會一直執行到自然結束，不會有任何反應；良好的可取消任務設計，應該在迴圈中定期檢查 `Thread.currentThread().isInterrupted()`，一旦偵測到中斷就主動清理資源並提前結束執行，這樣才能讓 `interrupt()` 真正發揮取消任務的作用。
 

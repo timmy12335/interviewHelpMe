@@ -52,7 +52,7 @@ source: original
 
 **核心答案**：record 自動生成的 `equals()` 會比較「兩個 record 的所有元件欄位是否都相等」，`hashCode()` 則基於所有元件欄位計算，兩者都嚴格遵守 equals/hashCode 契約（欄位全相等則 equals 為 true 且 hashCode 相同）。這正是「值語意」——兩個 record 只要所有欄位的值相同，就被視為相等，不管是不是同一個物件實例。
 
-**詳細解析**：這使得 record 天生適合當「值物件」和「Map 的 key」。例如 `record Point(int x, int y)`，`new Point(1, 2).equals(new Point(1, 2))` 為 true，且它們的 hashCode 相同——所以把 `Point(1,2)` 當作 HashMap 的 key 放入後，用另一個內容相同的 `Point(1,2)` 就能查到。這解決了普通類別「如果不手動覆寫 equals/hashCode，兩個內容相同的物件卻不相等、無法作為可靠的 key」的問題。而且因為 record 是不可變的（欄位 final），它作為 key 時雜湊碼恆定，不會有 [[001-equals-hashcode-contract.md]] 中提到的「可變 key 導致查不到」的風險——不可變性和自動正確的 equals/hashCode 讓 record 成為理想的 Map key。
+**詳細解析**：這使得 record 天生適合當「值物件」和「Map 的 key」。例如 `record Point(int x, int y)``new Point(1, 2).equals(new Point(1, 2))` 為 true，且它們的 hashCode 相同——所以把 `Point(1,2)` 當作 HashMap 的 key 放入後，用另一個內容相同的 `Point(1,2)` 就能查到。這解決了普通類別「如果不手動覆寫 equals/hashCode，兩個內容相同的物件卻不相等、無法作為可靠的 key」的問題。而且因為 record 是不可變的（欄位 final），它作為 key 時雜湊碼恆定，不會有 [[001-equals-hashcode-contract.md]] 中提到的「可變 key 導致查不到」的風險——不可變性和自動正確的 equals/hashCode 讓 record 成為理想的 Map key。
 
 **面試回答方式**：講清楚「基於所有欄位、遵守契約、實現值語意」，並連結到「所以 record 天生適合當值物件和 Map key」，能進一步點出「不可變性讓它作為 key 時雜湊碼恆定、沒有可變 key 的風險」，展現你把 record、equals 契約、不可變性這幾個知識點串起來理解。
 

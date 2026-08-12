@@ -22,7 +22,7 @@ AQS 是 `java.util.concurrent.locks` 包下的一個抽象基礎框架，核心�
 
 1. **`state`**：一個 `volatile int`，語意由子類別自行定義。例如 `ReentrantLock` 用它表示重入次數（0 表示未鎖定，每次重入 +1）；`Semaphore` 用它表示剩餘許可數；`CountDownLatch` 用它表示剩餘倒數次數。
 2. **CLH 變種佇列**：搶不到資源的執行緒被包裝成 `Node` 加入雙向鏈結佇列尾部並阻塞（`LockSupport.park()`）；持有資源的執行緒釋放時，喚醒佇列頭部的下一個節點。
-3. **模板方法**：子類別只需覆寫 `tryAcquire`/`tryRelease`（獨佔模式）或 `tryAcquireShared`/`tryReleaseShared`（共享模式），AQS 的 `acquire()`/`release()` 等模板方法負責呼叫這些方法並處理排隊、阻塞、喚醒的通用邏輯。
+3. **模板方法**：子類別只需覆寫 `tryAcquire`/`tryRelease`（獨佔模式）或 `tryAcquireShared`/`tryReleaseShared`（共享模式）AQS 的 `acquire()`/`release()` 等模板方法負責呼叫這些方法並處理排隊、阻塞、喚醒的通用邏輯。
 
 **獨佔 vs 共享模式**：
 
@@ -57,7 +57,7 @@ AQS 是 `java.util.concurrent.locks` 包下的一個抽象基礎框架，核心�
 
 ### 自己動手寫一個「只允許兩個執行緒同時存取」的同步器需要覆寫哪些方法？
 
-**核心答案**：這是共享模式的需求，需要繼承 AQS 並覆寫 `tryAcquireShared` 與 `tryReleaseShared` 兩個方法，把 `state` 初始化為 2（代表剩餘可用名額）。
+**核心答案**：這是共享模式的需求，需要繼承 AQS 並覆寫 `tryAcquireShared` 與 `tryReleaseShared` 兩個方法把 `state` 初始化為 2（代表剩餘可用名額）。
 
 **詳細解析**：`tryAcquireShared` 的邏輯是：用 CAS 嘗試把 `state` 減 1，若減完後結果 `>= 0` 代表搶佔成功（回傳正數或 0 表示成功），若 `state` 已經是 0 則搶佔失敗（回傳負數），執行緒會被放入佇列等待；`tryReleaseShared` 則是把 `state` 加 1，並回傳是否需要喚醒後續等待的執行緒。這其實就是 `Semaphore` 內部實作的簡化版本（`Semaphore` 就是把初始 `state` 設為傳入的許可數，邏輯完全一致）。能親手推導出這個實作，代表你真正理解 AQS 共享模式的運作原理，而不只是會使用現成的 `Semaphore`。
 
