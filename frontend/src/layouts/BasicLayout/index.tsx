@@ -1,7 +1,6 @@
 "use client";
 
 import { GithubFilled } from "@ant-design/icons";
-import { ProLayout } from "@ant-design/pro-components";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
@@ -9,6 +8,7 @@ import type { ReactNode } from "react";
 import { GlobalFooter } from "@/components/GlobalFooter";
 import { SearchInput } from "@/components/SearchInput";
 import { menus } from "@/config/menu";
+import { isActiveMenuItem } from "@/lib/nav";
 
 import "./index.css";
 
@@ -34,27 +34,35 @@ function Logo() {
   );
 }
 
-/** 全站通用版面：Ant Design ProLayout 頂部導覽 + 底部欄。 */
+/** 全站通用版面：頂部導覽列 + 內容區 + 底部欄。 */
 export function BasicLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   return (
     <div id="basicLayout">
-      <ProLayout
-        title="InterviewHelpMe"
-        layout="top"
-        logo={<Logo />}
-        location={{ pathname }}
-        avatarProps={undefined}
-        actionsRender={(props) => {
-          if (props.isMobile) {
-            return [];
-          }
+      <header className="site-header">
+        <div className="site-header__inner">
+          <Link href="/" className="basic-layout__brand">
+            <Logo />
+            <span className="basic-layout__wordmark">InterviewHelpMe</span>
+          </Link>
 
-          return [
-            <SearchInput key="search" />,
+          <nav className="site-nav" aria-label="主要導覽">
+            {menus.map((item) => (
+              <Link
+                key={item.path}
+                href={item.path}
+                className="site-nav__link"
+                aria-current={isActiveMenuItem(pathname, item) ? "page" : undefined}
+              >
+                {item.name}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="site-header__actions">
+            <SearchInput />
             <a
-              key="github"
               className="basic-layout__github"
               href="https://github.com/timmy12335/interviewHelpMe"
               target="_blank"
@@ -62,25 +70,14 @@ export function BasicLayout({ children }: { children: ReactNode }) {
               aria-label="GitHub"
             >
               <GithubFilled />
-            </a>,
-          ];
-        }}
-        headerTitleRender={(logo, title) => (
-          <Link href="/" className="basic-layout__brand">
-            {logo}
-            {title}
-          </Link>
-        )}
-        footerRender={() => <GlobalFooter />}
-        menuDataRender={() => menus}
-        menuItemRender={(item, dom) => (
-          <Link href={item.path || "/"} target={item.target}>
-            {dom}
-          </Link>
-        )}
-      >
-        {children}
-      </ProLayout>
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <div className="site-content">{children}</div>
+
+      <GlobalFooter />
     </div>
   );
 }

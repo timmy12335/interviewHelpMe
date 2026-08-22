@@ -1,43 +1,31 @@
+/*
+ * 站台外框。#basicLayout 自己是捲動容器（而非 window），題目頁的 sticky 側欄
+ * 與參考欄都以它為捲動視窗計算位置，改動這裡要一併確認那兩處。
+ */
 #basicLayout {
+  display: flex;
+  flex-direction: column;
   height: 100vh;
   overflow: auto;
 }
 
 /* ---------------------------------------------------------------- */
-/* ProLayout chrome → HUD command bar                                */
+/* 頂部導覽列                                                        */
 /* ---------------------------------------------------------------- */
 
-.ant-pro-layout,
-.ant-pro-layout .ant-layout,
-.ant-pro-layout .ant-pro-layout-content,
-.ant-pro-layout .ant-pro-layout-container {
-  background: transparent !important;
-}
-
-/*
- * ProLayout 把 content 設成 display:flex，頁面根節點會變成 flex item 而用
- * shrink-to-fit 決定寬度，導致 max-width / margin:auto 全部失效（桌機看起來
- * 像手機版）。改回 block 之後版面才會照常規文件流撐滿。
- */
-.ant-pro-layout .ant-pro-layout-content {
-  display: block !important;
-  padding-bottom: 96px !important;
-}
-
-.ant-pro-layout-top {
-  height: 100%;
-}
-
-.ant-pro-top-nav-header,
-.ant-pro-layout .ant-layout-header {
-  background: rgb(7 11 24 / 82%) !important;
+.site-header {
+  position: relative;
+  z-index: 19;
+  flex: none;
+  height: 56px;
+  border-block-end: 1px solid var(--line-strong);
+  background: rgb(7 11 24 / 82%);
   backdrop-filter: blur(14px);
-  border-block-end: 1px solid var(--line-strong) !important;
   box-shadow: 0 1px 0 rgb(34 211 238 / 12%);
 }
 
 /* 導覽列底部的掃描光帶 */
-.ant-pro-top-nav-header::after {
+.site-header::after {
   content: "";
   position: absolute;
   inset-inline: 0;
@@ -53,25 +41,32 @@
   opacity: 0.55;
 }
 
-.ant-pro-top-nav-header-main {
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  gap: 32px;
   max-width: 1240px;
+  height: 100%;
   margin: 0 auto;
+  padding-inline: 16px;
 }
 
 .basic-layout__brand {
   display: inline-flex;
+  flex: none;
   align-items: center;
   gap: 10px;
-  color: var(--ink) !important;
+  color: var(--ink);
   font-family: var(--font-display);
   font-size: 15px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  white-space: nowrap;
   transition: color var(--fast) var(--ease);
 }
 
 .basic-layout__brand:hover {
-  color: var(--cyan) !important;
+  color: var(--cyan);
   text-shadow: var(--glow-cyan);
 }
 
@@ -81,11 +76,73 @@
   filter: drop-shadow(0 0 8px rgb(34 211 238 / 55%));
 }
 
-.ant-pro-top-nav-header .ant-menu-item a {
+/* ---------------------------------------------------------------- */
+/* 主導覽                                                            */
+/* ---------------------------------------------------------------- */
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.site-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.site-nav__link {
+  position: relative;
+  padding: 6px 14px;
+  color: var(--ink-muted);
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  white-space: nowrap;
+  transition: color var(--fast) var(--ease);
+}
+
+.site-nav__link::after {
+  content: "";
+  position: absolute;
+  inset-inline: 14px;
+  bottom: -1px;
+  height: 1px;
+  background: var(--cyan);
+  box-shadow: var(--glow-cyan);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--fast) var(--ease);
+}
+
+.site-nav__link:hover {
+  color: var(--ink);
+}
+
+.site-nav__link:hover::after {
+  transform: scaleX(1);
+}
+
+.site-nav__link[aria-current="page"] {
+  color: var(--cyan);
+}
+
+.site-nav__link[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+/* ---------------------------------------------------------------- */
+/* 導覽列右側動作區                                                  */
+/* ---------------------------------------------------------------- */
+
+.site-header__actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  margin-inline-start: auto;
 }
 
 .search-input {
@@ -96,7 +153,9 @@
 }
 
 .basic-layout__github {
+  display: inline-flex;
   color: var(--ink-muted);
+  font-size: 16px;
   transition: color var(--fast) var(--ease);
 }
 
@@ -104,14 +163,58 @@
   color: var(--cyan);
 }
 
+/*
+ * 視窗變窄時逐段收掉次要元素，把寬度讓給導覽，避免選單被裁掉。
+ * 這裡用 media query 而非 JS 量測視窗，伺服器與瀏覽器才會產生一致的 HTML。
+ */
+
+/* 中等寬度：先收搜尋框（題目頁本身也有搜尋），保留 GitHub 連結。 */
+@media (max-width: 1023px) {
+  .search-input {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .site-header__inner {
+    gap: 16px;
+  }
+
+  .site-header__actions {
+    display: none;
+  }
+
+  /* 只留圖示，把橫向空間讓給導覽，避免選單被裁掉。 */
+  .basic-layout__wordmark {
+    display: none;
+  }
+
+  .site-nav__link {
+    padding-inline: 10px;
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* 內容區                                                            */
+/* ---------------------------------------------------------------- */
+
+.site-content {
+  flex: 1 0 auto;
+  padding: 32px 40px 96px;
+}
+
+@media (max-width: 767px) {
+  .site-content {
+    padding-inline: 16px;
+  }
+}
+
 /* ---------------------------------------------------------------- */
 /* Footer                                                            */
 /* ---------------------------------------------------------------- */
 
 .global-footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
+  flex: none;
   padding: 18px 16px;
   border-top: 1px solid var(--line);
   background: rgb(4 6 14 / 72%);
