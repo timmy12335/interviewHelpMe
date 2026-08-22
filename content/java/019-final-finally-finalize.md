@@ -53,7 +53,7 @@ source: original
 
 ### finally 中的 return 會發生什麼？
 
-**核心答案**：如果 `finally` 區塊中有 `return`，它會「覆蓋」try 或 catch 中的 return 值——也就是最終返回的是 finally 的值，而不是 try 中原本要返回的值；更糟的是，如果 try 中拋出了例外，finally 中的 return 會「吞掉」這個例外（例外不會被拋出，方法正常返回 finally 的值）。因此 `finally` 中絕對不應該寫 `return`，這是公認的反模式。
+**核心答案**：如果 `finally` 區塊中有 `return`，它會「覆蓋」try 或 catch 中的 return 值——也就是最終返回的是 finally 的值，而不是 try 中原本要返回的值；更糟的是如果 try 中拋出了例外，finally 中的 return 會「吞掉」這個例外（例外不會被拋出，方法正常返回 finally 的值）。因此 `finally` 中絕對不應該寫 `return`，這是公認的反模式。
 
 **詳細解析**：執行流程是——當 try 中執行到 `return x` 時，會先把 x 的值準備好，然後執行 finally；如果 finally 中也有 `return y`，這個 return 會直接讓方法返回 y，try 中準備好的 x 就被丟棄了。更危險的情況是 try 中拋出例外，本應向上傳播，但如果 finally 中有 return，方法會因為這個 return 而「正常結束」，那個例外就被靜默吞掉了，呼叫方完全不知道發生過錯誤——這會造成極難排查的 bug（錯誤憑空消失）。所以最佳實踐是：`finally` 只用來做清理（關資源），絕不放 return、也不要在 finally 中拋出新例外（同樣會覆蓋原例外）。
 
