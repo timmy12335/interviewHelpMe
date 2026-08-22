@@ -18,7 +18,7 @@ source: original
 
 ## 詳細解析
 
-**什麼是「逃逸」**：一個在方法中建立的物件，如果它的引用被傳遞到方法外部（例如作為返回值返回、賦值給成員變數/靜態變數、作為參數傳給其他可能保存它的方法），就叫「方法逃逸」；如果它還被其他執行緒存取，叫「執行緒逃逸」。反之，如果物件只在方法內部使用、生命週期不超出方法，就是「不逃逸」。
+**什麼是「逃逸」**：一個在方法中建立的物件，如果它的引用被傳遞到方法外部（例如作為返回值返回、賦值給成員變數/靜態變數、作為參數傳給其他可能保存它的方法），就叫「方法逃逸」；如果它還被其他執行緒存取，叫「執行緒逃逸」。反之如果物件只在方法內部使用、生命週期不超出方法，就是「不逃逸」。
 
 **基於逃逸分析的三種優化**：
 
@@ -48,7 +48,7 @@ source: original
 
 **核心答案**：經典例子是在方法內部局部使用 `StringBuffer`（或其他 synchronized 的物件）。`StringBuffer` 的 `append` 等方法都是 synchronized 的（執行緒安全），但如果你在一個方法內部 new 一個 StringBuffer、只在這個方法裡用它拼接字串、最後 toString 返回（這個 StringBuffer 本身不逃逸出方法、不會被其他執行緒存取），那麼它那些 synchronized 就完全是無謂的開銷——沒有任何其他執行緒能競爭這把鎖。JIT 透過逃逸分析發現這個 StringBuffer 不逃逸，就會把這些 synchronized 消除掉，讓它的效能接近非同步的 StringBuilder。
 
-**詳細解析**：這個例子很經典是因為它同時展示了逃逸分析的價值和「StringBuilder vs StringBuffer」的一個有趣延伸。表面上看，方法內用 StringBuffer 因為有 synchronized 開銷應該比 StringBuilder 慢；但實際上，如果這個 StringBuffer 不逃逸，JIT 的鎖消除會把那些 synchronized 去掉，兩者效能就幾乎沒差別了。這說明——「加了鎖不一定有鎖開銷」，JIT 能識別出無競爭的鎖並消除它。當然，這不意味著可以隨便用 StringBuffer——最佳實踐仍然是「單執行緒場景直接用 StringBuilder」（語意清晰、不依賴 JIT 優化），因為你不能總是保證 JIT 一定會做鎖消除（例如物件逃逸了、或優化沒觸發）。這個例子的價值在於理解「JIT 能消除無謂的鎖」這個能力，而非鼓勵依賴它。
+**詳細解析**：這個例子很經典是因為它同時展示了逃逸分析的價值和「StringBuilder vs StringBuffer」的一個有趣延伸。表面上看方法內用 StringBuffer 因為有 synchronized 開銷應該比 StringBuilder 慢；但實際上如果這個 StringBuffer 不逃逸，JIT 的鎖消除會把那些 synchronized 去掉，兩者效能就幾乎沒差別了。這說明——「加了鎖不一定有鎖開銷」，JIT 能識別出無競爭的鎖並消除它。當然，這不意味著可以隨便用 StringBuffer——最佳實踐仍然是「單執行緒場景直接用 StringBuilder」（語意清晰、不依賴 JIT 優化），因為你不能總是保證 JIT 一定會做鎖消除（例如物件逃逸了、或優化沒觸發）。這個例子的價值在於理解「JIT 能消除無謂的鎖」這個能力，而非鼓勵依賴它。
 
 **面試回答方式**：用「方法內局部使用不逃逸的 StringBuffer，它的 synchronized 會被鎖消除、效能接近 StringBuilder」這個經典例子回答。能補充「但最佳實踐仍是單執行緒直接用 StringBuilder、不該依賴 JIT 優化」，展現你既理解鎖消除的能力又有正確的實務判斷。
 
