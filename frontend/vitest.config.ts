@@ -8,6 +8,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      // 內容產生器住在 repo 根的 scripts/，但它的純函式仍要被單元測試涵蓋。
+      "@scripts": path.resolve(__dirname, "../scripts"),
     },
   },
   test: {
