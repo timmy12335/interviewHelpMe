@@ -35,8 +35,13 @@ source: original
 
 ## 講稿
 
+問題不在工廠方法難用，而在它替你決定了最危險的參數。
 
-Executors 的工廠方法（newFixedThreadPool、newCachedThreadPool、newSingleThreadExecutor 等）內部預設使用了無界佇列或無限制的最大執行緒數，容易在高負載下堆積過多任務或執行緒，導致記憶體溢位（OOM）。直接用 ThreadPoolExecutor 建構子能強制開發者顯式思考並設定每個參數，尤其是佇列容量的上限。
+newFixedThreadPool 的 corePoolSize 和 maximumPoolSize 一樣大，佇列卻是無界的 LinkedBlockingQueue。提交速度長期高過處理速度，任務就一直堆，最後吃光記憶體。
+
+newCachedThreadPool 反過來。佇列是 SynchronousQueue 不存任務，但 maximumPoolSize 是 Integer.MAX_VALUE。任務來得快，執行緒就無止盡地開，資源照樣耗乾。newSingleThreadExecutor 本質是 fixed 版的 1，同樣毛病。
+
+所以我會直接 new ThreadPoolExecutor，指定有界佇列和合理的上限，再配自訂拒絕策略。這背後是 fail-fast：與其讓問題悶著累積到資源耗盡才爆發，不如在超出預期的那刻就攤開來。
 
 ## 常見追問
 

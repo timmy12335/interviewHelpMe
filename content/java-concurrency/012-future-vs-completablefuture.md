@@ -40,8 +40,13 @@ source: original
 
 ## 講稿
 
+Future 拿結果只有 get 一條路，而 get 會阻塞當前執行緒，不然就是反覆輪詢 isDone。它沒辦法註冊「完成後自動做下一步」的回呼。
 
-Future 只能透過 get() 阻塞等待或反覆輪詢 isDone() 來取得非同步任務結果，無法對結果做進一步的鏈式處理，也無法組合多個 Future、無法主動完成或取消而不拋出例外。CompletableFuture（JDK 8）實作了 Future 與 CompletionStage 介面，提供了鏈式回呼、多任務組合、例外處理等豐富的 API，讓非同步程式設計更接近函數式風格。
+痛點很實際。任務 B 依賴 A 時，只能先 get 出 A、阻塞著，再手動送出 B。想等一批任務全部完成，得自己寫輪詢。任務裡的例外，也要等到 get 才被包成 ExecutionException 丟出來。
+
+CompletableFuture 是 JDK 8 加的，實作了 Future 和 CompletionStage。鏈式處理有 thenApply、thenCompose，組合多個任務有 allOf、anyOf、thenCombine，例外交給 exceptionally 和 handle。
+
+還有一點常被忽略。帶 Async 後綴的方法可以傳自訂 Executor，不指定就跑在共用的 ForkJoinPool，容易被別的任務拖住。
 
 ## 常見追問
 

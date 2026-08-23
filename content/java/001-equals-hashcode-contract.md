@@ -35,8 +35,13 @@ Java 規定：如果兩個物件 `equals()` 相等它們的 `hashCode()` 必須�
 
 ## 講稿
 
+這份契約的重點，在於它是不對稱的。兩個物件 equals 相等，hashCode 就必須相同，這是硬規定。反過來卻不強制，hashCode 一樣的兩個物件不一定相等，那叫雜湊衝突。
 
-Java 規定：如果兩個物件 equals() 相等它們的 hashCode() 必須相同；反之則不強制（hashCode() 相同的兩個物件不一定 equals() 相等，這是允許的雜湊衝突）。如果只覆寫 equals() 而不覆寫 hashCode()，會導致「邏輯上相等的兩個物件有不同的雜湊碼」，使得它們在 HashMap、HashSet 這類基於雜湊的容器中無法被正確地當成同一個 key，出現「明明放進去了卻查不到」的 bug。
+反向不強制，是因為雜湊碼要把無限多種物件值壓進 int 那四十幾億個格子。照鴿籠原理，衝突必然發生。容器早把這點算進去了，雜湊只負責縮小範圍，相等判斷交給 equals。
+
+只覆寫 equals、不管 hashCode，麻煩就來了。HashMap 查 key 是先用 hashCode 定位到桶，再在桶內用 equals 比對。兩個邏輯相等的物件雜湊碼不同，會被丟進不同的桶，equals 連被呼叫的機會都沒有。結果明明放進去了，get 卻回傳 null。
+
+原則很簡單：equals 用哪幾個欄位判斷，hashCode 就拿同一組欄位算。現在多半用 record 或 Objects.hash()，少手寫少出錯。
 
 ## 常見追問
 

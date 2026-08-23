@@ -47,8 +47,15 @@ source: original
 
 ## 講稿
 
+共同點帶過：都可重入，都保證互斥和可見性。
 
-兩者都提供互斥鎖語義且都支援可重入，但 ReentrantLock 是 API 層級（java.util.concurrent.locks）的顯式鎖，功能更豐富（可中斷、可設定逾時、可實作公平鎖、支援多個 Condition）需要手動 lock()/unlock()；synchronized 是 JVM 層級的關鍵字，由編譯器與 JVM 自動管理加解鎖，語法更簡潔且不會忘記釋放鎖。
+差別在層級。synchronized 是關鍵字，加解鎖 JVM 自動管理，拋例外也會釋放。ReentrantLock 是 API 層級的顯式鎖，lock、unlock 要自己寫。
+
+ReentrantLock 功能多。等鎖時能回應中斷，能 tryLock 設逾時，建構子可選公平非公平，還能用 newCondition 開多組等待佇列，生產者消費者區分滿空時好用。synchronized 只有一組隱式 wait-set。
+
+效能差距不大，JDK 6 鎖升級已優化低競爭場景。
+
+一般場景直接用 synchronized。要逾時、中斷、公平語意或多組等待條件才換 ReentrantLock。記得 unlock 放 finally、lock 寫在 try 外，否則加鎖失敗還去解沒持有的鎖，會拋 IllegalMonitorStateException。
 
 ## 常見追問
 

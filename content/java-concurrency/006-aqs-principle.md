@@ -39,11 +39,15 @@ AQS 是 `java.util.concurrent.locks` 包下的一個抽象基礎框架，核心�
 
 ## 講稿
 
-我的理解是，為什麼這樣設計能支撐這麼多不同工具。
+AQS 拆開來看只有三個東西。一個 volatile int 的 state 表示同步狀態，一個 CLH 變種的雙向 FIFO 等待佇列管理搶不到資源的執行緒，再加上一組模板方法。
 
-再來，子類別只需要決定 state 怎麼解讀，排隊喚醒都是共用邏輯。
+關鍵在於 state 的語意是留給子類別自己定義的。ReentrantLock 用它表示重入次數，0 是沒鎖，每次重入加一。Semaphore 用它表示剩餘許可數。CountDownLatch 用它表示還要倒數幾次。同一個 int，三種完全不同的解讀。
 
-要區分清楚的是，這是 Doug Lea 用模板方法模式（Template Method Pattern）解決『重複造輪子』問題。
+搶不到資源的執行緒會被包成 Node 掛到佇列尾端，然後 LockSupport.park 阻塞。持有資源的執行緒釋放時，再喚醒頭部的下一個節點。子類別只要覆寫 tryAcquire 和 tryRelease，或是共享模式的 tryAcquireShared 和 tryReleaseShared，排隊、阻塞、喚醒這些通用邏輯全部由 AQS 處理掉。
+
+獨佔模式一次只有一個執行緒持有，像 ReentrantLock。共享模式可以多個一起持有，像 Semaphore 和 CountDownLatch。
+
+沒有 AQS 的話，每個同步工具都得自己寫一遍排隊喚醒，又複雜又容易錯。Doug Lea 用模板方法模式把通用的部分抽出來，上層只要專注在資源狀態的語意判斷。
 
 ## 常見追問
 

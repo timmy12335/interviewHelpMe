@@ -39,10 +39,13 @@ Java 的註解是什麼？元註解有哪些？`@Retention` 的三種保留策�
 
 ## 講稿
 
+註解本身不改變執行邏輯，只是掛在類別、方法、欄位上的元資料。真正做事的是讀它的人。@Override 給編譯器看，檢查有沒有真的覆寫父類別。@Autowired 給 Spring 看，表示要注入依賴。
 
-註解是一種「附加在程式碼元素（類別、方法、欄位等）上的元資料標記」，本身不改變程式邏輯，而是提供資訊給編譯器、工具或框架在編譯期或執行期讀取並據此處理。元註解是「用來定義註解的註解」，主要有四個：@Retention（保留策略）、@Target（可用位置）、@Documented（是否納入 Javadoc）、@Inherited（是否可被子類別繼承）。
+元註解是定義註解用的註解，有四個。@Retention 管保留階段，@Target 管能用在類別、方法還是欄位，@Documented 管要不要進 Javadoc，@Inherited 管子類別能不能繼承，預設不繼承。
 
-@Retention 有三種策略：SOURCE（只在原始碼、編譯後丟棄）、CLASS（保留到 class 檔但執行期不可見）、RUNTIME（保留到執行期、可透過反射讀取）。
+@Retention 有三種策略。SOURCE 只活在原始碼，編譯完就丟掉，@Override 和 Lombok 屬於這類。CLASS 是預設，會寫進 class 檔，但執行期反射看不到，給位元組碼工具用。
+
+RUNTIME 最重要，它保留到執行期，反射讀得到。Spring、JUnit、Jackson 都靠它運作。框架能認出你標的註解，本質上就是 RUNTIME 加反射。
 
 ## 常見追問
 

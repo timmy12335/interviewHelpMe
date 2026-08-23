@@ -44,8 +44,13 @@ source: original
 
 ## 講稿
 
+ThreadPoolExecutor 有七個建構參數：corePoolSize、maximumPoolSize、keepAliveTime 和 unit、workQueue、threadFactory，還有拒絕策略 handler。
 
-ThreadPoolExecutor 有 7 個核心建構參數：corePoolSize、maximumPoolSize、keepAliveTime、unit、workQueue、threadFactory、handler（拒絕策略（Rejection Policy））。提交任務時，執行流程依序是：先看核心執行緒數是否已滿，未滿則建立新執行緒執行；已滿則嘗試放入佇列；佇列也滿了才嘗試建立非核心執行緒（直到 maximumPoolSize）；連最大執行緒數都用完，才觸發拒絕策略。
+任務丟進來走四步。執行緒數還沒到 corePoolSize，就直接開一條核心執行緒。到了，就把任務放進 workQueue。佇列滿了，才開非核心執行緒，開到 maximumPoolSize 為止。都滿了，才觸發拒絕策略。
+
+這裡有個常見誤解。不少人以為核心執行緒忙不過來才輪到非核心，其實核心數不足時是優先開新的，不是排隊。
+
+所以佇列若是無界的，任務永遠塞得進去，maximumPoolSize 形同虛設，最後就是 OOM。非核心執行緒閒置超過 keepAliveTime 會被回收，開了 allowCoreThreadTimeOut 核心的也會，池子能縮到零。
 
 ## 常見追問
 

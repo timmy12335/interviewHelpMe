@@ -30,11 +30,13 @@ source: community
 
 ## 講稿
 
-我的理解是，HashMap底層是陣列加鏈結串列(或紅黑樹)的結構，加入key-value時先計算key的hashCode決定放到陣列哪個索引(桶)，多個不同key碰撞到同一個桶就用鏈結串列串接，JDK8之後如果同一桶的鏈結串列長度超過門檻(預設8)會自動轉換成紅黑樹改善查詢效率。
+HashMap 底層是陣列加鏈結串列。放 key-value 進去時，先算 key 的 hashCode，決定它落在陣列的哪個桶。
 
-要區分清楚的是，執行緒安全性方面，Hashtable每個方法都加了synchronized本身是執行緒安全的，HashMap完全沒有同步機制在多執行緒下不安全;是否允許null方面，HashMap允許key和value都可以是null，Hashtable完全不允許。
+不同的 key 可能算到同一個桶，這就是雜湊碰撞。碰撞的元素會串成鏈結串列。JDK8 之後串列長度超過門檻，預設 8，就轉成紅黑樹，查詢快很多。
 
-另外可以補充的是，實務上如果需要執行緒安全的Map，更好的選擇是ConcurrentHashMap，因為它透過更細緻的鎖粒度，能在保證執行緒安全的同時提供遠比Hashtable更好的並行效能，而不是回頭用Hashtable這種把每個方法都直接加synchronized的粗暴同步方式。
+跟 Hashtable 的差別有兩點。執行緒安全上，Hashtable 每個方法都掛 synchronized，本身安全，HashMap 沒有同步機制，多執行緒下不安全。null 的處理上，HashMap 的 key 和 value 都可以是 null，Hashtable 一個都不允許，放了直接拋例外。
+
+不過實務上我不會回頭用 Hashtable。每個方法都加鎖太粗暴，等於整張表同時只有一個執行緒能進，動不同 key 也得排隊。要執行緒安全的 Map，我會選 ConcurrentHashMap，鎖粒度細得多。
 
 ## 常見追問
 

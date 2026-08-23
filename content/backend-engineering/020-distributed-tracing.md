@@ -32,9 +32,13 @@ source: original
 
 ## 講稿
 
-我的理解是，微服務下一次請求跨越多個服務，單靠各自獨立的日誌很難拼湊出完整的呼叫鏈路和效能瓶頸。
+一次使用者請求會穿過好幾個服務：閘道打訂單，訂單打庫存，庫存查資料庫。各服務只記自己的日誌，想查為什麼慢，得一台台翻、自己拼鏈路，服務一多就做不到。
 
-原因在於，透過 Context Propagation，把 Trace ID 和父 Span 資訊，附加在服務間呼叫的 HTTP Header(如 W3C Trace Context 標準的 traceparent 欄位)裡層層傳遞。
+追蹤有兩個核心概念。Trace 是一次完整請求，用全域唯一的 Trace ID 標識。Span 是其中一個步驟，像呼叫庫存這一次。每個 Span 記著自己的 ID 跟父 Span，靠父子關係還原整棵呼叫樹和耗時。
+
+跨服務靠 Context Propagation 串起來。A 呼叫 B 時把 Trace ID 跟自己的 Span 資訊塞進 HTTP Header，標準是 W3C 定義的 traceparent 欄位。B 讀出來建自己的 Span、記下父親，再往下游傳。
+
+Span 上會記起訖時間、操作名稱、成敗與狀態碼。上報到 Jaeger 就看得到瀑布圖，一眼認出瓶頸。埋點走 OpenTelemetry，廠商中立，換後端不用重寫。
 
 ## 常見追問
 

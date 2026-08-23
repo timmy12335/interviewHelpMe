@@ -44,8 +44,13 @@ try (var reader = new BufferedReader(new FileReader("file.txt"))) {
 
 ## 講稿
 
+try-with-resources 是 JDK 7 加的語法，資源宣告在 try 的括號裡。只要實作了 AutoCloseable，離開區塊時就自動呼叫 close()，正常結束或拋例外都一樣。
 
-try-with-resources（JDK 7 引入）是一種在 try 的括號中宣告資源的語法，只要資源實作了 AutoCloseable 介面，離開 try 區塊時（不管正常結束或拋例外）編譯器都會自動呼叫資源的 close() 方法關閉它。相比手動寫 try-finally 關閉，它更簡潔、不會忘記關閉、能自動處理多個資源的關閉順序、且能正確保留原始例外（關閉時的例外變成「被抑制的例外」而非覆蓋原始例外）。
+它解決傳統 try-finally 的兩個痛點。一是容易漏關或關錯順序。以前得在 finally 裡手動關，多個資源還要巢狀好幾層。現在括號裡宣告多個，會照逆序關閉。
+
+二是例外覆蓋。傳統寫法裡 try 拋了 A，finally 又拋 B，B 會蓋掉 A，根因就不見了。try-with-resources 保留 A 當主例外，B 記成被抑制的例外，用 getSuppressed() 取得。
+
+AutoCloseable 是 JDK 7 為此新增的，close() 可以拋 Exception。Closeable 更早，用在 IO，繼承自它，close() 拋 IOException 且要求冪等。
 
 ## 常見追問
 

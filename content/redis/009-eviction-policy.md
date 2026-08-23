@@ -46,10 +46,15 @@ source: original
 
 ## 講稿
 
+Redis 記憶體撐到 maxmemory 上限、又有新寫入進來，就依照 maxmemory-policy 挑 key 刪掉騰空間。
 
-當 Redis 記憶體達到 maxmemory 上限時，會根據配置的「淘汰策略（maxmemory-policy）」來刪除一些 key 以騰出空間。策略主要分幾類，noeviction（不淘汰，記憶體滿了就拒絕寫入、返回錯誤，預設）、針對「設了過期時間的 key」淘汰（volatile-lru/lfu/ttl/random）、針對「所有 key」淘汰（allkeys-lru/lfu/random）。
+八種策略不用死背，記分類就好。noeviction 是預設，什麼都不淘汰，寫入直接回錯誤。volatile 開頭的只動有設過期時間的 key，底下分 lru、lfu、ttl、random。allkeys 開頭的則是所有 key 都可能被挑走。
 
-LRU（Least Recently Used，最近最少使用）淘汰「最久沒被存取」的 key；LFU（Least Frequently Used，最不經常使用，Redis 4.0+）淘汰「存取頻率最低」的 key。LFU 通常比 LRU 更能保留真正的熱資料（LRU 可能被「偶爾存取一次的冷資料」誤導）。
+LRU 跟 LFU 差在判斷依據。LRU 看最後一次存取時間，誰最久沒被碰就淘汰誰。問題是它會被偶發存取騙到，一個平常沒人用的冷 key，剛好最近被讀了一次，LRU 就當它是熱的留著，反而擠掉真正的熱資料。
+
+LFU 是 Redis 4.0 之後才有的，改看存取頻率，總次數最少的先走，比較貼近實際熱度。
+
+純快取場景我選 allkeys-lru 或 allkeys-lfu，讓 Redis 自動淘汰冷資料、留下熱的。
 
 ## 常見追問
 

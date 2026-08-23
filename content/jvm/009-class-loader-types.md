@@ -43,10 +43,13 @@ JVM 內建三層類別載入器：啟動類別載入器（Bootstrap，載入核�
 
 ## 講稿
 
+JVM 內建三個載入器。Bootstrap 由 C++ 實作，載 java.lang 這類核心，在 Java 裡拿到的是 null。中間那層 JDK 8 叫擴展載入器，JDK 9 後改叫平台載入器。最下面是 Application，載 classpath 上的類別，也是預設用的那個。
 
-JVM 內建三層類別載入器：啟動類別載入器（Bootstrap，載入核心類別庫，C++ 實作）、擴展/平台類別載入器（Extension/Platform，載入擴展模組）、應用類別載入器（Application，載入 classpath 上的應用類別）。自訂類別載入器通常繼承 ClassLoader、覆寫 findClass() 方法（在其中讀取位元組碼（Bytecode）並呼叫 defineClass()），而不是覆寫 loadClass()（覆寫 findClass 能保留雙親委派（Parent Delegation））。
+要自訂就繼承 ClassLoader，覆寫 findClass，在裡面實作怎麼拿到位元組碼，來源可以是加密檔或網路，拿到位元組陣列再呼叫 defineClass 轉成 Class 物件。
 
-自訂載入器的常見場景包括：從特殊來源（加密檔案、網路、資料庫）載入類別、實現類別隔離、熱部署/熱替換等。
+關鍵是覆寫 findClass 而不是 loadClass。雙親委派的邏輯就寫在 loadClass 裡，先問父載入器，失敗才呼叫 findClass，動它很容易把委派弄壞。
+
+常見場景有三種。位元組碼放在加密檔或資料庫，得自己讀出來解密。類別隔離，Tomcat 就是這樣做。還有熱部署，同一個載入器沒辦法重載同名類別，換一個新的就能載新版本，不重啟就更新程式碼。
 
 ## 常見追問
 

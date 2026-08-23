@@ -49,8 +49,13 @@ source: original
 
 ## 講稿
 
+看到 OOM 就先調大堆，是最常見的誤判。第一步永遠是看清楚訊息後面接的是哪個區域。
 
-常見的 OOM 類型對應不同的記憶體區域耗盡:Java heap space(堆不足最常見，原因是記憶體洩漏（Memory Leak）或容量不足)、GC overhead limit exceeded(GC 花了大量時間卻回收很少，通常是堆快滿了的前兆)、Metaspace(元空間不足，類別載入過多或 classloader 洩漏)、unable to create new native thread(無法建立新執行緒，執行緒過多或系統限制)、Direct buffer memory(堆外直接記憶體不足，NIO 相關)。看到 OOM 的第一步永遠是「看清楚具體是哪種類型」，因為不同類型的成因和解法完全不同，盲目調大堆對非堆的 OOM 無效。
+Java heap space 最常見，堆放不下新物件，可能是洩漏、堆設太小，或一次撈回百萬筆資料。我會掛上 HeapDumpOnOutOfMemoryError，再用 MAT 看 GC 後堆降不降得下來，分辨是洩漏還是容量。前面若先冒出 GC overhead limit exceeded，那是同一個問題的前兆。
+
+Metaspace 是類別元資料撐爆，常見於 CGLIB 大量生成類別，或 classloader 洩漏。調大上限只是拖延。
+
+剩下兩種跟堆無關。unable to create new native thread 是執行緒建太多或 Xss 太大，我會用 jstack 看執行緒數再查 ulimit。Direct buffer memory 是 NIO 的堆外記憶體不夠，不受 Xmx 控制。
 
 ## 常見追問
 

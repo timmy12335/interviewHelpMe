@@ -38,9 +38,13 @@ source: original
 
 ## 講稿
 
-我的理解是，轉換用 `thenApply`、串接非同步依賴用 `thenCompose`、合併平行任務用 `thenCombine`、批量等待用 `allOf`/`anyOf`。
+這四個方法對應四種不同的依賴形狀。單純轉換上一步的結果，用 thenApply。
 
-再來，`get()` vs `join()` 拋出的例外型別不同。
+如果轉換函式本身又回傳一個 CompletableFuture，就該用 thenCompose。它會自動拆箱，不會變成巢狀的兩層，跟 Optional 的 flatMap 同一套理念。
+
+兩個任務彼此獨立、可以平行跑，等雙方都好了再合併，那是 thenCombine。要等一整批全部完成，用 allOf，但它不幫你收集結果。anyOf 是任一個完成就返回，常用在資料來源競速。
+
+例外走的是短路傳播。鏈路中任何一步拋例外，後面的步驟都被跳過，一路傳到 exceptionally 或 handle 為止。整條鏈都沒有處理節點，最後 get 會拋 ExecutionException，join 拋的是 CompletionException，型別不一樣。whenComplete 不算處理節點，它不吞例外也不恢復。
 
 ## 常見追問
 

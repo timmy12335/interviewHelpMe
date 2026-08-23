@@ -42,11 +42,13 @@ source: original
 
 ## 講稿
 
-我的理解是，條件裝配——讓 Bean 只在條件滿足時生效。
+@Conditional 做的事情很單純，就是讓 Bean 的註冊變成有條件的。你在 @Bean 或 @Configuration 上標一個條件類別，它實作 Condition 介面的 matches 方法，回傳 true 這個 Bean 才建立。
 
-再來，基於 @Conditional 的特化、按環境（dev/test/prod）切換配置。
+Spring Boot 在這之上包了一整排現成的條件註解。@ConditionalOnClass 看 classpath 有沒有某個類別，@ConditionalOnMissingBean 看容器裡是不是還沒有這個 Bean，@ConditionalOnProperty 看設定值符不符合。都是同一套機制的糖衣。
 
-另外可以補充的是，它們和自動配置的關係——Spring Boot 自動配置全建立在 @Conditional 之上、@Profile 也是一種 @Conditional。
+@Profile 也是其中一個特例，底層就是 @Conditional 搭 ProfileCondition，判斷目前啟用的 profile 有沒有匹配。用途是按環境切配置，開發環境用 H2 記憶體資料庫加詳細日誌，正式環境換成真實資料庫。啟用靠 spring.profiles.active，設定檔、環境變數、啟動參數都行。
+
+所以這三件事是同一個根。每個 XxxAutoConfiguration 都靠各種 @ConditionalOnXxx 決定要不要生效，@Conditional 就是自動配置按需生效的基石。
 
 ## 常見追問
 

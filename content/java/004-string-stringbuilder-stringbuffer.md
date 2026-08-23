@@ -38,9 +38,13 @@ source: original
 
 ## 講稿
 
-我的理解是，單執行緒頻繁修改用 `StringBuilder``StringBuffer` 只是加了鎖的版本、實務少用，`String` 適合固定內容。
+三者的差別，沿著可變性、執行緒安全、效能三條線看最清楚。
 
-舉個實務上的例子，迴圈中拼接字串要用 `StringBuilder` 而非 `+=`。
+String 不可變，每次 += 都生出新物件。它因此天生安全，適合固定內容、常數或當 key。但在迴圈裡拼接大量字串，會產生一堆臨時物件，記憶體和 GC 壓力都上來。
+
+StringBuilder 和 StringBuffer 都可變，兩個都繼承自 AbstractStringBuilder，API 幾乎一樣。唯一差別是 StringBuffer 把公開方法全加上 synchronized。單執行緒下我一律選 StringBuilder，那層鎖是純粹的浪費。真要多執行緒共享同一個可變緩衝區的場景很罕見，StringBuffer 現在幾乎看不到。
+
+最經典的建議是迴圈拼接。StringBuilder 建在迴圈外，迴圈裡只 append，跑完再 toString()，不要在迴圈內用 String +=。
 
 ## 常見追問
 

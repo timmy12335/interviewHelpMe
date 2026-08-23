@@ -38,8 +38,13 @@ G1 把堆劃分成許多大小相等的 Region，回收流程包括：Young GC�
 
 ## 講稿
 
+先講堆結構，這是理解 G1 的前提。G1 把堆切成幾千個大小相等的 Region，每個 1MB 到 32MB，角色動態，可以當 Eden、Survivor 或 Old。
 
-G1 把堆劃分成許多大小相等的 Region，回收流程包括：Young GC（回收新生代 Region）、並發標記週期（初始標記、並發標記、最終標記、清理）、以及 Mixed GC（同時回收新生代和部分價值最高的老年代 Region）。Remembered Set（記憶集）解決的是「跨 Region 引用」問題，當回收某些 Region 時，需要知道有哪些其他 Region 的物件引用了它們（否則這些引用者也算 GC Roots 的一部分），RSet 記錄了這些跨 Region 的引用關係，讓 G1 可以只回收部分 Region 而不用掃描整個堆。
+回收活動有三種。Eden 用滿觸發 Young GC，STW 回收新生代 Region。老年代佔用超過預設的 45%，就啟動並發標記週期，經過初始標記、並發標記、最終標記到清理。之後做 Mixed GC，回收全部新生代，加上一部分垃圾最多的老年代 Region。
+
+Remembered Set 解決的是跨 Region 引用。G1 只回收部分 Region，但裡面的物件可能被別的 Region 引用，總不能為此掃全堆。
+
+所以每個 Region 維護一份 RSet，記錄誰引用了自己。回收時除了 GC Roots，也把 RSet 裡的引用者當成額外的根。維護靠寫屏障，每次改引用就更新 RSet，這是 G1 的額外開銷。
 
 ## 常見追問
 

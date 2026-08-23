@@ -36,8 +36,13 @@ JDK 內建 4 種拒絕策略：`AbortPolicy`（預設，直接拋例外）、`Ca
 
 ## 講稿
 
+JDK 內建四種拒絕策略。AbortPolicy 是預設值，直接拋 RejectedExecutionException。CallerRunsPolicy 讓提交任務的那條執行緒親自跑。DiscardPolicy 靜默丟掉。DiscardOldestPolicy 則把佇列裡排最久的踢掉，再重試一次。
 
-JDK 內建 4 種拒絕策略：AbortPolicy（預設，直接拋例外）、CallerRunsPolicy（讓提交任務的執行緒自己執行）、DiscardPolicy（靜默丟棄）、DiscardOldestPolicy（丟棄佇列中最舊的任務再嘗試提交）。生產環境通常不會直接用內建策略，而是自訂拒絕策略，至少要記錄日誌／告警，避免任務被靜默丟棄導致問題難以排查。
+AbortPolicy 的好處是問題不會被藏起來，但呼叫方沒接好例外，整條鏈路就斷了。CallerRunsPolicy 本質是一種反壓，代價是拖慢呼叫方，像 HTTP 回應時間就會被拉長。
+
+後兩種在生產環境幾乎不該直接用。任務被無聲丟掉，沒有例外也沒有紀錄，出事的時候根本查不到。
+
+我的做法是自訂 RejectedExecutionHandler，至少做三件事：記詳細日誌、上報監控告警、必要時降級。說到底，選哪個策略是業務決策：能不能接受任務被丟、能不能接受呼叫方被拖慢，要看 SLA。
 
 ## 常見追問
 

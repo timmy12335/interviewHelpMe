@@ -39,8 +39,13 @@ source: original
 
 ## 講稿
 
+每個 Thread 物件內部都有一個 ThreadLocalMap 欄位。呼叫 set 時，其實是找到目前執行緒的這個 map，以 ThreadLocal 自己當 key、資料當 value 存進去。資料天然隔離在各自的 Thread 裡，不必加鎖。
 
-每個 Thread 物件內部持有一個 ThreadLocalMapThreadLocalMap 的 key 是 ThreadLocal 實例本身（以弱引用形式儲存），value 是實際存放的資料。記憶體洩漏的根源在於：key 是弱引用會被 GC 回收，但 value 是強引用不會被自動回收，若執行緒長期存活（例如執行緒池中的核心執行緒）且忘記呼叫 remove()，這些 value 就會一直佔用記憶體，形成洩漏。
+它的 Entry 繼承自 WeakReference，key 是弱引用。這是為了外部不再持有 ThreadLocal 時，GC 能回收掉實例本身。
+
+洩漏就出在這。key 被回收後變成 null，value 卻是強引用，不會跟著走。執行緒之後若不再存取這個 map，這些 Entry 就永遠清不掉，只能等執行緒銷毀。
+
+執行緒池把風險放大了。池裡的執行緒重複使用、長期存活。一個請求存了使用者上下文卻忘記 remove，下一個請求複用同一條執行緒，就拿到殘留資料。那不只是洩漏，是資料串號。所以用完務必在 finally 裡 remove。
 
 ## 常見追問
 

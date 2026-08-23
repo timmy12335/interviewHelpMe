@@ -36,10 +36,13 @@ source: original
 
 ## 講稿
 
+差別就在介入的時機和對象。BeanFactoryPostProcessor 改藍圖，BeanPostProcessor 改成品。
 
-兩者都是 Spring 的核心擴展點，但介入的階段和對象不同：BeanFactoryPostProcessor 在「BeanDefinition（Bean 的定義/藍圖）已載入、但 Bean 還沒實例化」時介入，它能修改 Bean 的「定義」（如改屬性值、改作用域、動態註冊新的 BeanDefinition），作用對象是「Bean 的定義」。BeanPostProcessor 在「每個 Bean 實例化之後、初始化前後」介入，它能對「每個 Bean 實例」做處理（在初始化前後攔截、包裝、增強），作用對象是「Bean 的實例」。
+前者在 BeanDefinition 都註冊完、但 Bean 還沒實例化時執行。它可以改定義的屬性值、改作用域，或動態塞進新的定義。最典型的是 PropertySourcesPlaceholderConfigurer，趕在實例化前把佔位符換成真正的設定值。
 
-簡言之，BeanFactoryPostProcessor 改「藍圖（定義）」、BeanPostProcessor 改「成品（實例）」。它們是 Spring 擴展性的關鍵，因為很多核心功能（AOP、@Autowired、@Value 的處理等）都是透過它們實現的。
+後者晚一步，在每個 Bean 實例化、屬性也填完之後，繞著初始化方法前後各給一個攔截點。這時拿到的是實例，最關鍵的能力是回傳包裝過的物件把原始 Bean 換掉。AOP 就是這樣做的，@Autowired 和 @Value 的注入也是走這裡。
+
+真正值得講的是另一層。Spring 自己的依賴注入、AOP 代理、佔位符解析，全都建立在這兩個公開擴展點上。框架沒給自己開後門，你能用的機制跟它用的是同一套。
 
 ## 常見追問
 

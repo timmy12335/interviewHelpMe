@@ -38,8 +38,13 @@ source: original
 
 ## 講稿
 
+synchronized 靠物件頭的 Mark Word 記錄鎖狀態，互斥交給 Monitor。JDK 6 之後有鎖升級機制，只升不降。
 
-synchronized 依賴物件頭（Mark Word）與 Monitor（管程）實作。JDK 6 之後引入鎖升級機制，鎖只會單向升級（不會降級），依競爭程度從偏向鎖逐步升級為輕量級鎖、最終升級為重量級鎖，藉此在低競爭場景避免作業系統層級互斥鎖的開銷。
+最輕的是偏向鎖，假設鎖多半被同一執行緒重複拿。第一次取得把執行緒 ID 寫進 Mark Word，之後再進來只要比對 ID，不用 CAS。有別人競爭就撤銷升級。
+
+輕量級鎖對應交替執行的輕度競爭。執行緒在棧幀建 Lock Record，用 CAS 把 Mark Word 指過去。CAS 失敗代表有人在搶，先自旋，拿不到就升級。
+
+最重的是重量級鎖，對應作業系統的 ObjectMonitor。搶不到的執行緒被掛起，牽涉核心態切換，開銷最大。Monitor 裡有 _owner、_EntryList、_WaitSet，這也是 wait、notify 必須寫在 synchronized 裡的原因。JDK 15 起偏向鎖已預設關掉，高並發下撤銷成本常超過收益。
 
 ## 常見追問
 

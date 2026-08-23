@@ -36,8 +36,13 @@ source: original
 
 ## 講稿
 
+try-with-resources 是 JDK 7 加的語法，資源宣告在 try 的括號裡。只要實作了 AutoCloseable，離開區塊時就自動呼叫 close()，正常結束或拋例外都一樣。
 
-類別的生命週期包括：載入（Loading）、連結（Linking，又分驗證 Verification、準備 Preparation、解析 Resolution）、初始化（Initialization），之後才是使用和卸載。載入是把類別的位元組碼（Bytecode）讀入並生成 Class 物件；驗證檢查位元組碼的合法性；準備為靜態變數分配記憶體並設為預設值（零值）；解析把符號引用轉為直接引用；初始化執行類別建構器 <clinit>（給靜態變數賦真正的值、執行靜態程式碼區塊）。
+它解決傳統 try-finally 的兩個痛點。一是容易漏關或關錯順序。以前得在 finally 裡手動關，多個資源還要巢狀好幾層。現在括號裡宣告多個，會照逆序關閉。
+
+二是例外覆蓋。傳統寫法裡 try 拋了 A，finally 又拋 B，B 會蓋掉 A，根因就不見了。try-with-resources 保留 A 當主例外，B 記成被抑制的例外，用 getSuppressed() 取得。
+
+AutoCloseable 是 JDK 7 為此新增的，close() 可以拋 Exception。Closeable 更早，用在 IO，繼承自它，close() 拋 IOException 且要求冪等。
 
 ## 常見追問
 
