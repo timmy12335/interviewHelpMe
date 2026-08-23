@@ -9,6 +9,7 @@ import { usePersistentFlag } from "@/hooks/usePersistentFlag";
 import { notifyProgressChanged } from "@/hooks/useProgress";
 import { questionHref } from "@/lib/content/resolveLinks";
 import { fallbackLabel, parseWikiTarget } from "@/lib/content/wikiLinks";
+import { readMinutes, speakSeconds } from "@/lib/content/readingTime";
 import { isTypingTarget } from "@/lib/keyboard";
 import { DETAIL_OPEN_KEY, REF_COLLAPSED_KEY } from "@/lib/uiPrefs";
 import {
@@ -19,7 +20,7 @@ import {
   readDraft,
   saveDraft,
 } from "@/lib/progress";
-import type { FollowUp, Question } from "@/types/question";
+import type { DetailBlock, FollowUp, Question } from "@/types/question";
 
 import "./index.css";
 
@@ -64,47 +65,206 @@ function AnswerSection({
   );
 }
 
-/**
- * 可收合的答案分區。詳細解析預設收起，避免一解鎖就是一整片文字。
- */
-function CollapsibleAnswerSection({
-  title,
-  value,
-  storageKey,
-  hint,
-}: {
-  title: string;
-  value?: string;
-  storageKey: string;
-  hint: string;
-}) {
-  const [open, setOpen] = usePersistentFlag(storageKey);
-  const panelId = useId();
+/** 把秒數說成人話：90 秒以內講秒，之後講分鐘。 */
+function formatSpoken(seconds: number): string {
+  if (seconds <= 90) {
+    return `約 ${seconds} 秒`;
+  }
 
-  if (!value) {
+  return `約 ${Math.round(seconds / 60)} 分鐘`;
+}
+
+/**
+ * 解鎖後先給一列「這裡面有什麼、各要花多久」。
+ * 知道成本才決定要不要點開，比直接被一整片文字淹沒好。
+ */
+function AnswerGuide({ question }: { question: Question }) {
+  const blocks = question.detailBlocks?.filter((block) => block.heading) ?? [];
+  const detailMinutes = readMinutes(question.detail);
+  const scriptSeconds = speakSeconds(question.script);
+
+  const chips = [
+    question.coreAnswer
+      ? { key: "core", label: "核心答案", note: `${readMinutes(question.coreAnswer)} 分鐘` }
+      : null,
+    blocks.length > 0
+      ? { key: "detail", label: "詳細解析", note: `${blocks.length} 段 · ${detailMinutes} 分鐘` }
+      : null,
+    question.script
+      ? { key: "script", label: "講稿", note: formatSpoken(scriptSeconds) }
+      : null,
+    question.followUps?.length
+      ? { key: "followups", label: "常見追問", note: `${question.followUps.length} 題` }
+      : null,
+  ].filter((chip): chip is { key: string; label: string; note: string } => Boolean(chip));
+
+  if (chips.length === 0) {
     return null;
   }
 
   return (
-    <section className={`answer-fold${open ? " is-open" : ""}`}>
+    <ul className="answer-guide">
+      {chips.map((chip) => (
+        <li className="answer-guide__chip" key={chip.key}>
+          <span className="answer-guide__label">{chip.label}</span>
+          <span className="answer-guide__note">{chip.note}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** 沒有小標的段落是開場白，直接攤開；收起來只會讓人少讀一段脈絡。 */
+function DetailIntro({ body }: { body: string }) {
+  return (
+    <div className="detail-blocks__intro">
+      <MdViewer value={body} />
+    </div>
+  );
+}
+
+function DetailBlockItem({
+  block,
+  open,
+  onToggle,
+}: {
+  block: DetailBlock;
+  open: boolean;
+  onToggle: () => void;
+}) {
+  const panelId = useId();
+
+  return (
+    <div className={`detail-block${open ? " is-open" : ""}`}>
       <button
         type="button"
-        className="answer-fold__trigger"
+        className="detail-block__trigger"
         aria-expanded={open}
         aria-controls={panelId}
-        onClick={() => setOpen()}
+        onClick={onToggle}
       >
-        <span className="answer-fold__caret" aria-hidden>
+        <span className="detail-block__caret" aria-hidden>
           ▸
         </span>
-        <span className="answer-fold__title">{title}</span>
-        <span className="answer-fold__hint">{open ? "收起" : hint}</span>
+        <span className="detail-block__heading">{block.heading}</span>
       </button>
       {open ? (
-        <div className="answer-fold__panel" id={panelId}>
-          <MdViewer value={value} />
+        <div className="detail-block__panel" id={panelId}>
+          <MdViewer value={block.body} />
         </div>
       ) : null}
+    </div>
+  );
+}
+
+/**
+ * 詳細解析改成「小標全部看得到、內文預設收起」。
+ * 內容裡四分之三的段落本來就寫成 `**小標**：內文`，把這個結構攤出來，
+ * 小標列本身就是一份目錄，能先掃再決定讀哪一段。
+ */
+function DetailBlockList({
+  blocks,
+  detail,
+}: {
+  blocks?: DetailBlock[];
+  detail?: string;
+}) {
+  const [expandAll, setExpandAll] = usePersistentFlag(DETAIL_OPEN_KEY);
+  const [open, setOpen] = useState<ReadonlySet<number>>(() => new Set<number>());
+  const headingCount = blocks?.filter((block) => block.heading).length ?? 0;
+
+  // 「全部展開／收起」是唯一會被記住的偏好；個別小塊的開合只活在這次瀏覽。
+  useEffect(() => {
+    setOpen(
+      expandAll ? new Set((blocks ?? []).map((_, index) => index)) : new Set<number>(),
+    );
+  }, [expandAll, blocks]);
+
+  if (!blocks || blocks.length === 0) {
+    return null;
+  }
+
+  // 整段都沒有小標時退回單一收合區，維持舊行為。
+  if (headingCount === 0) {
+    return (
+      <section className="detail-blocks">
+        <div className="detail-blocks__head">
+          <h3 className="detail-blocks__title">詳細解析</h3>
+          <span className="detail-blocks__meta">{readMinutes(detail)} 分鐘</span>
+        </div>
+        <DetailIntro body={blocks[0].body} />
+      </section>
+    );
+  }
+
+  const toggle = (index: number) => {
+    setOpen((current) => {
+      const next = new Set(current);
+      if (next.has(index)) {
+        next.delete(index);
+      } else {
+        next.add(index);
+      }
+      return next;
+    });
+  };
+
+  return (
+    <section className="detail-blocks">
+      <div className="detail-blocks__head">
+        {/* 段數與時間由上方的 AnswerGuide 統一交代，這裡不重複 */}
+        <h3 className="detail-blocks__title">詳細解析</h3>
+        <button
+          type="button"
+          className="detail-blocks__toggle-all"
+          onClick={() => setExpandAll(!expandAll)}
+        >
+          {expandAll ? "全部收起" : "全部展開"}
+        </button>
+      </div>
+
+      <div className="detail-blocks__list">
+        {blocks.map((block, index) =>
+          block.heading ? (
+            <DetailBlockItem
+              key={block.heading}
+              block={block}
+              open={open.has(index)}
+              onToggle={() => toggle(index)}
+            />
+          ) : (
+            <DetailIntro body={block.body} key={`intro-${index}`} />
+          ),
+        )}
+      </div>
+    </section>
+  );
+}
+
+/**
+ * 講稿：可以照著念的逐字稿。
+ * 排版刻意和解析區分開——字大、行距寬、每段標號，
+ * 目的是「眼睛跟得上嘴巴」，而不是拿來讀懂內容。
+ */
+function AnswerScript({ value }: { value?: string }) {
+  if (!value) {
+    return null;
+  }
+
+  const seconds = speakSeconds(value);
+
+  return (
+    <section className="answer-script">
+      <h3 className="answer-script__title">
+        <span className="answer-script__badge">講稿</span>
+        照著這樣講
+      </h3>
+      <p className="answer-script__meta">
+        {formatSpoken(seconds)} · 每段換一口氣
+      </p>
+      <div className="answer-script__body">
+        <MdViewer value={value} />
+      </div>
     </section>
   );
 }
@@ -199,7 +359,8 @@ export function PracticeQuestion({ question }: { question: Question }) {
   const hasStructured =
     Boolean(question.coreAnswer) ||
     Boolean(question.detail) ||
-    Boolean(question.interviewTip);
+    Boolean(question.interviewTip) ||
+    Boolean(question.script);
 
   return (
     <article className={`practice${refCollapsed ? " is-ref-collapsed" : ""}`}>
@@ -272,6 +433,7 @@ export function PracticeQuestion({ question }: { question: Question }) {
       {showAnswer ? (
         <div className="practice__card hud-panel hud-brackets is-decrypted" id={answerPanelId}>
           <p className="hud-eyebrow">Decrypted // 推薦答案</p>
+          <AnswerGuide question={question} />
           {hasStructured ? (
             <>
               <AnswerSection
@@ -279,13 +441,12 @@ export function PracticeQuestion({ question }: { question: Question }) {
                 value={question.coreAnswer}
                 variant="core"
               />
-              <CollapsibleAnswerSection
-                title="詳細解析"
-                value={question.detail}
-                storageKey={DETAIL_OPEN_KEY}
-                hint="展開細節"
+              <DetailBlockList
+                blocks={question.detailBlocks}
+                detail={question.detail}
               />
               <AnswerSummary value={question.interviewTip} />
+              <AnswerScript value={question.script} />
             </>
           ) : (
             <AnswerSection title="核心答案" value={question.answer} variant="core" />

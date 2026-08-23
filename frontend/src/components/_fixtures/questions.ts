@@ -13,6 +13,28 @@ export const sampleQuestion: Question = {
   categorySlug: "java",
 };
 
+/** 具備完整結構（可掃描的解析小塊、講稿、追問）的題目。 */
+export const structuredQuestion: Question = {
+  id: "question-structured",
+  slug: "react-pattern",
+  title: "什麼是 ReAct 模式？",
+  difficulty: "medium",
+  tags: ["Agent"],
+  content: "請說明 ReAct 的運作方式。",
+  coreAnswer: "ReAct 讓模型交替產生思考、行動與觀察三種內容。",
+  detail: "**推理與行動為何要交錯**：只有推理會缺乏外部資訊。\n\n**觀察的作用**：讓下一輪思考建立在真實回饋上。",
+  detailBlocks: [
+    { heading: "推理與行動為何要交錯", body: "只有推理會缺乏外部資訊。" },
+    { heading: "觀察的作用", body: "讓下一輪思考建立在真實回饋上。" },
+  ],
+  interviewTip: "先給核心做法，再補上侷限。",
+  script: "我的理解是，ReAct 讓模型交替產生思考、行動與觀察。\n\n不過要誠實說，每一輪展開思考都會增加延遲。",
+  followUps: [
+    { title: "和 Plan-and-Execute 差在哪？", coreAnswer: "差在規劃與行動是否交錯。" },
+  ],
+  categorySlug: "ai-agent",
+};
+
 /** 列表與空間配置展示使用的題目集合。 */
 export const sampleQuestions: Question[] = [
   sampleQuestion,

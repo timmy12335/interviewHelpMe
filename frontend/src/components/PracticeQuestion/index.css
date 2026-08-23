@@ -315,7 +315,8 @@
 /* ---------------------------------------------------------------- */
 
 .answer-block .markdown-body strong,
-.answer-fold__panel .markdown-body strong,
+.detail-block__panel .markdown-body strong,
+.detail-blocks__intro .markdown-body strong,
 .answer-summary .markdown-body strong,
 .followup__panel .markdown-body strong {
   color: var(--accent, var(--cyan));
@@ -338,7 +339,8 @@
  * 同樣是段落開頭的引導詞，因為後面有沒有別的粗體而樣式不一致。
  */
 .answer-block .markdown-body p > strong:first-child,
-.answer-fold__panel .markdown-body p > strong:first-child,
+.detail-block__panel .markdown-body p > strong:first-child,
+.detail-blocks__intro .markdown-body p > strong:first-child,
 .answer-summary .markdown-body p > strong:first-child,
 .followup__panel .markdown-body p > strong:first-child {
   display: inline-block;
@@ -348,23 +350,122 @@
 }
 
 /* ---------------------------------------------------------------- */
-/* 可收合的詳細解析                                                  */
+/* 解鎖後的導覽列：先知道有什麼、要花多久                             */
 /* ---------------------------------------------------------------- */
 
-.answer-fold {
-  margin-top: 18px;
+.answer-guide {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 4px;
+  padding: 0;
+  list-style: none;
+}
+
+.answer-guide__chip {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  background: rgb(4 6 14 / 45%);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+}
+
+.answer-guide__label {
+  color: var(--ink-muted);
+}
+
+.answer-guide__note {
+  color: var(--cyan);
+}
+
+/* ---------------------------------------------------------------- */
+/* 詳細解析：小標當目錄，內文各自收合                                 */
+/* ---------------------------------------------------------------- */
+
+.detail-blocks {
+  margin-top: 22px;
+}
+
+.detail-blocks__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.detail-blocks__title {
+  flex: 1;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--line-strong);
+}
+
+.detail-blocks__meta {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+}
+
+.detail-blocks__toggle-all {
+  flex-shrink: 0;
+  padding: 3px 9px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition:
+    border-color var(--fast) var(--ease),
+    color var(--fast) var(--ease);
+}
+
+.detail-blocks__toggle-all:hover {
+  border-color: var(--line-strong);
+  color: var(--ink);
+}
+
+.detail-blocks__toggle-all:focus-visible {
+  outline: 1px solid var(--cyan);
+  outline-offset: 1px;
+}
+
+.detail-blocks__list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* 開場白沒有小標，直接攤開，但縮排區隔於下方的小標列表 */
+.detail-blocks__intro {
+  padding-inline-start: 14px;
+  border-inline-start: 2px solid var(--line);
+}
+
+.detail-block {
   border: 1px solid var(--line);
   background: rgb(4 6 14 / 40%);
   transition: border-color var(--fast) var(--ease);
 }
 
-.answer-fold.is-open {
+.detail-block.is-open {
   border-color: var(--line-strong);
 }
 
-.answer-fold__trigger {
+.detail-block__trigger {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   width: 100%;
   padding: 11px 14px;
@@ -372,6 +473,12 @@
   border: none;
   color: var(--ink-muted);
   font-family: inherit;
+  /*
+   * 小標是這一層唯一的掃描依據，用內文字級而非 mono 小字，
+   * 才能一眼讀完一整列標題再決定點哪一段。
+   */
+  font-size: 14px;
+  line-height: 1.6;
   text-align: start;
   cursor: pointer;
   transition:
@@ -379,46 +486,141 @@
     color var(--fast) var(--ease);
 }
 
-.answer-fold__trigger:hover {
+.detail-block__trigger:hover {
   background: rgb(34 211 238 / 8%);
   color: var(--ink);
 }
 
-.answer-fold__trigger:focus-visible {
+.detail-block__trigger:focus-visible {
   outline: 1px solid var(--cyan);
   outline-offset: -2px;
 }
 
-.answer-fold__caret {
+.detail-block.is-open .detail-block__trigger {
+  color: var(--ink);
+}
+
+.detail-block__caret {
+  flex-shrink: 0;
+  margin-top: 4px;
   font-size: 9px;
   color: var(--cyan);
   transition: transform var(--fast) var(--ease);
 }
 
-.answer-fold__trigger[aria-expanded="true"] .answer-fold__caret {
+.detail-block__trigger[aria-expanded="true"] .detail-block__caret {
   transform: rotate(90deg);
 }
 
-.answer-fold__title {
+.detail-block__heading {
   flex: 1;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  font-weight: 600;
 }
 
-.answer-fold__hint {
-  flex-shrink: 0;
+.detail-block__panel {
+  padding: 4px 16px 16px 34px;
+  border-top: 1px solid var(--line);
+}
+
+/* ---------------------------------------------------------------- */
+/* 講稿：照著念的逐字稿                                              */
+/* ---------------------------------------------------------------- */
+
+.answer-script {
+  --accent: var(--amber);
+
+  position: relative;
+  margin-top: 20px;
+  padding: 16px 18px 18px 20px;
+  border: 1px solid color-mix(in srgb, var(--amber) 34%, transparent);
+  border-left: 3px solid var(--amber);
+  background: rgb(251 191 36 / 7%);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 12px) 0,
+    100% 12px,
+    100% 100%,
+    12px 100%,
+    0 calc(100% - 12px)
+  );
+}
+
+.answer-script__title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.answer-script__badge {
+  padding: 2px 8px;
+  background: var(--amber);
+  color: #1a1204;
   font-family: var(--font-mono);
   font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.answer-script__meta {
+  margin: 0 0 14px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
   letter-spacing: 0.1em;
   color: var(--ink-faint);
 }
 
-.answer-fold__panel {
-  padding: 4px 16px 16px;
-  border-top: 1px solid var(--line);
+/*
+ * 唸稿版面：字大、行距寬、行短。
+ * 這一區不是拿來讀懂內容的，是要在講話時眼睛跟得上，
+ * 所以放棄資訊密度，換取「不會跳行」。
+ */
+.answer-script__body .markdown-body {
+  font-size: 16.5px;
+  line-height: 2.15;
+  counter-reset: script-beat;
+}
+
+.answer-script__body .markdown-body p {
+  position: relative;
+  max-width: 32em;
+  margin-bottom: 1.05em;
+  padding-left: 30px;
+}
+
+/* 每段一個號碼，講到一半抬頭也知道自己在第幾口氣 */
+.answer-script__body .markdown-body p::before {
+  counter-increment: script-beat;
+  content: counter(script-beat);
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1;
+  color: color-mix(in srgb, var(--amber) 70%, transparent);
+}
+
+/* 講稿內不做重點高亮：跟稿時視線被打斷比看不到重點更糟 */
+.answer-script__body .markdown-body strong {
+  color: inherit;
+  font-weight: 600;
+  background: none;
+}
+
+/* ---------------------------------------------------------------- */
+/* 長中文段落的行寬：一行約 36 字，比預設的 42 字好跟                  */
+/* ---------------------------------------------------------------- */
+
+.answer-block .markdown-body p,
+.detail-block__panel .markdown-body p,
+.detail-blocks__intro .markdown-body p,
+.followup__panel .markdown-body p {
+  max-width: 36em;
 }
 
 /* ---------------------------------------------------------------- */
@@ -597,7 +799,13 @@
 
   .practice {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(380px, 40%);
+    /*
+     * 答案欄才是要一路讀下去的那一欄，寬度優先給它。
+     * 原本的 40% 在 1440 螢幕上只剩一行 21 個中文字，
+     * 遠低於中文舒適的 32–36 字，長段落會讀到迷路。
+     * 題目欄只放標題、題幹與作答框，讓給它是划算的。
+     */
+    grid-template-columns: minmax(0, 1fr) minmax(460px, 52%);
     gap: 20px;
     align-items: start;
   }
