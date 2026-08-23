@@ -27,6 +27,10 @@ AI Agent 是以 LLM 為核心決策引擎的系統。
 
 先講定義，再講組成。
 
+## 講稿
+
+我的理解是，AI Agent 是以 LLM 為核心決策引擎的系統。
+
 ## 常見追問
 
 ### Function Calling 算 Agent 嗎？
@@ -57,6 +61,7 @@ describe("parseQuestionMarkdown", () => {
       coreAnswer: "AI Agent 是以 LLM 為核心決策引擎的系統。",
       detail: "詳細說明 Agent 與單次問答的差異。",
       interviewTip: "先講定義，再講組成。",
+      script: "我的理解是，AI Agent 是以 LLM 為核心決策引擎的系統。",
     });
     expect(result.answer).toContain("## 核心答案");
     expect(result.followUps).toEqual([
@@ -98,5 +103,32 @@ difficulty: easy
     expect(() => parseQuestionMarkdown(raw, "content/x/001.md")).toThrow(
       'content/x/001.md: missing or invalid frontmatter "title"',
     );
+  });
+
+  it("splits 詳細解析 into blocks for scannable rendering", () => {
+    const raw = VALID_RAW.replace(
+      "詳細說明 Agent 與單次問答的差異。",
+      "**自主性**：能自己決定下一步。\n\n**持續性**：不是單次問答。",
+    );
+
+    expect(parseQuestionMarkdown(raw, "test.md").detailBlocks).toEqual([
+      { heading: "自主性", body: "能自己決定下一步。" },
+      { heading: "持續性", body: "不是單次問答。" },
+    ]);
+  });
+
+  it("leaves script undefined when the 講稿 section is absent", () => {
+    const raw = VALID_RAW.replace(
+      /## 講稿\n\n[^\n]+\n\n/,
+      "",
+    );
+
+    expect(parseQuestionMarkdown(raw, "test.md").script).toBeUndefined();
+  });
+
+  it("keeps 講稿 out of the merged answer markdown", () => {
+    const result = parseQuestionMarkdown(VALID_RAW, "test.md");
+
+    expect(result.answer).not.toContain("## 講稿");
   });
 });

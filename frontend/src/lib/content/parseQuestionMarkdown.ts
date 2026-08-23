@@ -1,12 +1,15 @@
 import matter from "gray-matter";
 import type { Difficulty, FollowUp, Question } from "@/types/question";
 
+import { splitDetailBlocks } from "./detailBlocks";
+
 const DIFFICULTIES = new Set<Difficulty>(["easy", "medium", "hard"]);
 
 const SECTION_HEADINGS = [
   "核心答案",
   "詳細解析",
   "面試回答方式",
+  "講稿",
   "常見追問",
   "相關",
 ] as const;
@@ -133,12 +136,14 @@ export function parseQuestionMarkdown(raw: string, filePathForErrors: string): Q
   const coreAnswer = sections.get("核心答案")?.trim() || undefined;
   const detail = sections.get("詳細解析")?.trim() || undefined;
   const interviewTip = sections.get("面試回答方式")?.trim() || undefined;
+  const script = sections.get("講稿")?.trim() || undefined;
   const followUps = parseFollowUps(sections.get("常見追問") ?? "");
   const related = parseRelated(sections.get("相關") ?? "");
 
   const answerParts: string[] = [];
   for (const name of SECTION_HEADINGS) {
-    if (name === "常見追問" || name === "相關") {
+    // 講稿是獨立呈現的逐字稿，混進合併 markdown 只會讓舊版面重複同一段話。
+    if (name === "講稿" || name === "常見追問" || name === "相關") {
       continue;
     }
     const value = sections.get(name);
@@ -158,7 +163,9 @@ export function parseQuestionMarkdown(raw: string, filePathForErrors: string): Q
     answer,
     coreAnswer,
     detail,
+    detailBlocks: splitDetailBlocks(detail),
     interviewTip,
+    script,
     followUps: followUps.length > 0 ? followUps : undefined,
     related: related.length > 0 ? related : undefined,
     categorySlug: fm.category as string,

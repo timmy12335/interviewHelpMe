@@ -1,6 +1,8 @@
 import { withBasePath } from "@/lib/paths";
 import type { FollowUp, Question } from "@/types/question";
 
+import type { DetailBlock } from "@/types/question";
+
 import { emphasizeQuotedPhrases } from "./emphasizeQuotes";
 import {
   fallbackLabel,
@@ -86,6 +88,21 @@ function resolveTip(
   return linked === undefined ? undefined : emphasizeQuotedPhrases(linked);
 }
 
+/**
+ * 詳細解析的小塊各自渲染，連結必須在這裡解析，
+ * 否則畫面上會直接出現沒被換掉的 `[[...]]`。
+ */
+function resolveDetailBlocks(
+  blocks: readonly DetailBlock[] | undefined,
+  categorySlug: string,
+  resolve: WikiLinkResolver,
+): DetailBlock[] | undefined {
+  return blocks?.map((block) => ({
+    ...block,
+    body: replaceWikiLinks(block.body, categorySlug, resolve),
+  }));
+}
+
 function resolveFollowUp(
   followUp: FollowUp,
   categorySlug: string,
@@ -117,7 +134,11 @@ export function withResolvedLinks(
     answer: replaceIn(question.answer, categorySlug, resolve),
     coreAnswer: replaceIn(question.coreAnswer, categorySlug, resolve),
     detail: replaceIn(question.detail, categorySlug, resolve),
+    detailBlocks: resolveDetailBlocks(question.detailBlocks, categorySlug, resolve),
     interviewTip: resolveTip(question.interviewTip, categorySlug, resolve),
+    // 講稿是要照著念的，不套用「」轉粗體：唸稿版面靠字級與斷句分層，
+    // 再灑一層粗體只會讓視線在跟稿時被打斷。
+    script: replaceIn(question.script, categorySlug, resolve),
     followUps: question.followUps?.map((followUp) =>
       resolveFollowUp(followUp, categorySlug, resolve),
     ),

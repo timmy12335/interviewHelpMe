@@ -1,6 +1,13 @@
 /** 題目難度。 */
 export type Difficulty = "easy" | "medium" | "hard";
 
+/** 詳細解析裡的一小塊：`**小標**：內文` 拆出來的結果，可各自收合。 */
+export type DetailBlock = {
+  /** 沒有 `**小標**：` 前綴的段落沒有標題，會當成開場文字直接顯示。 */
+  heading?: string;
+  body: string;
+};
+
 /** 常見追問（可各自展開）。 */
 export type FollowUp = {
   title: string;
@@ -21,7 +28,11 @@ export type Question = {
   answer?: string;
   coreAnswer?: string;
   detail?: string;
+  /** detail 依 `**小標**：` 拆出的區塊，供可掃描的收合式渲染使用。 */
+  detailBlocks?: DetailBlock[];
   interviewTip?: string;
+  /** 可逐字念出來的口語講稿。 */
+  script?: string;
   followUps?: FollowUp[];
   related?: string[];
   categorySlug: string;
