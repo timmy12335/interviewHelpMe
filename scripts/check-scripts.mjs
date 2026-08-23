@@ -13,7 +13,7 @@ import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { readScriptSection } from "./gen-scripts.mjs";
+import { readScriptSection, resolveContentPath } from "./gen-scripts.mjs";
 
 const CONTENT_DIR = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -96,7 +96,7 @@ async function collect(dir) {
 
 async function main() {
   const category = process.argv[2];
-  const root = category ? path.join(CONTENT_DIR, category) : CONTENT_DIR;
+  const root = resolveContentPath(category);
 
   const problems = [];
   const openers = new Map();

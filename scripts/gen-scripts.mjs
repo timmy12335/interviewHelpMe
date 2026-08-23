@@ -39,6 +39,21 @@ const MIN_SCRIPT_LENGTH = 120;
 const SCRIPT_HEADING = "## 講稿";
 
 /**
+ * 把使用者給的相對路徑收斂進 content/。
+ *
+ * 這幾支工具會就地改寫檔案，所以路徑必須關在 content/ 裡。
+ * 沒有這道守門的話，`--only=../` 會把 repo 裡每一個 .md——README、
+ * docs、規格文件——都當成題目檔改寫掉。
+ */
+export function resolveContentPath(relative = "") {
+  const full = path.resolve(CONTENT_DIR, relative);
+  if (full !== CONTENT_DIR && !full.startsWith(CONTENT_DIR + path.sep)) {
+    throw new Error(`路徑超出 content/：${relative}`);
+  }
+  return full;
+}
+
+/**
  * 一個 `## 標題` 區塊的內容，到下一個 `## ` 或檔尾為止。
  * 結尾不能寫成 `\Z`——那在 JS 正則裡是字面上的 Z，不是檔尾，
  * 會讓任何含大寫 Z 的區塊（ZGC、ZSet、「大寫 A 到 Z」）在該處被截斷。
@@ -317,7 +332,7 @@ async function main() {
   const fixShort = args.includes("--fix-short");
   const only = args.find((arg) => arg.startsWith("--only="))?.slice("--only=".length);
 
-  const root = only ? path.join(CONTENT_DIR, only) : CONTENT_DIR;
+  const root = resolveContentPath(only);
   const files = await collectMarkdownFiles(root);
 
   const written = [];
@@ -365,5 +380,11 @@ async function main() {
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  await main();
+  try {
+    await main();
+  } catch (error) {
+    // 這是批次改寫內容的工具，堆疊追蹤只會蓋住真正的原因。
+    console.error(`錯誤：${error instanceof Error ? error.message : String(error)}`);
+    process.exitCode = 1;
+  }
 }

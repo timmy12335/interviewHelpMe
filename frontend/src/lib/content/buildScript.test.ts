@@ -6,6 +6,7 @@ import {
   insertScriptSection,
   readScriptSection,
   replaceScriptSection,
+  resolveContentPath,
 } from "@scripts/gen-scripts.mjs";
 
 describe("buildScript", () => {
@@ -178,5 +179,31 @@ describe("readScriptSection / replaceScriptSection", () => {
 
   it("returns null when there is no script section", () => {
     expect(readScriptSection("## 核心答案\n\n內容\n")).toBeNull();
+  });
+});
+
+describe("resolveContentPath", () => {
+  // 這幾支工具會就地改寫檔案。`--only=../` 這種輸入若沒被擋下，
+  // 會把 repo 裡所有 .md（README、docs）都當成題目改寫掉。
+  it("resolves a category inside content/", () => {
+    expect(resolveContentPath("java")).toMatch(/\/content\/java$/);
+  });
+
+  it("resolves a file inside content/", () => {
+    expect(resolveContentPath("java/001-x.md")).toMatch(/\/content\/java\/001-x\.md$/);
+  });
+
+  it("resolves content/ itself when given nothing", () => {
+    expect(resolveContentPath()).toMatch(/\/content$/);
+  });
+
+  it("rejects paths that climb out of content/", () => {
+    expect(() => resolveContentPath("..")).toThrow(/超出 content/);
+    expect(() => resolveContentPath("../frontend/src")).toThrow(/超出 content/);
+    expect(() => resolveContentPath("java/../../scripts")).toThrow(/超出 content/);
+  });
+
+  it("rejects absolute paths", () => {
+    expect(() => resolveContentPath("/etc")).toThrow(/超出 content/);
   });
 });

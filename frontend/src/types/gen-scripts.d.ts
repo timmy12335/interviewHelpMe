@@ -21,4 +21,10 @@ declare module "@scripts/gen-scripts.mjs" {
 
   /** 就地換掉既有的講稿內容。 */
   export function replaceScriptSection(markdown: string, script: string): string;
+
+  /**
+   * 把相對路徑收斂進 content/；跳脫時拋錯。
+   * 這幾支工具會就地改寫檔案，路徑必須關在題庫目錄裡。
+   */
+  export function resolveContentPath(relative?: string): string;
 }

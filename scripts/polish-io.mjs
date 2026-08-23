@@ -15,7 +15,11 @@ import { readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { readScriptSection, replaceScriptSection } from "./gen-scripts.mjs";
+import {
+  readScriptSection,
+  replaceScriptSection,
+  resolveContentPath,
+} from "./gen-scripts.mjs";
 
 const CONTENT_DIR = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -38,14 +42,6 @@ function questionBody(markdown) {
   return match ? match[1].trim() : null;
 }
 
-function resolve(relative) {
-  const full = path.resolve(CONTENT_DIR, relative);
-  if (!full.startsWith(CONTENT_DIR + path.sep)) {
-    throw new Error(`路徑超出 content/：${relative}`);
-  }
-  return full;
-}
-
 async function collect(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
   const files = [];
@@ -63,7 +59,7 @@ async function collect(dir) {
 }
 
 async function readCommand(relative) {
-  const markdown = await readFile(resolve(relative), "utf8");
+  const markdown = await readFile(resolveContentPath(relative), "utf8");
 
   console.log(`# 題目\n\n${questionBody(markdown) ?? "(無)"}`);
   for (const heading of MATERIAL_HEADINGS) {
@@ -88,7 +84,7 @@ async function writeCommand(relative) {
     throw new Error("講稿不該包含 Markdown 標題，這會把區塊結構打亂");
   }
 
-  const full = resolve(relative);
+  const full = resolveContentPath(relative);
   const markdown = await readFile(full, "utf8");
 
   if (readScriptSection(markdown) === null) {
@@ -100,7 +96,7 @@ async function writeCommand(relative) {
 }
 
 async function listCommand(category) {
-  const root = category ? path.join(CONTENT_DIR, category) : CONTENT_DIR;
+  const root = resolveContentPath(category);
   for (const file of await collect(root)) {
     console.log(path.relative(CONTENT_DIR, file));
   }
