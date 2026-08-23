@@ -36,8 +36,15 @@ source: original
 
 ## 講稿
 
+@SpringBootApplication 拆開來看，其實就是三個註解組成的懶人包。
 
-@SpringBootApplication 是一個「組合註解」，主要由三個核心註解組成：@SpringBootConfiguration（本質是 @Configuration，宣告這是一個配置類別，可以定義 @Bean）、@EnableAutoConfiguration（開啟自動配置機制，載入並按條件套用各種 XxxAutoConfiguration）、@ComponentScan（開啟元件掃描，掃描並註冊主類別所在包及其子包下的 @Component/@Service/@Controller 等 Bean）。所以一個 @SpringBootApplication 就同時做了「這是配置類別 + 開啟自動配置 + 掃描元件」三件事，是 Spring Boot 應用的入口標記。
+第一個是 @SpringBootConfiguration，它本身被 @Configuration 標著，所以本質就是配置類別，可以在裡面寫 @Bean。第二個是 @EnableAutoConfiguration，自動配置的總開關，負責載入各個 jar 的自動配置類別，再用條件註解篩出該生效的。
+
+第三個是 @ComponentScan，開啟元件掃描。預設掃的是主類別所在的包，加上底下所有子包。你的 Controller 跟 Service 只要標了註解又放對位置，就會被找出來註冊成 Bean。
+
+這裡有個很實際的坑。掃描範圍既然是從主類別往下算，主類別就一定要放在專案的根包。要是塞進某個子包，其他包的 Bean 就全掃不到。
+
+一個註解就把配置類別、自動配置、元件掃描三件事一起做完了。
 
 ## 常見追問
 
