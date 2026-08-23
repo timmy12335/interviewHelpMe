@@ -4,6 +4,11 @@ reference/
 # Claude Code local (machine-specific) settings; shareable config under .claude/ can still be tracked.
 .claude/settings.local.json
 
+# 環境變數檔一律不進版控。`.env.example` 例外——那是給人照著填的範本，
+# 不含實際值，要跟著 repo 走。
+.env*
+!.env.example
+
 # Common build/dependency artifacts (populated once backend/frontend scaffolding is added)
 node_modules/
 target/
