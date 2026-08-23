@@ -38,11 +38,13 @@ DispatcherServlet 依賴一組核心組件協同完成請求處理：`HandlerMap
 
 ## 講稿
 
-我的理解是，HandlerMapping 和 HandlerAdapter 為什麼分開。
+圍在 DispatcherServlet 旁邊的組件，我照一次請求的流程點名。
 
-再來，單一職責 + 適配器模式的擴展性。
+請求進來，先由 HandlerMapping 根據 URL 找出對應的 Handler，順便帶出攔截器鏈。接著交給 HandlerAdapter 實際呼叫，參數綁定和返回值處理都在這裡。
 
-另外，用 Adapter 適配不同形式的 Handler、要支援新 Handler 只需加 Adapter 不用改 DispatcherServlet。
+其餘的各司其職。ViewResolver 把視圖名解析成 View，HttpMessageConverter 負責物件和 JSON 互轉，HandlerExceptionResolver 收拾途中拋出的異常，@ExceptionHandler 就掛在這一層。
+
+那為什麼要把前兩個拆開？一是單一職責，找誰處理和怎麼呼叫本來就是兩件事。二是擴展性，Handler 的形式不只註解方法，還有實作介面的類別。要是讓它直接呼叫，每多一種形式就得改。多了 Adapter 這層，只對介面編程，新形式加一個 Adapter 就好。
 
 ## 常見追問
 

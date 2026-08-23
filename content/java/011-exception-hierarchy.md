@@ -47,13 +47,13 @@ Throwable
 
 ## 講稿
 
-我的理解是，Checked 編譯期強制處理、Unchecked 不強制。
+整個體系的分界線只有一條，就是 RuntimeException。
 
-原因在於，Checked 用於可預期、可恢復的外部失敗（如 IO），Unchecked 用於程式 bug（如 NPE）。
+根是 Throwable，底下兩個分支。一邊是 Error，代表 JVM 層級的嚴重問題，像 OutOfMemoryError 就是。這種救不回來也不該捕捉，系統當下已經不健康，接住沒意義。
 
-再來，一個要 try-catch 一個不用。
+另一邊是 Exception。RuntimeException 和它的子類別是非受檢例外，其餘都是受檢例外。差別在編譯期，受檢例外編譯器會逼你處理，呼叫會拋 IOException 的方法，要嘛 try-catch 接住，要嘛在方法簽章上 throws 往上丟，不然編不過。
 
-另外，Error 不該捕捉，因為代表系統已不健康。
+更值得講的是設計意圖。受檢例外針對可預期、可恢復的外部失敗，檔案不存在、網路斷掉都算，強制是怕開發者忽略。非受檢例外代表程式本身的 bug，像 NullPointerException，正解是把程式改對，不是拿 try-catch 去包。
 
 ## 常見追問
 

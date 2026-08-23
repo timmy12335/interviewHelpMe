@@ -44,10 +44,13 @@ Spring 內建的 Bean 作用域主要有：`singleton`（單例預設，整個�
 
 ## 講稿
 
+預設是 singleton，這句先講清楚，後面很多坑都從這裡來。
 
-Spring 內建的 Bean 作用域主要有：singleton（單例預設，整個容器中只有一個實例）、prototype（原型，每次請求都建立新實例）、request（每個 HTTP 請求一個實例，僅 Web 環境）、session（每個 HTTP session 一個實例，僅 Web 環境）、application（每個 ServletContext 一個實例）。預設是 singleton。
+常見的作用域有五個。singleton 是整個容器只有一個實例，啟動時就建好。prototype 相反，每次跟容器要就給你一個新的。另外三個只在 Web 環境有效，request 一個請求一個實例，session 一個會話一個，application 則是整個 ServletContext 共用一個。
 
-singleton 和 prototype 的核心區別是，singleton 全容器共享同一個實例、由容器全程管理生命週期；prototype 每次獲取都建立新實例、容器只負責建立不負責銷毀。
+這兩者的差別我抓兩點。一是實例數，全容器唯一對上每次新建。二是生命週期，singleton 由容器管到銷毀，prototype 容器只負責建立和初始化，交出去就不管了，destroy 方法不會被呼叫。
+
+還有一點面試官愛追。singleton 是共享實例，多執行緒同時進來，只要 Bean 裡有可變的成員狀態就會出事，這是實務上最常踩的坑。prototype 各用各的實例，天然沒這個問題。
 
 ## 常見追問
 

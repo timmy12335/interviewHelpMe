@@ -45,10 +45,15 @@ source: original
 
 ## 講稿
 
+線上出事我不先抓工具，先確認是哪一類問題，GC、記憶體洩漏，還是 CPU。
 
-常用命令列工具：jps（查 Java 行程）、jstat（監控 GC 統計，如 GC 次數/耗時/各區使用率）、jmap（產生堆快照 heap dump、看物件統計）、jstack（產生執行緒堆疊快照，排查死鎖/CPU 飆高/執行緒阻塞）、jinfo（查看/修改 JVM 參數）。圖形化/進階工具：jvisualvm、JMC（Java Mission Control）、Arthas（阿里開源的線上診斷神器）、MAT（Memory Analyzer，分析 heap dump 找記憶體洩漏）。
+第一步是 jps 找到行程 PID。看 GC 用 jstat，下 gcutil 每秒輸出，各區使用率、GC 次數和耗時都在上面。老年代一路漲不回頭，或 Full GC 很密集，方向就出來了。
 
-排查方法是，先用監控定位問題類型（GC 問題 / 記憶體洩漏 / CPU 問題），再用對應工具深入分析。
+接著看什麼在堆積。jmap -histo 列出堆裡物件的數量和大小，佔最多的一眼看得到。要細查就 dump 堆快照丟進 MAT，它會給 Leak Suspects，展開引用鏈就知道它為什麼沒被回收。線上先開 HeapDumpOnOutOfMemoryError，才留得下現場。
+
+CPU 飆高有固定流程。top 找到吃 CPU 的執行緒，ID 轉成十六進位，再到 jstack 輸出裡對出那條堆疊，就知道它卡在哪。死鎖也靠 jstack，會直接標示。
+
+還有 Arthas，不用重啟服務就能看方法耗時、監控參數和回傳值。
 
 ## 常見追問
 

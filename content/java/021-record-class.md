@@ -48,10 +48,13 @@ source: original
 
 ## 講稿
 
+以前寫一個 DTO，要手刻建構子、一堆 getter，再補 equals、hashCode 和 toString，不然就靠 Lombok。record 一行全收掉。
 
-record（JDK 14 預覽、JDK 16 正式）是一種簡潔的「不可變資料載體」類別。你只需宣告它的組成欄位（如 record Point(int x, int y) {}），編譯器就會自動生成建構子、每個欄位的存取方法、以及符合契約的 equals()、hashCode()、toString()。
+record 是 JDK 16 正式定案的不可變資料載體。你只宣告它的組成欄位，編譯器就自動生成規範建構子、存取方法，以及符合契約的 equals、hashCode 跟 toString。存取方法叫 x，不叫 getX。
 
-它的欄位都是 final（不可變），適合用於「純粹承載資料、不需要可變狀態」的場景，如 DTO、值物件、方法回傳多個值的組合等。
+限制也明確。欄位隱含是 private final，建立後改不了。類別隱含 final，不能被繼承。它可以實作介面，但不能繼承別的類別，因為它已繼承 java.lang.Record。要做參數驗證就寫緊湊建構子。
+
+適合的場景是純資料。層與層之間的 DTO、座標或金額這種以值定義相等性的值物件，或用 record 打包多個回傳值，都比丟陣列或 Map 清楚。反過來說，需要可變狀態或繼承的類別就別用。
 
 ## 常見追問
 

@@ -34,8 +34,15 @@ source: original
 
 ## 講稿
 
+比較這四個，我會抓三條軸來看，有沒有容量上限、鎖的粒度、排隊順序。
 
-ArrayBlockingQueue 是有界佇列，底層陣列，一把鎖控制存取；LinkedBlockingQueue 預設無界，底層鏈結串列，讀寫可用兩把鎖分離提升並行度；SynchronousQueue 本身不儲存任何元素，每個 put 必須配對一個 take 才能完成；PriorityBlockingQueue 是無界的優先級佇列，元素按照優先級出列而非先進先出。
+ArrayBlockingQueue 底層是固定大小的陣列，讀寫共用一把鎖，同一時間只有一個執行緒能進去，適合要把記憶體上限釘死的場景。LinkedBlockingQueue 底層是鏈結串列，takeLock 和 putLock 分開，並行度比前者高，但不指定容量就等於無界，要小心 OOM。
+
+SynchronousQueue 根本不存元素，是執行緒對執行緒的直接交接點，一個 put 必須配到一個 take 才算完成。Executors.newCachedThreadPool() 用的就是它。
+
+PriorityBlockingQueue 底層是二元堆，無界，出列順序由 Comparable 或 Comparator 決定，不是先進先出。
+
+選型就對著需求挑，要控記憶體、要高吞吐、要立即交接、要照優先級，剛好對上這四個。
 
 ## 常見追問
 

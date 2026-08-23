@@ -44,13 +44,15 @@ source: original
 
 ## 講稿
 
-我的理解是，宣告式交易 = @Transactional + AOP。
+@Transactional 不是什麼魔法註解，它就是 AOP 的典型應用。交易是標準的橫切關注點，過去得手動 commit 和 rollback，侵入又繁瑣，現在宣告一句就好。
 
-舉個實務上的例子，PlatformTransactionManager 負責實際的交易操作。
+流程是這樣。Spring 為標了註解的 Bean 生成代理，呼叫方打到的其實是代理。裡面的交易攔截器先介入，在目標方法之前開啟交易，取得資料庫連線並把 autoCommit 關掉。
 
-再來，用 ThreadLocal 綁定連線保證同一交易用同一連線。
+然後才跑業務邏輯。正常返回就提交，拋出異常則依回滾規則決定回不回滾，最後解除綁定、釋放連線。
 
-另外，@Transactional 失效。
+實際動手的是 PlatformTransactionManager 這個交易管理器介面，不同的資料存取技術各有實作。
+
+還有一個容易漏的點是 ThreadLocal。Spring 把連線綁在當前執行緒上，確保同一個交易裡的操作都走同一條連線，交易分散在不同連線上就沒有意義了。
 
 ## 常見追問
 

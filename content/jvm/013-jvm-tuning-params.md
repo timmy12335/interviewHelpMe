@@ -51,8 +51,15 @@ source: original
 
 ## 講稿
 
+調優不是背一組參數貼上去，每個參數背後都有取捨。
 
-常見參數分幾類：堆大小（-Xms 初始堆、-Xmx 最大堆，通常設成相等避免動態擴縮容的抖動）、新生代（-Xmn 新生代大小、-XX:SurvivorRatio Eden/Survivor 比例）、元空間（-XX:MetaspaceSize、-XX:MaxMetaspaceSize）、棧（-Xss 執行緒棧大小）、收集器選擇（-XX:+UseG1GC 等）、GC 目標（-XX:MaxGCPauseMillis 目標停頓）、以及 GC 日誌與 OOM 時 dump（-XX:+HeapDumpOnOutOfMemoryError）。調優關注的核心指標是，吞吐量、GC 停頓時間、GC 頻率、記憶體佔用。
+堆最常動。-Xms 和 -Xmx 我會設成一樣，免得運行中擴容縮容造成抖動甚至 Full GC。-Xmn 調新生代，設大則 Minor GC 次數少但單次長。SurvivorRatio 管 Eden 跟單個 Survivor 的比例，預設 8。
+
+元空間要設上限，擋住類別元資料吃光本地記憶體。-Xss 是執行緒棧，太大在執行緒多時浪費，太小容易 StackOverflowError。收集器用 UseG1GC 這類開關挑，G1 還能給停頓的軟目標。
+
+診斷參數我一定加。開 HeapDumpOnOutOfMemoryError，OOM 當下自動 dump 堆快照，事後才有東西查。GC 日誌也要開，JDK 9 之後統一走 -Xlog:gc。
+
+指標看四個，吞吐量、GC 停頓、GC 頻率、記憶體佔用。它們彼此制約，調優就是找平衡，沒有萬用參數。
 
 ## 常見追問
 

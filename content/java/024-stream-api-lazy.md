@@ -42,8 +42,13 @@ Stream 的操作分兩類——「中間操作（intermediate）」如 `filter`�
 
 ## 講稿
 
+Stream 的操作看回傳型別就能分辨。回傳 Stream 的是中間操作，像 filter、map、limit。回傳別的東西的是終端操作，像 collect、reduce、count、findFirst。一條管線只能有一個終端操作，跑完就消耗掉，不能再用。
 
-Stream 的操作分兩類，「中間操作（intermediate）」如 filter、map、sorted，回傳一個新的 Stream，可以鏈式串接；「終端操作（terminal）」如 collect、forEach、reduce、count，會觸發整個 Stream 管線執行並產生最終結果。惰性求值指的是：中間操作不會立即執行，它們只是「記錄下要做什麼」，直到遇到終端操作才真正開始處理資料，且處理是「逐個元素流過整條管線」而非「每個操作處理完整個集合再傳給下一個」，這讓 Stream 能做短路優化、避免不必要的計算。
+惰性求值的意思是，中間操作根本不做事。它們只是把要做什麼記錄下來。你寫完 filter 接 map，一個元素都還沒被碰過。要等終端操作被呼叫，管線才真的開始跑。
+
+更關鍵的是流動方式。Stream 不是先把整個集合 filter 完，再整批拿去 map。而是一個元素依序走完整條管線，下一個才進來。
+
+這帶來兩個好處。一是短路，findFirst、anyMatch 條件一滿足就停手。譬如 filter 接 findFirst，找到第一個符合的就收工，剩下的連看都不用看。二是省記憶體，階段之間不必生出完整的中間集合。
 
 ## 常見追問
 

@@ -47,8 +47,13 @@ source: original
 
 ## 講稿
 
+這兩個註解出身就不一樣。@Autowired 是 Spring 自己的，@Resource 是 JSR-250 標準註解，換掉 Spring 也還能用。
 
-@Autowired 是 Spring 提供的註解，預設「按型別（byType）」注入；@Resource 是 JSR-250 標準註解（不綁定 Spring），預設「按名稱（byName）」注入。當一個介面有多個實作時，型別注入會有歧義（Spring 不知道注入哪個），此時可以，用 @Autowired 搭配 @Qualifier("beanName") 指定名稱、或搭配 @Primary 標記首選實作、或直接用 @Resource(name="beanName") 按名稱指定，來消除歧義。
+行為差別在預設策略。@Autowired 預設按型別找，型別撞到多個才退化成用欄位名去對 Bean 名稱，還是分不出來就拋 NoUniqueBeanDefinitionException。@Resource 反過來，預設按名稱找，名稱找不到才退回型別。
+
+所以介面有多個實作時就會出事。假設 PaymentService 底下有支付寶和微信兩個實作，直接注入介面，容器不知道要哪一個。
+
+消歧義有幾種做法。@Qualifier 指定 Bean 名稱，是這一次我明確要哪個。@Primary 標在實作類別上，是設一個預設首選，歧義時就挑它。也可以用 @Resource 帶 name 按名稱注入。
 
 ## 常見追問
 

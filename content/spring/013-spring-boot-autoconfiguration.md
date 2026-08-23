@@ -40,8 +40,13 @@ Spring Boot 自動配置的核心是——`@EnableAutoConfiguration`（通常透
 
 ## 講稿
 
+一個 starter 丟進去就全配好了，關鍵只有兩件事，載入跟條件。
 
-Spring Boot 自動配置的核心是，@EnableAutoConfiguration（通常透過 @SpringBootApplication 引入）觸發自動配置機制：Spring Boot 從所有依賴 jar 的特定檔案（JDK 8 是 META-INF/spring.factories、Spring Boot 2.7+ 是 META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports）中載入一大批「自動配置類別」，然後每個自動配置類別透過 @Conditional 系列條件註解「按需生效」，只有當滿足條件（如 classpath 上有某個類別、容器中沒有某個 Bean、某個配置屬性開啟等）時，這個配置才會被套用。所以「引入 starter → 帶來對應的依賴和自動配置類別 → 條件滿足 → 自動配置好」。
+先講載入。@SpringBootApplication 包了 @EnableAutoConfiguration，這是總開關。它會去掃所有 jar 裡的特定檔案，舊版叫 spring.factories，2.7 之後換成 AutoConfiguration.imports。裡面列的一大批自動配置類別，全部先當候選。
+
+候選不等於生效。每個類別都掛了 @Conditional 系列註解，條件滿足才套用。負責 DataSource 的那個，掛的是 @ConditionalOnClass，classpath 上沒有 DataSource 就整個不動作。
+
+最精華的是 @ConditionalOnMissingBean。預設 Bean 都用它守著，你自己定義同型別的 Bean，預設就讓路。這就是約定優於配置，開箱能用又能覆蓋。
 
 ## 常見追問
 

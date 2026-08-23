@@ -50,8 +50,13 @@ source: original
 
 ## 講稿
 
+三個工具底層都是 AQS，差別在語意。CountDownLatch 等一組事件全部完成，CyclicBarrier 是一群執行緒互相等到齊，Semaphore 控制同時能有幾個執行緒進來。
 
-三者都基於 AQS，但語意不同：CountDownLatch 讓一個或多個執行緒等待「一組事件全部完成」，只能用一次（不可重置）；CyclicBarrier 讓一組執行緒互相等待「所有人都到齊」才繼續，且可重複使用；Semaphore 控制「同時能有多少執行緒存取某資源」。
+CountDownLatch 建構時給一個計數，countDown() 減一，await() 的執行緒擋到歸零。它一次性，歸零後不能重置。主執行緒等多個微服務健康檢查全過很適合。壓測時把計數設成 1，一聲令下讓所有執行緒同時開跑。
+
+CyclicBarrier 給的是參與方數量，每個人呼叫 await() 就卡住，等所有人到齊才一起放行。它會自動重置，可以直接跑下一輪，還能傳一個 Runnable 進去彙總這輪結果。分階段並行計算就是它的場景。
+
+Semaphore 維護一組許可證，acquire() 拿不到就阻塞，release() 再還回去。限制同時進連線池的執行緒數、做限流、實作物件池，都靠它。
 
 ## 常見追問
 

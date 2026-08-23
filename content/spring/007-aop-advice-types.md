@@ -47,10 +47,13 @@ Spring AOP 有五種通知：`@Before`（前置，方法執行前）、`@After`�
 
 ## 講稿
 
+五種通知，我按時機排一遍。@Before 在目標方法前跑，適合權限檢查。@After 在方法後跑，成功失敗都會執行，定位像 finally。
 
-Spring AOP 有五種通知：@Before（前置，方法執行前）、@After（後置/最終，方法執行後不管成功失敗都執行，類似 finally）、@AfterReturning（返回後，方法正常返回後執行）、@AfterThrowing（異常後，方法拋異常時執行）、@Around（環繞，包裹整個方法、最強大，能控制是否執行目標方法及修改參數返回值）。單個切面的執行順序是，@Around 前半段 → @Before → 目標方法 → @Around 後半段 → @After → @AfterReturning/@AfterThrowing。
+@AfterReturning 只在正常返回時觸發，拿得到返回值。@AfterThrowing 只在拋異常時觸發，拿得到異常物件，做異常日誌或轉換很好用。@Around 最強，它包住整個方法，靠 proceed 決定要不要真的進目標方法，還能改參數和返回值。
 
-多個切面的順序用 @Order 註解或 Ordered 介面控制（值越小優先級越高、越先執行）。
+單個切面的順序是這樣。@Around 前半段最先，接著 @Before，然後目標方法，回來走 @Around 後半段，再來 @After，最後才是 @AfterReturning 或 @AfterThrowing。
+
+多個切面用 @Order 或 Ordered 介面控制，數字越小優先級越高。結構是洋蔥模型，優先級高的包在外層，先進後出，記住這四個字就不會亂。
 
 ## 常見追問
 

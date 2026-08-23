@@ -40,10 +40,11 @@ synchronized (lock) {
 
 ## 講稿
 
+這三個方法掛在 Object 上不是偶然，每個物件都有自己的 Monitor。wait() 動的就是它的等待集合，語意是釋放鎖再把自己丟進去阻塞，notify 從裡面撈人。既然動到 Monitor 狀態，呼叫前就得持有鎖，否則拋 IllegalMonitorStateException。
 
-wait/notify/notifyAll 是 Object 類別的方法，操作的是這個物件對應的 Monitor 的等待集合，必須先持有這個物件的鎖才能呼叫，否則拋出 IllegalMonitorStateException。wait() 要放在 while 迴圈判斷條件，是為了防範「虛假喚醒」與「條件在喚醒後被其他執行緒再次改變」的情況。
+用 while 包住 wait() 有三個理由。JVM 允許虛假喚醒，醒來不代表條件成立。notifyAll() 把所有人叫醒，但條件可能只滿足一次。就算條件成立，從喚醒到搶回鎖之間也可能被改掉。用 if 只判斷一次就中招，while 是每次醒來重新檢查。
 
-Condition 是 Lock 體系下的等價物，功能更強，支援一個鎖對應多組獨立的等待佇列。
+Condition 是 Lock 體系的對應物，由 lock.newCondition() 建立，方法換成 await() 和 signal()。它強在一個 Lock 能開多組獨立的等待佇列，內建 Monitor 只有一組，生產者消費者就好寫很多。
 
 ## 常見追問
 
