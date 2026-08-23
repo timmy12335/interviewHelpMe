@@ -21,8 +21,19 @@ describe("countReadableChars", () => {
 });
 
 describe("speakSeconds", () => {
-  it("estimates spoken length at 4.5 chars per second", () => {
+  it("estimates Chinese speech at 4.5 characters per second", () => {
     expect(speakSeconds("字".repeat(450))).toBe(100);
+  });
+
+  it("reads latin text far faster per character than Chinese", () => {
+    // 同樣 140 個字元，中文要 31 秒，英文只要 10 秒。
+    expect(speakSeconds("a".repeat(140))).toBe(10);
+    expect(speakSeconds("字".repeat(140))).toBe(31);
+  });
+
+  it("does not charge speaking time to punctuation", () => {
+    expect(speakSeconds("，、。；：！？「」（）")).toBe(0);
+    expect(speakSeconds("字".repeat(45) + "，、。；：")).toBe(10);
   });
 
   it("never reports zero for non-empty text", () => {
@@ -35,9 +46,13 @@ describe("speakSeconds", () => {
 });
 
 describe("readMinutes", () => {
-  it("estimates reading time at 300 chars per minute, rounded up", () => {
+  it("estimates Chinese reading at 300 characters per minute, rounded up", () => {
     expect(readMinutes("字".repeat(300))).toBe(1);
     expect(readMinutes("字".repeat(301))).toBe(2);
+  });
+
+  it("reads latin text faster per character than Chinese", () => {
+    expect(readMinutes("a".repeat(900))).toBe(1);
   });
 
   it("reports zero for empty text", () => {
