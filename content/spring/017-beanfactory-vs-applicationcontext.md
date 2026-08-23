@@ -44,6 +44,14 @@ source: original
 
 先講關係——「ApplicationContext 是 BeanFactory 的子介面、繼承並增強了它」。兩個核心區別要講清楚：一是「功能」（BeanFactory 只管 Bean、ApplicationContext 加了國際化/事件/資源/整合等企業級功能），二是「載入時機」（BeanFactory 延遲、ApplicationContext 預先建立單例）。實務加分點——講「ApplicationContext 預先載入的好處是啟動時就暴露配置問題（快速失敗）」，並點出「實際開發幾乎都用 ApplicationContext」。能從「基礎 vs 增強」和「延遲 vs 預先」兩個維度清晰對比，展現你理解兩者的定位差異。
 
+## 講稿
+
+我的理解是，ApplicationContext 是 BeanFactory 的子介面、繼承並增強了它。
+
+另外可以補充的是，ApplicationContext 預先載入的好處是啟動時就暴露配置問題（快速失敗）。
+
+再來，實際開發幾乎都用 ApplicationContext。
+
 ## 常見追問
 
 ### 為什麼 ApplicationContext 預設預先載入所有單例 Bean？這有什麼好處和代價？

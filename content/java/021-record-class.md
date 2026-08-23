@@ -46,6 +46,13 @@ source: original
 
 先講「record 是什麼」——簡潔的不可變資料載體，編譯器自動生成建構子/存取方法/equals/hashCode/toString。重點講「它消除了什麼樣板程式碼」——以前寫一個 DTO 要手寫一堆 getter、equals、hashCode、toString（或靠 Lombok），現在一行 record 搞定。適用場景要能舉出 DTO、值物件、多回傳值打包這些具體例子。如果能點出限制（不可變、不能繼承、不能有額外實例欄位）以及「存取方法是 `x()` 而非 `getX()`」這個細節，展現你真的用過而非只聽過。
 
+## 講稿
+
+
+record（JDK 14 預覽、JDK 16 正式）是一種簡潔的「不可變資料載體」類別。你只需宣告它的組成欄位（如 record Point(int x, int y) {}），編譯器就會自動生成建構子、每個欄位的存取方法、以及符合契約的 equals()、hashCode()、toString()。
+
+它的欄位都是 final（不可變），適合用於「純粹承載資料、不需要可變狀態」的場景，如 DTO、值物件、方法回傳多個值的組合等。
+
 ## 常見追問
 
 ### record 的 equals 和 hashCode 是怎麼實作的？

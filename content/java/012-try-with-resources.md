@@ -42,6 +42,11 @@ try (var reader = new BufferedReader(new FileReader("file.txt"))) {
 
 先講「是什麼」——try 括號中宣告資源、自動關閉、前提是實作 `AutoCloseable`。接著講「好處」，這是重點：對比傳統 try-finally 的兩個痛點（容易忘記關閉/順序錯、例外覆蓋遺失根因），說明 try-with-resources 如何各自解決。尤其「被抑制的例外（suppressed exception）」這個機制是很多人不知道的細節，主動講出來能明顯加分。最後可以補一句「多資源按逆序關閉」和「AutoCloseable 是前提介面」，讓回答更完整。
 
+## 講稿
+
+
+try-with-resources（JDK 7 引入）是一種在 try 的括號中宣告資源的語法，只要資源實作了 AutoCloseable 介面，離開 try 區塊時（不管正常結束或拋例外）編譯器都會自動呼叫資源的 close() 方法關閉它。相比手動寫 try-finally 關閉，它更簡潔、不會忘記關閉、能自動處理多個資源的關閉順序、且能正確保留原始例外（關閉時的例外變成「被抑制的例外」而非覆蓋原始例外）。
+
 ## 常見追問
 
 ### 什麼是「被抑制的例外（suppressed exception）」？

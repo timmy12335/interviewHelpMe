@@ -40,6 +40,13 @@ Spring MVC 的攔截器（Interceptor）和 Servlet 的過濾器（Filter）有�
 
 用「所屬層級」這個根本區別來組織回答——Filter 屬於 Servlet 規範（底層、Spring 容器之外）、Interceptor 屬於 Spring MVC（上層、Spring 內部）。由此推導出其他區別：範圍（Filter 攔所有請求含靜態資源、Interceptor 只攔 Controller 請求）、能力（Filter 難用 Spring、Interceptor 能注入 Bean）、控制點（Filter 粗、Interceptor 細）。各配典型場景（Filter 做編碼/跨域/XSS、Interceptor 做登入/權限）。能點出「執行順序上 Filter 包著 Interceptor」，展現你理解兩者的層級關係。
 
+## 講稿
+
+
+過濾器（Filter）是「Servlet 規範」的一部分，它工作在更底層（Servlet 容器層級），能攔截「所有進入 Servlet 容器的請求」（包括靜態資源），在請求進入 DispatcherServlet「之前」和回應返回「之後」處理。攔截器（Interceptor）是「Spring MVC 框架」的一部分，它工作在 Spring MVC 的層級（DispatcherServlet 內部），只能攔截「進入 Spring MVC 的請求（Controller 的請求）」，且能存取 Spring 的上下文（如注入其他 Bean）、能在 Handler 執行前後、視圖渲染前後等更細的節點介入。
+
+簡言之，Filter 更底層、範圍更廣、但脫離 Spring 上下文；Interceptor 更上層、範圍限於 MVC、但能用 Spring 的能力、控制點更細。
+
 ## 常見追問
 
 ### 為什麼登入/權限驗證通常用攔截器而不是過濾器？

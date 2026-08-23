@@ -36,6 +36,12 @@ source: original
 
 這題是進階題，考的是你對 `CompletableFuture` API 家族的整體掌握，而不是單一方法。建議用一句話先分類：「轉換用 `thenApply`、串接非同步依賴用 `thenCompose`、合併平行任務用 `thenCombine`、批量等待用 `allOf`/`anyOf`」，把四個方法放進同一個分類框架講，展現你不是零散記憶 API 而是有系統性理解。例外傳播的部分，務必講清楚「短路傳播」與「`get()` vs `join()` 拋出的例外型別不同」這兩個細節，這是這題最容易被進一步追問、也最容易踩雷的地方。
 
+## 講稿
+
+我的理解是，轉換用 `thenApply`、串接非同步依賴用 `thenCompose`、合併平行任務用 `thenCombine`、批量等待用 `allOf`/`anyOf`。
+
+再來，`get()` vs `join()` 拋出的例外型別不同。
+
 ## 常見追問
 
 ### 為什麼 thenApply 用在回傳 CompletableFuture 的方法上是一個常見錯誤？

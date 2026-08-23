@@ -43,6 +43,13 @@ source: original
 
 先按「工具分類」列出核心工具（命令列 jps/jstat/jmap/jstack + 進階 Arthas/MAT），並簡述各自用途。更重要的是展現「排查思路」——按問題類型（GC 頻繁 / OOM / CPU 飆高 / 死鎖）講對應的排查步驟，尤其「CPU 飆高怎麼用 top + jstack 定位到具體執行緒和程式碼」這個經典流程一定要能完整說出，這是最能展現實戰經驗的部分。能提到 Arthas 這個線上診斷利器和 MAT 分析 heap dump，展現你有實際的線上排查經驗而非只知道工具名稱。
 
+## 講稿
+
+
+常用命令列工具：jps（查 Java 行程）、jstat（監控 GC 統計，如 GC 次數/耗時/各區使用率）、jmap（產生堆快照 heap dump、看物件統計）、jstack（產生執行緒堆疊快照，排查死鎖/CPU 飆高/執行緒阻塞）、jinfo（查看/修改 JVM 參數）。圖形化/進階工具：jvisualvm、JMC（Java Mission Control）、Arthas（阿里開源的線上診斷神器）、MAT（Memory Analyzer，分析 heap dump 找記憶體洩漏）。
+
+排查方法是，先用監控定位問題類型（GC 問題 / 記憶體洩漏 / CPU 問題），再用對應工具深入分析。
+
 ## 常見追問
 
 ### CPU 飆高怎麼定位到具體是哪段程式碼？

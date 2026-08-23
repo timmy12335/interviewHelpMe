@@ -42,6 +42,16 @@ source: original
 
 先講「宣告式交易 = @Transactional + AOP」這個本質——它是 AOP 的經典應用，把交易這個橫切關注點抽離。接著講執行流程——代理攔截、方法前開啟交易、正常返回提交、異常回滾。務必點出兩個關鍵——「PlatformTransactionManager 負責實際的交易操作」和「用 ThreadLocal 綁定連線保證同一交易用同一連線」。能把 @Transactional 連結到 AOP 動態代理（前面的題），展現你理解它不是「魔法註解」而是建立在 AOP 之上的機制，這也為後面「@Transactional 失效」題鋪墊（很多失效都源於「代理沒生效」）。
 
+## 講稿
+
+我的理解是，宣告式交易 = @Transactional + AOP。
+
+舉個實務上的例子，PlatformTransactionManager 負責實際的交易操作。
+
+再來，用 ThreadLocal 綁定連線保證同一交易用同一連線。
+
+另外，@Transactional 失效。
+
 ## 常見追問
 
 ### @Transactional 預設只在什麼異常下回滾？為什麼？

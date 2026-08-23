@@ -30,6 +30,16 @@ redo log 是 InnoDB 保證「持久性」的機制——交易提交時，先把
 
 先講「WAL 思想——先寫日誌、資料頁延後刷」，這是理解 redo log 的核心。然後講「為什麼寫 redo log 快」——「順序寫 vs 資料頁的隨機寫」，這個對比是這題的關鍵論點。能提到「redo log buffer + 循環寫」和「innodb_flush_log_at_trx_commit 參數」這個持久性和效能的權衡點（類似 Redis AOF 的 appendfsync），展現你理解 redo log 不只是一個抽象概念、而是有具體的緩衝、刷盤策略、和恢復機制。最後提「當機恢復時重做 redo log」把整個流程講完整。
 
+## 講稿
+
+我的理解是，WAL 思想——先寫日誌、資料頁延後刷。
+
+要區分清楚的是，redo log buffer + 循環寫。
+
+再來，innodb_flush_log_at_trx_commit 參數。
+
+不過要誠實說，當機恢復時重做 redo log。
+
 ## 常見追問
 
 ### innodb_flush_log_at_trx_commit 這個參數的三個值分別代表什麼？

@@ -40,6 +40,14 @@ source: original
 
 先講 @Conditional 是「條件裝配——讓 Bean 只在條件滿足時生效」，並列出 Spring Boot 基於它的常用條件註解（@ConditionalOnClass/OnMissingBean/OnProperty）。@Profile 講「基於 @Conditional 的特化、按環境（dev/test/prod）切換配置」並舉例（開發用記憶體庫、生產用真實庫）。最能加分的是點出「它們和自動配置的關係——Spring Boot 自動配置全建立在 @Conditional 之上、@Profile 也是一種 @Conditional」，把這三個知識點（條件裝配、Profile、自動配置）串成一個體系，展現你理解它們共同的機制根基。
 
+## 講稿
+
+我的理解是，條件裝配——讓 Bean 只在條件滿足時生效。
+
+再來，基於 @Conditional 的特化、按環境（dev/test/prod）切換配置。
+
+另外可以補充的是，它們和自動配置的關係——Spring Boot 自動配置全建立在 @Conditional 之上、@Profile 也是一種 @Conditional。
+
 ## 常見追問
 
 ### @ConditionalOnProperty 的典型用法是什麼？

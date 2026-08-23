@@ -28,6 +28,11 @@ Java 執行緒有哪些狀態？`BLOCKED` 和 `WAITING` 有什麼區別？
 
 這是基礎題，適合用來快速展現你對 Java 執行緒模型的掌握是否扎實。六個狀態不需要花太多時間逐一解釋，重點應該放在「`BLOCKED` 和 `WAITING` 的差異」這個核心考點上，用「觸發原因」和「能否中斷」兩個維度對比，講清楚就足夠。如果面試官接著問排查相關問題，順勢提到「這些狀態在 `jstack` 排查中怎麼解讀」，能自然延伸到更實務的話題，展現你不只知道理論定義，也知道怎麼在真實場景中運用這些知識。
 
+## 講稿
+
+
+Thread.State 定義了 6 種狀態：NEW、RUNNABLE、BLOCKED（等待取得 synchronized 鎖）、WAITING（無限期等待，需要其他執行緒明確喚醒）、TIMED_WAITING（限時等待）、TERMINATED。BLOCKED 專指「等待進入 synchronized 臨界區」WAITING/TIMED_WAITING 則涵蓋 wait()、join()、LockSupport.park() 等更廣泛的主動等待場景。
+
 ## 常見追問
 
 ### 為什麼 Thread.State 沒有直接對應作業系統的就緒與執行中兩種狀態？

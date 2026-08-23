@@ -45,6 +45,16 @@ Throwable
 
 先畫出體系的骨架——`Throwable` 分 `Error` 和 `Exception``Exception` 再分 Checked 和 Unchecked（以 `RuntimeException` 為界）。核心對比是「Checked 編譯期強制處理、Unchecked 不強制」，並解釋設計意圖：「Checked 用於可預期、可恢復的外部失敗（如 IO），Unchecked 用於程式 bug（如 NPE）」。能講出這個「設計意圖」層面的區別，比只背「一個要 try-catch 一個不用」更有深度。可以主動補一句「Error 不該捕捉，因為代表系統已不健康」。
 
+## 講稿
+
+我的理解是，Checked 編譯期強制處理、Unchecked 不強制。
+
+原因在於，Checked 用於可預期、可恢復的外部失敗（如 IO），Unchecked 用於程式 bug（如 NPE）。
+
+再來，一個要 try-catch 一個不用。
+
+另外，Error 不該捕捉，因為代表系統已不健康。
+
 ## 常見追問
 
 ### 受檢例外的設計在實務中有什麼爭議？

@@ -37,6 +37,11 @@ source: original
 
 先講資料結構（`Thread` 內部有 `ThreadLocalMap`key 是 `ThreadLocal` 自己），這是理解後面所有問題的基礎。接著講「為什麼會洩漏」時，務必按「key 弱引用被回收 → value 強引用留下 → 執行緒長期存活時永遠不會被清理」這個因果鏈說清楚，而不是只說一句「因為忘記 remove」。最後一定要連結到執行緒池場景，講出「污染下一個請求資料」這個比記憶體洩漏本身更嚴重的實務風險，這是資深工程師才會主動提到的細節，也是這題的加分關鍵。
 
+## 講稿
+
+
+每個 Thread 物件內部持有一個 ThreadLocalMapThreadLocalMap 的 key 是 ThreadLocal 實例本身（以弱引用形式儲存），value 是實際存放的資料。記憶體洩漏的根源在於：key 是弱引用會被 GC 回收，但 value 是強引用不會被自動回收，若執行緒長期存活（例如執行緒池中的核心執行緒）且忘記呼叫 remove()，這些 value 就會一直佔用記憶體，形成洩漏。
+
 ## 常見追問
 
 ### InheritableThreadLocal 解決了什麼問題？在執行緒池場景下為什麼還是可能失效？

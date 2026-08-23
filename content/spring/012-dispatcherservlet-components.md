@@ -36,6 +36,14 @@ DispatcherServlet 依賴一組核心組件協同完成請求處理：`HandlerMap
 
 先列出核心組件及各自職責（HandlerMapping 找誰處理、HandlerAdapter 怎麼呼叫、ViewResolver 解析視圖、HttpMessageConverter 轉 JSON、HandlerExceptionResolver 處理異常）。「HandlerMapping 和 HandlerAdapter 為什麼分開」是這題的深度考點——講出「單一職責 + 適配器模式的擴展性」，尤其「用 Adapter 適配不同形式的 Handler、要支援新 Handler 只需加 Adapter 不用改 DispatcherServlet」。能從「設計模式（適配器）和擴展性」角度回答，展現你理解這個拆分不是隨意的而是有明確的設計意圖。
 
+## 講稿
+
+我的理解是，HandlerMapping 和 HandlerAdapter 為什麼分開。
+
+再來，單一職責 + 適配器模式的擴展性。
+
+另外，用 Adapter 適配不同形式的 Handler、要支援新 Handler 只需加 Adapter 不用改 DispatcherServlet。
+
 ## 常見追問
 
 ### @ExceptionHandler 和 @ControllerAdvice 是怎麼實現全域異常處理的？

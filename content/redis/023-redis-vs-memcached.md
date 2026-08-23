@@ -48,6 +48,18 @@ Redis 和 Memcached 都是記憶體快取，但 Redis 功能豐富得多：（1�
 
 用對比的方式講清主要區別——資料類型（Redis 豐富 vs Memcached 只有 key-value）、持久化（Redis 有 vs Memcached 無）、高可用（Redis 完整方案 vs Memcached 無原生）、功能（Redis 事務/Lua/發布訂閱等 vs Memcached 少）。要「平衡」——也講 Memcached 的優勢（多執行緒、純快取簡單），避免給人「Redis 全面碾壓」的偏頗印象。最後給選擇建議——「絕大多數用 Redis（功能全生態好）、純簡單 key-value 追求極致吞吐才考慮 Memcached」。這是相對基礎的比較題，能全面客觀地對比並給出務實建議即可。
 
+## 講稿
+
+Redis 和 Memcached 都是記憶體快取，但 Redis 功能豐富得多：
+
+（1）資料類型，Memcached 只支援簡單的 key-value（value 是字串/二進位），Redis 支援 String/Hash/List/Set/ZSet 等豐富的資料結構；
+
+（2）持久化，Memcached 純記憶體、不支援持久化（重啟資料全丟），Redis 支援 RDB/AOF 持久化；
+
+（3）高可用/分散式，Redis 有主從、哨兵、Cluster 等完整方案，Memcached 沒有原生的（要靠客戶端分片）；
+
+（4）功能，Redis 還有事務、Lua 腳本、發布訂閱、過期、淘汰策略等豐富功能。Memcached 的優勢是，「多執行緒」（能更好利用多核，純 key-value 讀寫的極致吞吐可能略高）、且「純快取、簡單」。選擇，絕大多數場景用 Redis（功能全、生態好）；只有「純粹的、簡單的 key-value 快取、且追求多核下的極致吞吐」才可能考慮 Memcached。
+
 ## 常見追問
 
 ### Memcached 是多執行緒的，Redis 是單執行緒的，為什麼 Redis 反而更流行？

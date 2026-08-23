@@ -40,6 +40,11 @@ Spring 大量運用了設計模式，常見的有：**工廠模式**（BeanFacto
 
 這題考的是「廣度 + 能舉例」。不用把所有模式都講，挑幾個最有代表性、最能說清楚的重點講——工廠（BeanFactory）、代理（AOP）、模板方法（JdbcTemplate）、觀察者（事件機制）、適配器（HandlerAdapter）。每個模式一定要配「在 Spring 哪裡用到、解決什麼」的具體例子，這是這題的關鍵（光說模式名沒用，要能對應到 Spring 的實際運用）。能講清楚「模板方法在 JdbcTemplate 的應用（封裝固定流程、回呼處理可變部分）」這種有深度的例子，比泛泛列舉更能展現理解。
 
+## 講稿
+
+
+Spring 大量運用了設計模式，常見的有：工廠模式（BeanFactory/ApplicationContext 用工廠模式建立和管理 Bean）、單例模式（Bean 預設單例）、代理模式（AOP 用動態代理（Dynamic Proxy）實現）、模板方法模式（JdbcTemplate、RestTemplate 等 XxxTemplate，把固定流程封裝、可變部分留給使用者）、觀察者模式（事件機制 ApplicationEvent/Listener）、適配器模式（HandlerAdapter 適配不同形式的 Controller）、裝飾器模式（如各種 Wrapper）、策略模式（如多種 ViewResolver、各種可替換的策略介面）等。這些模式的運用讓 Spring 靈活、可擴展、易維護。
+
 ## 常見追問
 
 ### 模板方法模式在 JdbcTemplate 中是怎麼體現的？

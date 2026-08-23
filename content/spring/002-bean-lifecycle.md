@@ -35,6 +35,11 @@ Bean 的生命週期主要是：實例化（呼叫建構子建立物件）→ �
 
 按階段順序講——實例化 → 屬性填充 → Aware 回呼 → BeanPostProcessor 前置 → 初始化（@PostConstruct / afterPropertiesSet / init-method 三者順序）→ BeanPostProcessor 後置（AOP 在此）→ 使用 → 銷毀。不用逐字背，但要能講出主幹和幾個關鍵擴展點。最重要的是點出「BeanPostProcessor 是核心擴展點、AOP 代理在後置處理時生成」——這連結到後面循環依賴、AOP 等題目。能講出初始化方法的三種方式及其執行順序（@PostConstruct 最先），展現你對生命週期細節的掌握。
 
+## 講稿
+
+
+Bean 的生命週期主要是：實例化（呼叫建構子建立物件）→ 屬性填充（依賴注入）→ Aware 介面回呼（注入容器相關的資訊如 BeanName、ApplicationContext）→ BeanPostProcessor 前置處理 → 初始化（@PostConstruct → InitializingBean.afterPropertiesSet() → 自訂 init-method）→ BeanPostProcessor 後置處理（AOP 代理通常在這裡生成）→ Bean 就緒被使用 → 容器關閉時銷毀（@PreDestroy → DisposableBean.destroy() → 自訂 destroy-method）。核心擴展點是 BeanPostProcessor（能在初始化前後對每個 Bean 做處理，AOP 就是靠它織入）。
+
 ## 常見追問
 
 ### @PostConstruct、InitializingBean、init-method 三種初始化方式的執行順序和區別？

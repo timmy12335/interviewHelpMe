@@ -45,6 +45,11 @@ source: original
 
 先講兩者的核心差異——`@Autowired` 是 Spring 的、預設按型別；`@Resource` 是 JSR-250 標準的、預設按名稱。這是這題的主軸。多實作消歧義是必考的延伸，要能列出幾種解法（@Qualifier、@Primary、@Resource 按名稱），並理解它們的差異——@Primary 是「設一個預設首選」、@Qualifier 是「明確指定這一次要哪個」。能點出「@Resource 是標準註解、不綁 Spring」這個區別，展現你理解兩者不只是用法差異還有「標準 vs 框架」的定位差異。
 
+## 講稿
+
+
+@Autowired 是 Spring 提供的註解，預設「按型別（byType）」注入；@Resource 是 JSR-250 標準註解（不綁定 Spring），預設「按名稱（byName）」注入。當一個介面有多個實作時，型別注入會有歧義（Spring 不知道注入哪個），此時可以，用 @Autowired 搭配 @Qualifier("beanName") 指定名稱、或搭配 @Primary 標記首選實作、或直接用 @Resource(name="beanName") 按名稱指定，來消除歧義。
+
 ## 常見追問
 
 ### @Autowired 按型別注入時，如果匹配到多個 Bean，Spring 怎麼處理？

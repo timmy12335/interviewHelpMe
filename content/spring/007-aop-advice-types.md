@@ -45,6 +45,13 @@ Spring AOP 有五種通知：`@Before`（前置，方法執行前）、`@After`�
 
 先列出五種通知並簡述各自時機和用途，重點突出 `@Around` 是最強大的（能控制方法執行、改參數返回值）。執行順序是這題的核心考點——按 `@Around 前 → @Before → 方法 → @Around 後 → @After → @AfterReturning/Throwing` 講清楚。多切面順序要點出「用 @Order 控制、優先級高的在外層、洋蔥模型（先進後出）」。能講出洋蔥模型這個直觀的比喻，展現你理解多切面的巢狀執行結構而非死記順序。
 
+## 講稿
+
+
+Spring AOP 有五種通知：@Before（前置，方法執行前）、@After（後置/最終，方法執行後不管成功失敗都執行，類似 finally）、@AfterReturning（返回後，方法正常返回後執行）、@AfterThrowing（異常後，方法拋異常時執行）、@Around（環繞，包裹整個方法、最強大，能控制是否執行目標方法及修改參數返回值）。單個切面的執行順序是，@Around 前半段 → @Before → 目標方法 → @Around 後半段 → @After → @AfterReturning/@AfterThrowing。
+
+多個切面的順序用 @Order 註解或 Ordered 介面控制（值越小優先級越高、越先執行）。
+
 ## 常見追問
 
 ### @Around 環繞通知相比其他通知強在哪？使用時要注意什麼？

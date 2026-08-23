@@ -49,6 +49,11 @@ source: original
 
 按類別組織參數（堆、新生代、元空間、棧、收集器、診斷），不用背全部，講出每類最核心的幾個即可。重點是展現「理解參數的作用和權衡」而非死背——例如「`-Xms` 和 `-Xmx` 設成相等避免動態擴縮容抖動」「新生代大則 Minor GC 少但單次長」這種帶權衡的說明。最後點出調優關注的核心指標（吞吐、停頓、頻率、記憶體）以及「調優是在這些相互制約的目標間取平衡」，展現你理解調優是系統性的權衡而非套用固定參數。
 
+## 講稿
+
+
+常見參數分幾類：堆大小（-Xms 初始堆、-Xmx 最大堆，通常設成相等避免動態擴縮容的抖動）、新生代（-Xmn 新生代大小、-XX:SurvivorRatio Eden/Survivor 比例）、元空間（-XX:MetaspaceSize、-XX:MaxMetaspaceSize）、棧（-Xss 執行緒棧大小）、收集器選擇（-XX:+UseG1GC 等）、GC 目標（-XX:MaxGCPauseMillis 目標停頓）、以及 GC 日誌與 OOM 時 dump（-XX:+HeapDumpOnOutOfMemoryError）。調優關注的核心指標是，吞吐量、GC 停頓時間、GC 頻率、記憶體佔用。
+
 ## 常見追問
 
 ### 為什麼建議把 -Xms 和 -Xmx 設成相等？

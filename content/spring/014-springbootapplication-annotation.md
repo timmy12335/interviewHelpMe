@@ -34,6 +34,11 @@ source: original
 
 直接拆解 `@SpringBootApplication` 的三個核心組成——`@SpringBootConfiguration`（=@Configuration，配置類別）、`@EnableAutoConfiguration`（自動配置）、`@ComponentScan`（元件掃描）。分別說清楚各自做什麼。這是這題的主軸。能連結到「@EnableAutoConfiguration 開啟前面講的自動配置機制」展現知識串聯。實務加分點——主動提「主類別要放在根包，因為 @ComponentScan 預設掃描主類別所在包及子包」，這是一個真實會踩的坑（主類別放錯位置導致 Bean 掃不到），展現你有實際開發經驗。
 
+## 講稿
+
+
+@SpringBootApplication 是一個「組合註解」，主要由三個核心註解組成：@SpringBootConfiguration（本質是 @Configuration，宣告這是一個配置類別，可以定義 @Bean）、@EnableAutoConfiguration（開啟自動配置機制，載入並按條件套用各種 XxxAutoConfiguration）、@ComponentScan（開啟元件掃描，掃描並註冊主類別所在包及其子包下的 @Component/@Service/@Controller 等 Bean）。所以一個 @SpringBootApplication 就同時做了「這是配置類別 + 開啟自動配置 + 掃描元件」三件事，是 Spring Boot 應用的入口標記。
+
 ## 常見追問
 
 ### @ComponentScan 預設掃描的範圍是什麼？如果元件在掃描範圍外怎麼辦？

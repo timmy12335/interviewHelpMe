@@ -44,6 +44,13 @@ source: original
 
 先講「淘汰的觸發」（記憶體達 maxmemory 上限 + 有寫入時）。八種策略不用死背全部，講清楚「分類邏輯」——noeviction（不淘汰、拒絕寫入）、volatile-xxx（只淘汰設了過期的）、allkeys-xxx（淘汰所有 key），每類裡有 lru/lfu/random/ttl 幾種依據。LRU vs LFU 是核心考點——講清「LRU 看最後存取時間、會被偶發存取誤導；LFU 看存取頻率、更能保留真熱資料」。能給出「做快取常用 allkeys-lru/lfu」的實務建議，展現你理解策略選擇。
 
+## 講稿
+
+
+當 Redis 記憶體達到 maxmemory 上限時，會根據配置的「淘汰策略（maxmemory-policy）」來刪除一些 key 以騰出空間。策略主要分幾類，noeviction（不淘汰，記憶體滿了就拒絕寫入、返回錯誤，預設）、針對「設了過期時間的 key」淘汰（volatile-lru/lfu/ttl/random）、針對「所有 key」淘汰（allkeys-lru/lfu/random）。
+
+LRU（Least Recently Used，最近最少使用）淘汰「最久沒被存取」的 key；LFU（Least Frequently Used，最不經常使用，Redis 4.0+）淘汰「存取頻率最低」的 key。LFU 通常比 LRU 更能保留真正的熱資料（LRU 可能被「偶爾存取一次的冷資料」誤導）。
+
 ## 常見追問
 
 ### 為什麼說 LFU 通常比 LRU 更適合做快取淘汰？

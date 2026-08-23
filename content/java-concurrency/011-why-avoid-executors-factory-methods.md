@@ -33,6 +33,11 @@ source: original
 
 這題的標準結構是「先講內建工廠方法各自的隱藏地雷，再講正確做法」。不需要四個工廠方法都詳細展開，挑 `newFixedThreadPool` 和 `newCachedThreadPool` 這兩個最常被誤用的講清楚（分別是無界佇列、無界執行緒數），就足以說明問題本質。最關鍵的加分點是最後把這題提升到「快速失敗（fail-fast）設計原則」的高度——不要只回答「因為手冊這樣規定」，而是解釋「為什麼這樣規定是合理的」，展現你理解規範背後的工程原理，而不只是記得規範條文。
 
+## 講稿
+
+
+Executors 的工廠方法（newFixedThreadPool、newCachedThreadPool、newSingleThreadExecutor 等）內部預設使用了無界佇列或無限制的最大執行緒數，容易在高負載下堆積過多任務或執行緒，導致記憶體溢位（OOM）。直接用 ThreadPoolExecutor 建構子能強制開發者顯式思考並設定每個參數，尤其是佇列容量的上限。
+
 ## 常見追問
 
 ### 如果一定要用無界佇列，可以搭配什麼機制降低 OOM 風險？

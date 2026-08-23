@@ -34,6 +34,13 @@ Starter 是 Spring Boot 提供的「一站式依賴集合」——一個 starter
 
 先講「Starter 解決什麼問題」——依賴管理繁瑣、版本衝突，starter 把一組相容依賴聚合成一個，引入一個就全帶進來。接著點出「starter 本身通常是空殼（只是依賴清單）」這個容易被誤解的點。最核心的是講清「starter 和自動配置的分工」——starter 帶依賴、自動配置根據依賴配 Bean，兩者配合實現開箱即用。能區分官方（spring-boot-starter-xxx）和第三方（xxx-spring-boot-starter）的命名慣例是加分細節，展現你對 starter 生態的了解。
 
+## 講稿
+
+
+Starter 是 Spring Boot 提供的「一站式依賴集合」，一個 starter（如 spring-boot-starter-web）把「使用某個功能所需的一組相關依賴」聚合打包在一起，你只要引入這一個 starter，就自動帶來這個功能需要的所有依賴（且版本相互相容），不用自己一個個找依賴、對版本。它解決的是「依賴管理繁瑣、版本衝突」的痛點。
+
+Starter 和自動配置的關係是，starter 負責「帶來依賴」，自動配置負責「根據這些依賴自動配好 Bean」，兩者配合實現「引入一個 starter 就開箱即用」。
+
 ## 常見追問
 
 ### 引入一個 starter 後，「開箱即用」的完整鏈路是什麼？

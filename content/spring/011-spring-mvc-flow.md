@@ -38,6 +38,12 @@ Spring MVC 的請求流程以 `DispatcherServlet`（前端控制器）為核心�
 
 以 `DispatcherServlet` 為核心串起整個流程——它是「前端控制器」，統一調度。按「接收請求 → HandlerMapping 找 Handler → HandlerAdapter 呼叫 → Controller 執行返回 → ViewResolver 解析視圖 → 渲染 → 回應」講。務必區分「傳統 MVC（返回視圖）」和「REST API（@ResponseBody + HttpMessageConverter 返回 JSON）」兩條路徑——現在後端多是後者，能點出這個區別展現你了解實際開發。能說清楚各組件的職責（HandlerMapping 找誰處理、HandlerAdapter 怎麼呼叫、ViewResolver 解析視圖），展現你理解 MVC 的組件協作而非只背流程步驟。
 
+## 講稿
+
+我的理解是，接收請求 → HandlerMapping 找 Handler → HandlerAdapter 呼叫 → Controller 執行返回 → ViewResolver 解析視圖 → 渲染 → 回應。
+
+再來，REST API（@ResponseBody + HttpMessageConverter 返回 JSON）。
+
 ## 常見追問
 
 ### DispatcherServlet 為什麼叫「前端控制器」？這個設計模式有什麼好處？

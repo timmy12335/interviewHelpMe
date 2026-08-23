@@ -38,6 +38,11 @@ source: original
 
 這是這一批題目中相對基礎的一題，適合用來快速展現「你知道 Java 非同步程式設計的演進脈絡」。回答結構是「先講 `Future` 的限制（重點是無法鏈式、無法組合），再講 `CompletableFuture` 怎麼解決這些限制」，每個限制對應到 `CompletableFuture` 提供的具體解法，形成一一對應的清楚結構，而不是分別列舉兩份不相關的清單。如果時間充裕，補一個實際例子（例如「查完使用者再非同步查訂單」）會讓回答更立體，這也是接下來追問（[[013-completablefuture-composition.md]]）的自然銜接點。
 
+## 講稿
+
+
+Future 只能透過 get() 阻塞等待或反覆輪詢 isDone() 來取得非同步任務結果，無法對結果做進一步的鏈式處理，也無法組合多個 Future、無法主動完成或取消而不拋出例外。CompletableFuture（JDK 8）實作了 Future 與 CompletionStage 介面，提供了鏈式回呼、多任務組合、例外處理等豐富的 API，讓非同步程式設計更接近函數式風格。
+
 ## 常見追問
 
 ### thenApply 和 thenApplyAsync 的差異是什麼？什麼時候該用帶 Async 的版本？

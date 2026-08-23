@@ -47,6 +47,11 @@ source: original
 
 這題的核心訊息是「OOM 不只一種、看到 OOM 先看類型」。列出幾種主要類型(heap space、Metaspace、unable to create native thread、Direct buffer memory)，每種講清楚成因方向和排查思路。最重要的是傳達那個關鍵原則——「不同 OOM 類型成因和解法完全不同、盲目調大堆對非堆的 OOM(元空間/執行緒/直接記憶體)完全無效」。能把每種 OOM 連結到前面的知識(heap space→洩漏/容量、Metaspace→類別載入、native thread→執行緒與 Xss)，展現你把 JVM 記憶體的各個面向串成了完整的排查體系。
 
+## 講稿
+
+
+常見的 OOM 類型對應不同的記憶體區域耗盡:Java heap space(堆不足最常見，原因是記憶體洩漏（Memory Leak）或容量不足)、GC overhead limit exceeded(GC 花了大量時間卻回收很少，通常是堆快滿了的前兆)、Metaspace(元空間不足，類別載入過多或 classloader 洩漏)、unable to create new native thread(無法建立新執行緒，執行緒過多或系統限制)、Direct buffer memory(堆外直接記憶體不足，NIO 相關)。看到 OOM 的第一步永遠是「看清楚具體是哪種類型」，因為不同類型的成因和解法完全不同，盲目調大堆對非堆的 OOM 無效。
+
 ## 常見追問
 
 ### 遇到 Java heap space OOM，怎麼判斷是洩漏還是容量不足?

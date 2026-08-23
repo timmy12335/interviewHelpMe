@@ -40,6 +40,11 @@ source: original
 
 先講「為什麼需要通配符」（泛型是不變的，`List<Integer>` 不是 `List<Number>` 的子型別），這是理解通配符動機的前提。接著把 `extends`（能讀不能寫）和 `super`（能寫、讀只能當 Object）的行為對比講清楚，並解釋「為什麼」——關鍵是「編譯器對實際型別的已知程度」。最後用 PECS 這個口訣收尾，並舉 `Collections.copy` 這個經典例子。能講出「為什麼 extends 不能寫、super 讀只能當 Object」的推理過程，比只背口訣強得多。
 
+## 講稿
+
+
+? extends T 是「上界通配符」，表示「T 或 T 的某個子型別」，只能讀取（取出的元素保證是 T）不能寫入；? super T 是「下界通配符」，表示「T 或 T 的某個父型別」，可以寫入 T（或 T 的子型別）但讀取只能當作 Object。PECS 原則（Producer Extends, Consumer Super）是選用準則：如果一個結構是「生產者」（你從中讀取資料）就用 extends，如果是「消費者」（你往裡面寫入資料）就用 super。
+
 ## 常見追問
 
 ### 為什麼 List<? extends Number> 不能 add 元素（除了 null）？

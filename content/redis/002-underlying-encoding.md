@@ -34,6 +34,12 @@ Redis 的「資料類型（如 List、Hash、ZSet）」是對外的邏輯類型�
 
 先講核心設計思想——「邏輯類型和底層編碼分離、按資料規模自動選最優編碼」，這是理解這題的關鍵。然後對幾個重點類型講清楚「小資料用什麼、大資料用什麼、為什麼」——尤其 Hash（listpack vs hashtable）、ZSet（listpack vs skiplist+hashtable）、List（quicklist）。要點出「轉換由閾值觸發、且是單向的（不轉回）」。能講出「這種設計是為了兼顧小資料的記憶體和大資料的效能」，展現你理解 Redis 這個核心設計的動機，而非死背哪個類型有哪些編碼。
 
+## 講稿
+
+Redis 的「資料類型（如 List、Hash、ZSet）」是對外的邏輯類型，每種類型底層可以由「不同的資料結構（編碼）」實現，Redis 根據資料的「規模和內容」自動選擇最合適的編碼，並在條件變化時自動轉換。這樣設計是為了「在小資料時用緊湊省記憶體的結構、大資料時用高效的結構」，兼顧記憶體和效能。
+
+例如，Hash 在元素少且值短時用 ziplist/listpack（緊湊、省記憶體），元素多或值長時轉為 hashtable（查詢快）；ZSet 在小時用 ziplist/listpack大時用 skiplist（跳躍表）+ hashtable。這種「一個類型多種編碼、按需自動轉換」是 Redis 高效省記憶體的關鍵設計。
+
 ## 常見追問
 
 ### 為什麼小資料用 ziplist/listpack、大資料才用 hashtable/skiplist？

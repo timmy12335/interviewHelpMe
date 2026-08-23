@@ -41,6 +41,13 @@ JVM 內建三層類別載入器：啟動類別載入器（Bootstrap，載入核�
 
 先列出三層內建載入器（Bootstrap/Platform/Application）及各自載入的範圍。自訂載入器的重點是「覆寫 `findClass` 而非 `loadClass`」以及「為什麼」——因為 loadClass 含雙親委派邏輯、覆寫 findClass 能保留委派。這個細節很能區分是否真的寫過自訂載入器。常見場景要能舉出幾個（非標準來源載入、隔離、熱部署、加密），尤其「熱部署靠換載入器來載入同名新類別」這個點展現你理解類別載入器的隔離特性如何被實際利用。
 
+## 講稿
+
+
+JVM 內建三層類別載入器：啟動類別載入器（Bootstrap，載入核心類別庫，C++ 實作）、擴展/平台類別載入器（Extension/Platform，載入擴展模組）、應用類別載入器（Application，載入 classpath 上的應用類別）。自訂類別載入器通常繼承 ClassLoader、覆寫 findClass() 方法（在其中讀取位元組碼（Bytecode）並呼叫 defineClass()），而不是覆寫 loadClass()（覆寫 findClass 能保留雙親委派（Parent Delegation））。
+
+自訂載入器的常見場景包括：從特殊來源（加密檔案、網路、資料庫）載入類別、實現類別隔離、熱部署/熱替換等。
+
 ## 常見追問
 
 ### 為什麼自訂載入器要覆寫 findClass 而不是 loadClass？

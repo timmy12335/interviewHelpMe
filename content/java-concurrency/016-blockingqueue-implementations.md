@@ -32,6 +32,11 @@ source: original
 
 四選一比較題最容易講成流水帳，建議先用一句話點出核心差異軸——「有沒有容量上限」「鎖的粒度」「排隊順序」，再逐一對應到四個實作類別上。每個實作講完立刻補一個典型使用場景（尤其 `SynchronousQueue` 一定要提到它是 `newCachedThreadPool` 的底層佇列，這個連結很容易被追問），最後用選型速查表收尾。這種「先給框架、再填內容、最後給決策依據」的結構，是回答任何「多選一比較題」的通用模板。
 
+## 講稿
+
+
+ArrayBlockingQueue 是有界佇列，底層陣列，一把鎖控制存取；LinkedBlockingQueue 預設無界，底層鏈結串列，讀寫可用兩把鎖分離提升並行度；SynchronousQueue 本身不儲存任何元素，每個 put 必須配對一個 take 才能完成；PriorityBlockingQueue 是無界的優先級佇列，元素按照優先級出列而非先進先出。
+
 ## 常見追問
 
 ### SynchronousQueue 有公平模式和非公平模式，兩者實作機制有何不同？

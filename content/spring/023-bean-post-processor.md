@@ -34,6 +34,13 @@ source: original
 
 用「時機 + 對象」兩個維度清晰對比——BeanFactoryPostProcessor（Bean 實例化前、改定義/藍圖）vs BeanPostProcessor（Bean 實例化後、改實例/成品）。用「藍圖 vs 成品」這個比喻概括最容易記。務必舉出各自的經典應用——BeanFactoryPostProcessor 的佔位符解析、BeanPostProcessor 的 AOP 代理生成和 @Autowired 處理。最能加分的是點出「Spring 自己的核心功能（AOP、依賴注入、佔位符）都是靠這兩個擴展點實現的、框架自身也用公開擴展點」——這揭示了 Spring 高度可擴展的設計本質，展現你的理解達到了「看清框架設計哲學」的層次。
 
+## 講稿
+
+
+兩者都是 Spring 的核心擴展點，但介入的階段和對象不同：BeanFactoryPostProcessor 在「BeanDefinition（Bean 的定義/藍圖）已載入、但 Bean 還沒實例化」時介入，它能修改 Bean 的「定義」（如改屬性值、改作用域、動態註冊新的 BeanDefinition），作用對象是「Bean 的定義」。BeanPostProcessor 在「每個 Bean 實例化之後、初始化前後」介入，它能對「每個 Bean 實例」做處理（在初始化前後攔截、包裝、增強），作用對象是「Bean 的實例」。
+
+簡言之，BeanFactoryPostProcessor 改「藍圖（定義）」、BeanPostProcessor 改「成品（實例）」。它們是 Spring 擴展性的關鍵，因為很多核心功能（AOP、@Autowired、@Value 的處理等）都是透過它們實現的。
+
 ## 常見追問
 
 ### AOP 代理是在 BeanPostProcessor 的哪個階段生成的？為什麼是那個階段？

@@ -28,6 +28,14 @@ source: community
 
 先給出底層資料結構——「HashMap底層是陣列加鏈結串列(或紅黑樹)的結構，加入key-value時先計算key的hashCode決定放到陣列哪個索引(桶)，多個不同key碰撞到同一個桶就用鏈結串列串接，JDK8之後如果同一桶的鏈結串列長度超過門檻(預設8)會自動轉換成紅黑樹改善查詢效率」。給出和Hashtable的兩個核心差異——「執行緒安全性方面，Hashtable每個方法都加了synchronized本身是執行緒安全的，HashMap完全沒有同步機制在多執行緒下不安全;是否允許null方面，HashMap允許key和value都可以是null，Hashtable完全不允許」。可以主動補充實務建議——「實務上如果需要執行緒安全的Map，更好的選擇是ConcurrentHashMap，因為它透過更細緻的鎖粒度，能在保證執行緒安全的同時提供遠比Hashtable更好的並行效能，而不是回頭用Hashtable這種把每個方法都直接加synchronized的粗暴同步方式」，展現你對這題基礎知識有紮實且具備延伸視野的理解。
 
+## 講稿
+
+我的理解是，HashMap底層是陣列加鏈結串列(或紅黑樹)的結構，加入key-value時先計算key的hashCode決定放到陣列哪個索引(桶)，多個不同key碰撞到同一個桶就用鏈結串列串接，JDK8之後如果同一桶的鏈結串列長度超過門檻(預設8)會自動轉換成紅黑樹改善查詢效率。
+
+要區分清楚的是，執行緒安全性方面，Hashtable每個方法都加了synchronized本身是執行緒安全的，HashMap完全沒有同步機制在多執行緒下不安全;是否允許null方面，HashMap允許key和value都可以是null，Hashtable完全不允許。
+
+另外可以補充的是，實務上如果需要執行緒安全的Map，更好的選擇是ConcurrentHashMap，因為它透過更細緻的鎖粒度，能在保證執行緒安全的同時提供遠比Hashtable更好的並行效能，而不是回頭用Hashtable這種把每個方法都直接加synchronized的粗暴同步方式。
+
 ## 常見追問
 
 ### 為什麼 HashMap 的初始容量一定要是 2 的次方（如 16、32、64）？
