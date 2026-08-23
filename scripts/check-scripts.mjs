@@ -62,13 +62,19 @@ function charCount(script) {
 }
 
 /**
- * 最長的一句。兩個計算細節都會影響判斷準確度：
- * 只算中日韓字元（中英混排會讓字元數膨脹），
- * 並把全形分號當成句子邊界（那在中文口說裡是明確的換氣點）。
+ * 最長的一段「沒有停頓的連續文字」。
+ *
+ * 量整句的長度是錯的判準：一句 63 字但每 13 字就有一個逗號，唸起來很順；
+ * 一句 40 字卻一個標點都沒有，才是真的會斷氣。決定能不能唸的是換氣點的
+ * 間隔，不是句子的總長。所以這裡切在所有停頓標記上，而不是只切句號。
+ *
+ * 只算中日韓字元——中英混排會讓字元數虛胖，英文唸起來比中文快得多。
  */
-function longestSentence(script) {
+const PAUSE_RE = /[。！？；，、：\n]/;
+
+function longestRun(script) {
   return script
-    .split(/[。！？；\n]/)
+    .split(PAUSE_RE)
     .reduce((max, s) => Math.max(max, (s.match(/[一-鿿]/g) ?? []).length), 0);
 }
 
@@ -120,9 +126,9 @@ async function main() {
       problems.push([relative, `字數 ${chars}`, `合理區間 ${MIN_CHARS}–${MAX_CHARS}`]);
     }
 
-    const longest = longestSentence(script);
-    if (longest > 55) {
-      problems.push([relative, `最長句 ${longest} 字`, "念到一半會斷氣，拆開"]);
+    const longest = longestRun(script);
+    if (longest > 30) {
+      problems.push([relative, `連續 ${longest} 字無停頓`, "唸到這裡會斷氣，補標點或拆句"]);
     }
 
     const opener = script.slice(0, OPENER_SAMPLE);

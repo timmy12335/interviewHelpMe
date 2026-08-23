@@ -42,11 +42,11 @@ Spring MVC 的請求流程以 `DispatcherServlet`（前端控制器）為核心�
 
 整個流程的核心只有一個東西，DispatcherServlet，也就是前端控制器。所有請求都先進到它手上，由它統一調度。
 
-它接到請求，先問 HandlerMapping 這個 URL 該由誰處理，拿回對應的 Controller 方法和一整條攔截器鏈。接著它不自己呼叫 Handler，而是交給 HandlerAdapter。因為 Handler 有很多種形式，用適配器才能統一呼叫方式。參數綁定和資料校驗都在這一步做完。
+它接到請求，先問 HandlerMapping 這個 URL 該由誰處理，拿回對應的 Controller 方法和攔截器鏈。接著它不自己呼叫 Handler，而是交給 HandlerAdapter，因為 Handler 有很多種形式，用適配器才能統一呼叫。參數綁定和校驗都在這一步做完。
 
-Controller 跑完業務邏輯，傳統 MVC 會回傳 ModelAndView。Model 是資料，View 是邏輯視圖名。DispatcherServlet 把視圖名交給 ViewResolver 解析成真正的 View，像是 JSP 或 Thymeleaf 模板，再把資料填進去產生 HTML 寫回回應。
+Controller 跑完業務邏輯回傳 ModelAndView，DispatcherServlet 把視圖名交給 ViewResolver 解析成真正的 View，再把資料填進去產生 HTML。
 
-現在後端大多不走這條路。只要標了 @RestController 或 @ResponseBody，視圖解析整段跳過，直接由 HttpMessageConverter 把回傳物件序列化成 JSON。攔截器則貫穿全程，preHandle 在 Handler 之前，postHandle 在渲染之前，afterCompletion 在整個請求結束之後。
+現在後端大多不走這條路。標了 @RestController，視圖解析整段跳過，直接由 HttpMessageConverter 序列化成 JSON。攔截器則貫穿全程，preHandle 在 Handler 之前，postHandle 在渲染之前，afterCompletion 在請求結束之後。
 
 ## 常見追問
 

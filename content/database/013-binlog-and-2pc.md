@@ -43,13 +43,13 @@ binlog（二進位日誌）是 MySQL Server 層（不依賴具體儲存引擎）
 
 ## 講稿
 
-binlog 是 MySQL Server 層記錄的邏輯變更日誌，不依賴具體的儲存引擎，主要用途是主從複製和時間點恢復。格式有三種：Statement 記錄實際執行的 SQL，Row 記錄每一行資料的實際變化，Mixed 則是混合，大多數情況走 Statement，遇到有不確定性的語句自動改用 Row。
+binlog 是 MySQL Server 層記錄的邏輯變更日誌，不依賴具體儲存引擎，主要用途是主從複製和時間點恢復。格式有三種：Statement 記錄執行的 SQL，Row 記錄每一行的實際變化，Mixed 則是混合，大多數走 Statement，遇到有不確定性的語句自動改用 Row。
 
-至於為什麼需要兩階段提交，我覺得用反例講最清楚。redo log 屬於 InnoDB 引擎、binlog 屬於 Server 層，這是兩個獨立的系統各自記錄。如果先寫完 redo log 就當機，binlog 少了這一筆，主庫恢復後有這筆資料、但同步給從庫的沒有，主從就不一致了；反過來先寫 binlog 再當機，從庫多了一筆主庫沒有的資料，一樣不一致。
+為什麼需要兩階段提交，用反例講最清楚。redo log 屬於 InnoDB、binlog 屬於 Server 層，是兩個獨立系統各自記錄。先寫完 redo log 就當機，binlog 少了這一筆，主庫有、從庫沒有；反過來先寫 binlog 再當機，從庫多了一筆主庫沒有的。兩種都是主從不一致。
 
-兩階段提交的流程是，先讓 redo log 進入 prepare 這個中間狀態，接著寫 binlog，binlog 寫成功之後再讓 redo log 真正 commit。
+流程是先讓 redo log 進入 prepare 這個中間狀態，接著寫 binlog，寫成功之後 redo log 才真正 commit。
 
-關鍵在恢復時的判斷邏輯：如果 redo log 已經是 commit 狀態就直接提交；如果停在 prepare 狀態，就去看對應的 binlog 完不完整，完整就補提交，不完整就回滾。這樣兩份日誌就能被恢復到一致的狀態。
+關鍵在恢復時的判斷。redo log 已經是 commit 就直接提交；停在 prepare 就去看對應的 binlog 完不完整，完整補提交，不完整回滾。兩份日誌就這樣被拉回一致。
 
 ## 常見追問
 
