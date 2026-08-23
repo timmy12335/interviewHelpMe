@@ -53,10 +53,15 @@ class AppConfig {
 
 ## 講稿
 
+從一個實際情境講起。配置類別裡有兩個 @Bean 方法，a 依賴 b，所以 a 的方法體直接呼叫了 b。
 
-@Configuration 預設是「full 模式」，Spring 會用 CGLIB 為配置類別生成代理，攔截其中 @Bean 方法的呼叫，保證「即使在配置類別內部一個 @Bean 方法呼叫另一個 @Bean 方法，返回的也是容器裡的同一個單例 Bean，而不是每次都 new 新的」。「lite 模式」則是不做這個 CGLIB 代理，當 @Bean 方法定義在非 @Configuration 類別（如 @Component）中、或設定 @Configuration(proxyBeanMethods = false) 時，@Bean 方法之間的呼叫就是「普通 Java 方法呼叫」，每次呼叫都會執行方法體（可能建立新物件），不保證單例。
+如果這是普通的 Java 呼叫，每呼叫一次就執行一次方法體，等於每次都 new 一個新的 B，容器的單例保證就破功了。
 
-proxyBeanMethods 屬性就是控制這個，true（預設）是 full 模式（代理、保證單例）、false 是 lite 模式（不代理、不保證、但省去代理開銷、啟動更快）。
+@Configuration 預設的 full 模式就在解這件事。Spring 用 CGLIB 為配置類別生成代理，攔截 @Bean 方法的呼叫。就算在類別內部互相呼叫，拿到的還是容器裡那個單例。
+
+lite 模式不做這層代理。@Bean 方法寫在 @Component 這類非 @Configuration 的類別裡，或明確設了 proxyBeanMethods 等於 false，就會走 lite。這時方法之間就是普通呼叫，不保證單例。
+
+所以 proxyBeanMethods 控制的就是這個開關。預設 true 保證單例但要付代理成本，設成 false 啟動更快，代價是你得自己確保 @Bean 方法之間沒有互相呼叫。
 
 ## 常見追問
 

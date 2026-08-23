@@ -46,11 +46,15 @@ source: original
 
 ## 講稿
 
-我的理解是，ApplicationContext 是 BeanFactory 的子介面、繼承並增強了它。
+兩者是繼承關係。BeanFactory 是 IoC 容器最基礎的介面，ApplicationContext 是它的子介面，繼承全部功能之後再往上加。
 
-另外可以補充的是，ApplicationContext 預先載入的好處是啟動時就暴露配置問題（快速失敗）。
+BeanFactory 只做一件事，管 Bean。定義、建立、依賴注入、getBean，功能很精簡。ApplicationContext 補上一整套企業級功能：國際化、事件發布與監聽、統一的資源存取，還有對 AOP 和註解更好的整合。
 
-再來，實際開發幾乎都用 ApplicationContext。
+另一個關鍵差異是載入時機。BeanFactory 預設延遲載入，用到才建。ApplicationContext 在啟動時就把所有單例 Bean 建好。
+
+預先載入的好處是問題早暴露。某個 Bean 少了依賴或配置寫錯，啟動當下就報錯，而不是等執行期第一次用到才炸。這是快速失敗的思路，對生產環境友善得多。
+
+所以實務幾乎都用 ApplicationContext，BeanFactory 比較像理解容器分層時才會碰到的底層介面。
 
 ## 常見追問
 

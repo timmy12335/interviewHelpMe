@@ -36,10 +36,13 @@ source: original
 
 ## 講稿
 
+先給結論避免誤會：這四個在「能不能成為 Bean」上完全等價，都會被元件掃描註冊進容器。@Service、@Repository、@Controller 內部本身就被 @Component 標註，是它的特化。
 
-這四個註解本質上「功能相同」，都是把類別標記為 Spring 管理的 Bean（都能被元件掃描發現並註冊為 Bean）。其中 @Component 是「通用」的元件標記，而 @Service、@Repository、@Controller 都是 @Component 的「特化（衍生）」，它們內部都被 @Component 標註，所以效果上和 @Component 一樣能註冊為 Bean，但它們透過「語意化的命名」表達了這個 Bean 在分層架構中的「角色」（Service 是業務層、Repository 是資料存取層、Controller 是 Web 層），提升了程式碼的可讀性。
+主要差別在語意化分層。看到 @Service 就知道是業務層，@Repository 是資料存取層，@Controller 是 Web 層。可讀性差很多，也讓切面能按角色處理，例如對所有 @Service 統一記日誌。
 
-此外個別註解有一點額外功能，@Repository 會把資料存取的異常轉換成 Spring 統一的 DataAccessException、@Controller 配合 Spring MVC 處理 Web 請求。
+不過也不只是換個名字，有兩個實質差異。@Repository 會啟用例外轉換，把 JDBC 的 SQLException 統一轉成 Spring 的 DataAccessException，上層就不必綁死在特定資料存取技術上。
+
+@Controller 則配合 Spring MVC，只有被它標記的類別，方法上的 @RequestMapping 才會被識別成請求處理器。
 
 ## 常見追問
 

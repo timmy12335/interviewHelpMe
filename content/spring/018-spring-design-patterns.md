@@ -42,8 +42,13 @@ Spring 大量運用了設計模式，常見的有：**工廠模式**（BeanFacto
 
 ## 講稿
 
+Spring 幾乎是設計模式的活教材，我挑幾個最有代表性的講。
 
-Spring 大量運用了設計模式，常見的有：工廠模式（BeanFactory/ApplicationContext 用工廠模式建立和管理 Bean）、單例模式（Bean 預設單例）、代理模式（AOP 用動態代理（Dynamic Proxy）實現）、模板方法模式（JdbcTemplate、RestTemplate 等 XxxTemplate，把固定流程封裝、可變部分留給使用者）、觀察者模式（事件機制 ApplicationEvent/Listener）、適配器模式（HandlerAdapter 適配不同形式的 Controller）、裝飾器模式（如各種 Wrapper）、策略模式（如多種 ViewResolver、各種可替換的策略介面）等。這些模式的運用讓 Spring 靈活、可擴展、易維護。
+工廠模式就是容器本身，BeanFactory 負責建立與管理 Bean，把物件建立集中封裝。代理模式是 AOP 的核心，用 JDK 動態代理或 CGLIB 生成代理，在方法前後織入交易、日誌這類橫切邏輯。
+
+最值得展開的是模板方法，也就是 JdbcTemplate 這一系列。取得連線、執行、處理例外、關閉連線這套流程每次都一樣，模板把骨架封裝起來，只把會變的部分，像是 SQL 和結果處理，用回呼留給使用者。
+
+觀察者模式是事件機制，發布者送事件、監聽者用 @EventListener 接，兩邊解耦。適配器模式是 HandlerAdapter，把各種寫法的 Controller 適配成統一介面，DispatcherServlet 才能一視同仁地呼叫。
 
 ## 常見追問
 
