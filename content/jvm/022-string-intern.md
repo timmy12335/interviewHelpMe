@@ -34,10 +34,10 @@ source: original
 **經典陷阱題**:
 
 ```java
-String s = new String("1") + new String("1"); // 堆上得到 "11",此時池中還沒有 "11"
+String s = new String("1") + new String("1"); // 堆上得到 "11"，此時池中還沒有 "11"
 boolean b = s.intern() == s;
-// JDK 7+: true(intern 時池中沒有 "11",直接把 s 的引用放入池,所以 s.intern() 返回的就是 s)
-// JDK 6:  false(intern 複製了一份 "11" 到永久代池,返回的是複製品,不等於 s)
+// JDK 7+: true（intern 時池中沒有 "11"，直接把 s 的引用放入池，所以 s.intern() 返回的就是 s）
+// JDK 6:  false（intern 複製了一份 "11" 到永久代池，返回的是複製品，不等於 s）
 ```
 
 ## 面試回答方式
