@@ -71,5 +71,5 @@ source: original
 ## 相關
 
 - [[006-caching-strategies.md]]
-- [[../redis/README.md]]
+- [[../redis/010-cache-penetration.md]]
 - [[../backend-engineering/008-service-degradation.md]]

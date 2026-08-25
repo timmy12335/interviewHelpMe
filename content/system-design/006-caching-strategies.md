@@ -70,6 +70,6 @@ Write-Behind 是先只寫快取就回應成功，之後再非同步批次寫回�
 
 ## 相關
 
-- [[../redis/README.md]]
+- [[../redis/013-cache-consistency.md]]
 - [[../backend-engineering/015-outbox-pattern.md]]
 - [[003-load-balancing.md]]
