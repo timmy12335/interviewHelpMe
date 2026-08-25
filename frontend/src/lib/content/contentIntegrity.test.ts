@@ -115,6 +115,34 @@ describe("題庫結構", () => {
     expect(mismatched).toEqual([]);
   });
 
+  it("同一分類裡沒有重複的 slug", () => {
+    // slug 就是網址的一段。同分類撞 slug 會讓兩題指向同一個頁面，
+    // 而編號不同時光看檔名列表看不出來。
+    const duplicates = CATEGORIES.flatMap((category) => {
+      const seen = new Map<string, string>();
+      return QUESTIONS.filter((q) => q.category === category).flatMap((question) => {
+        const slug = expectedSlug(question.fileName);
+        const first = seen.get(slug);
+        seen.set(slug, question.fileName);
+        return first ? [`${category} 的 ${first} 與 ${question.fileName} slug 都是 ${slug}`] : [];
+      });
+    });
+
+    expect(duplicates).toEqual([]);
+  });
+
+  it("id 在全站唯一", () => {
+    const seen = new Map<string, string>();
+    const duplicates = QUESTIONS.flatMap((question) => {
+      const id = frontmatterValue(question.markdown, "id") ?? "";
+      const first = seen.get(id);
+      seen.set(id, question.label);
+      return first ? [`${first} 與 ${question.label} 的 id 都是 ${id}`] : [];
+    });
+
+    expect(duplicates).toEqual([]);
+  });
+
   it("每個分類的檔案編號從 001 開始連續", () => {
     const gaps = CATEGORIES.flatMap((category) => {
       const numbers = QUESTIONS.filter((q) => q.category === category).map((q) => q.number);
