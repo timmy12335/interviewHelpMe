@@ -40,17 +40,15 @@ source: original
 
 先用工作層級把三個排開。
 
-LoadBalancer Service 在 L4，一個 Service 映射一台雲端負載平衡器跟一個外部 IP。好處是支援任意 TCP、UDP 協定，資料庫、遊戲伺服器都能對外。壞處是每個服務各佔一個 IP 跟一台 LB，數量一多成本很難看。
-
-Ingress 在 L7，多個服務共用一個入口，依主機名跟路徑分流，TLS 也統一處理。在 GKE 上它會被翻譯成 Google Cloud Load Balancer。
+LoadBalancer Service 在 L4，一個 Service 映射一台雲端負載平衡器跟一個外部 IP。好處是支援任意 TCP、UDP 協定。壞處是每個服務各佔一個 IP 跟一台 LB，數量一多成本很難看。Ingress 在 L7，多個服務共用一個入口，依主機名跟路徑分流，TLS 統一處理。
 
 那 Gateway API 想解決 Ingress 的什麼問題？我覺得有兩件。
 
-第一是表達力不足。重試、逾時、流量權重切分、標頭改寫，這些常見需求 Ingress 規範裡都沒有，各家 Controller 只能用自己的 annotation 實作。結果是設定完全不能移植，從 NGINX 換到 GCE Ingress 幾乎每個 annotation 都要重寫。
+第一是表達力不足。重試、逾時、流量權重切分，這些常見需求 Ingress 規範裡都沒有，各家 Controller 只能用自己的 annotation 實作。結果是設定不能移植，從 NGINX 換到 GCE Ingress 幾乎每個 annotation 都要重寫。
 
-第二是職責混在一起。Ingress 把憑證、主機名、路由規則全塞在同一份 YAML，應用團隊改一條路徑就得碰到憑證設定。Gateway API 把它拆開，平台團隊管 Gateway 跟憑證，應用團隊只提交 HTTPRoute 綁上去，而且 Gateway 可以宣告允許哪些命名空間掛進來。
+第二是職責混在一起。Ingress 把憑證、主機名、路由規則全塞在同一份 YAML，應用團隊改一條路徑就得碰憑證設定。Gateway API 把它拆開，平台團隊管 Gateway 跟憑證，應用團隊只提交 HTTPRoute 綁上去。
 
-不過也不必為了新而換。判準是有沒有遇到 Ingress 表達不了的需求，沒有的話 Ingress 反而更省事。
+不過也不必為了新而換。判準是有沒有遇到 Ingress 表達不了的需求。
 
 ## 常見追問
 

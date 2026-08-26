@@ -42,15 +42,15 @@ Autopilot 的代價是**限制**：不能用 privileged 容器、多數 hostPath
 
 差別的根源只有兩件事：節點由誰負責，還有按什麼計費。
 
-Standard 模式你自己管節點池，選機型、決定數量、排升級節奏，計費是按節點，開著就收錢，不管上面跑了多少 Pod。Autopilot 是 Google 管節點，你看不到也管不到節點池，只要提交 Pod，計費按 Pod 實際 request 的 CPU、記憶體跟儲存。
+Standard 你自己管節點池，選機型、決定數量、排升級節奏，計費按節點，開著就收錢，不管上面跑了多少 Pod。Autopilot 是 Google 管節點，你看不到也管不到，只要提交 Pod，計費按 Pod 實際 request 的資源。
 
 Autopilot 的代價是限制。不能用 privileged 容器，多數 hostPath 跟 hostNetwork 被禁，不能在節點裝自己的 agent，也不能 SSH 進去除錯。
 
-所以該不該選，判準是「我的工作負載需不需要碰節點」，而不是團隊熟不熟 K8s。需要自建安全 agent、要調核心參數、要自訂 GPU 驅動，那就得用 Standard。
+所以該不該選，判準是「我的工作負載需不需要碰節點」，而不是團隊熟不熟 K8s。要自建安全 agent、要調核心參數，那就得用 Standard。
 
-有一個影響很實際的差異值得提。Autopilot 是按 request 計費，等於 requests 直接就是帳單。在 Standard 模式把 requests 設高只是浪費排程空間，帳單不變；在 Autopilot 你設多少就付多少。這讓資源設定從效能議題變成成本議題。
+有個影響很實際的差異。Autopilot 按 request 計費，等於 requests 直接就是帳單。在 Standard 把 requests 設高只是浪費排程空間，帳單不變；在 Autopilot 你設多少就付多少。這讓資源設定從效能議題變成成本議題。
 
-成本上沒有一致答案。負載波動大、利用率低的情況 Autopilot 通常划算，負載穩定又已經做過裝箱優化的用 Standard 比較便宜。這個要拿 requests 總和對比節點成本實際算，不能靠直覺。
+成本上沒有一致答案，要拿 requests 總和對比節點成本實際算，不能靠直覺。
 
 ## 常見追問
 

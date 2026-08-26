@@ -38,15 +38,13 @@ ClusterIP、NodePort、LoadBalancer 這三種 Service 型別各自解決什麼�
 
 第一件要講清楚的是，這三種型別是疊加上去的，不是三選一。
 
-ClusterIP 是基礎，給一個只有叢集內可達的虛擬 IP。NodePort 在它之上，額外在每個節點開一個高位 port，從外面打任一節點都轉得進來。LoadBalancer 又在 NodePort 之上，額外請雲端配一台負載平衡器和一個外部 IP。所以你建一個 LoadBalancer，底下其實三層都在。
+ClusterIP 是基礎，給一個只有叢集內可達的虛擬 IP。NodePort 在它之上，額外在每個節點開一個高位 port。LoadBalancer 又在 NodePort 之上，額外請雲端配一台負載平衡器和一個外部 IP。所以你建一個 LoadBalancer，底下其實三層都在。
 
-那為什麼還要 Ingress？因為層級不一樣。Service 工作在 L4，只認 IP 和 port。而每一個 LoadBalancer Service 都會各自佔一個外部 IP、一台雲端負載平衡器，十個服務就是十份帳單。
+那為什麼還要 Ingress？因為層級不一樣。Service 在 L4 只認 IP 跟 port，而每個 LoadBalancer Service 都各佔一個外部 IP、一台負載平衡器，十個服務就是十份帳單。Ingress 在 L7，能依主機名和路徑分流，所有服務共用一個入口，TLS 也統一處理。
 
-Ingress 工作在 L7，能依照 HTTP 的主機名和路徑分流到不同 Service，所有服務共用一個入口、一個 IP，TLS 憑證也在這一層統一處理。
+兩個實務細節。ClusterIP 其實是個不存在的 IP，ping 不到，它可達是因為 kube-proxy 在每個節點寫了轉發規則。
 
-有兩個實務細節值得提。ClusterIP 其實是個不存在的 IP，ping 不到，它可達是因為 kube-proxy 在每個節點寫了轉發規則，叢集外沒有這套規則所以打不到。
-
-還有，Ingress 本身不做事，要有 Ingress Controller 去讀它才會生效。只建 Ingress 沒裝 Controller 是最常見的「設定完全沒反應」，而且不會報錯，只會看到 ADDRESS 欄位一直空著。
+還有，Ingress 本身不做事，要有 Controller 讀它才生效。只建 Ingress 沒裝 Controller 是最常見的「設定完全沒反應」，而且不報錯，只會看到 ADDRESS 一直空著。
 
 ## 常見追問
 

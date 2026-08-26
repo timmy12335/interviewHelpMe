@@ -40,17 +40,15 @@ resources 的 requests 和 limits 差在哪？它們怎麼決定 Pod 的 QoS 等
 
 ## 講稿
 
-requests 是排程的依據，limits 是執行期的天花板。Scheduler 只看 requests，而且它比對的是節點上已經被 request 的總量，不是實際用量。
+requests 是排程的依據，limits 是執行期的天花板。Scheduler 只看 requests，而且比對的是節點上已被 request 的總量，不是實際用量。
 
-最該記住的是 CPU 跟記憶體超限的後果完全不同。CPU 超過 limit 只是被 throttle，變慢但不會死。記憶體超過 limit 會直接被核心 OOMKill，沒有商量餘地，因為記憶體沒辦法像 CPU 那樣回收。
+最該記住的是 CPU 跟記憶體超限的後果完全不同。CPU 超過 limit 只是被 throttle，變慢但不會死。記憶體超過會直接被核心 OOMKill，沒有商量餘地，因為記憶體沒辦法像 CPU 那樣回收。
 
-QoS 由這兩個值的關係決定。都設且相等是 Guaranteed，有設但不相等是 Burstable，都沒設是 BestEffort。它決定的是節點資源不足時誰先被趕走。
+QoS 由這兩個值的關係決定。都設且相等是 Guaranteed，有設但不相等是 Burstable，都沒設是 BestEffort。它決定節點資源不足時誰先被趕走。
 
-這裡要分清楚兩件事。OOMKilled 是這個容器自己超過它的記憶體 limit，跟節點有沒有壓力無關。驅逐是節點整體資源不足，kubelet 依 QoS 挑 Pod 趕走。症狀很像，成因完全不同。
+這裡要分清楚兩件事。OOMKilled 是容器自己超過它的記憶體 limit，跟節點壓力無關。驅逐是節點整體資源不足，kubelet 依 QoS 挑人趕走。症狀很像，成因完全不同。
 
-排查上有個快捷方式，看到 Exit Code 137 就直接往記憶體查，那是 128 加上 SIGKILL 的 9。
-
-另外 JVM 這類自己管堆的執行環境要特別小心，容器的 limit 必須大於最大堆再加上 metaspace、執行緒堆疊跟原生記憶體。不然 JVM 自己覺得還很寬裕，容器卻先被殺掉了。
+排查有個快捷方式，看到 Exit Code 137 就直接往記憶體查。另外 JVM 這類自己管堆的執行環境要小心，容器 limit 必須大於最大堆再加上 metaspace 跟原生記憶體，不然 JVM 覺得還很寬裕，容器卻先被殺了。
 
 ## 常見追問
 

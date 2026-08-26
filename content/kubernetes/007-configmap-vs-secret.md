@@ -36,17 +36,15 @@ ConfigMap 和 Secret 有什麼差別？Secret 只是 base64 編碼，這樣算�
 
 ## 講稿
 
-功能上這兩個幾乎一樣，都是鍵值對，都能用環境變數或檔案掛載給 Pod。差別在用途語意跟周邊處理：ConfigMap 放非敏感設定，Secret 放密碼、Token、憑證。
+功能上這兩個幾乎一樣，都是鍵值對，都能用環境變數或檔案掛載給 Pod。差別在用途語意：ConfigMap 放非敏感設定，Secret 放密碼、Token、憑證。
 
 至於 base64，它是編碼不是加密，任何人拿到都能還原。它存在的理由只是讓憑證這種二進位內容能放進 YAML，從來沒打算隱藏什麼。
 
-Secret 真正的保護來自別的地方。RBAC 可以獨立控管誰能讀 Secret，值不會出現在 describe 裡，可以設定 etcd 靜態加密，掛載時是放在記憶體的 tmpfs 而不是寫進磁碟。
+Secret 真正的保護來自別的地方。RBAC 可以獨立控管誰能讀，值不會出現在 describe 裡，可以設定 etcd 靜態加密，掛載時放在記憶體的 tmpfs 而不是寫進磁碟。
 
 所以我會這樣定調：Secret 預設並不安全，它提供的是一個可以被保護的位置，實際安全到什麼程度，取決於你有沒有把那些保護打開。
 
-有一個容易被忽略的邊界要提。RBAC 保護的是 API 層面，但如果一個人能在那個 namespace 建立 Pod，他就可以掛載該 namespace 的任何 Secret 再印出來。所以實際的隔離邊界是 namespace 加上誰能建工作負載，不只是誰能 get secret。
-
-真正敏感的東西，實務上會交給 Secret Manager 或 Vault，K8s 只留取用的憑證。
+有個容易忽略的邊界。RBAC 保護的是 API 層面，但能在那個 namespace 建 Pod 的人，就可以掛載該 namespace 的任何 Secret 再印出來。所以實際的隔離邊界是 namespace 加上誰能建工作負載。
 
 ## 常見追問
 

@@ -42,11 +42,11 @@ HPA、VPA 和 Cluster Autoscaler 分別在調整什麼？它們可以同時使�
 
 這三個調整的是不同維度，而且彼此是接力關係。
 
-HPA 調 Pod 的數量，看 CPU、記憶體或自訂指標增減副本。VPA 調單一 Pod 的 requests 跟 limits，觀察實際用量再修正配置。Cluster Autoscaler 調節點數量，有 Pod 因為資源不足卡在 Pending 就加節點，節點長期閒置就移除。
+HPA 調 Pod 的數量，VPA 調單一 Pod 的 requests 跟 limits，Cluster Autoscaler 調節點數量。
 
-接力關係是這樣：HPA 加了 Pod，現有節點放不下，Pod 進入 Pending，Cluster Autoscaler 這時才開新節點。所以 HPA 跟 Cluster Autoscaler 幾乎一定要一起用。
+接力關係是這樣：HPA 加了 Pod，現有節點放不下，Pod 進入 Pending，Cluster Autoscaler 這時才開新節點。所以這兩個幾乎一定要一起用。
 
-但 HPA 跟 VPA 不能同時盯同一個指標，會打架。VPA 調高 requests，每個 Pod 的使用率就下降，HPA 看到使用率低就縮副本，負載又集中回來，來回震盪。要並用必須讓它們看不同維度。
+但 HPA 跟 VPA 不能同時盯同一個指標，會打架。VPA 調高 requests，每個 Pod 的使用率就下降，HPA 看到使用率低就縮副本，負載又集中回來，來回震盪。
 
 有兩個實務重點。第一，HPA 的 CPU 使用率是相對於 requests 算的，不是 limits。所以 requests 設得準不準，直接決定 HPA 好不好用。
 

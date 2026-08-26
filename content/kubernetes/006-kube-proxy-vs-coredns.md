@@ -38,15 +38,15 @@ source: original
 
 這兩個負責完全不同的兩段，串起來才通。
 
-CoreDNS 負責名稱變成 IP。Pod 查 my-service，CoreDNS 回答這個 Service 的 ClusterIP。kube-proxy 負責虛擬 IP 變成真實的 Pod IP，它在每個節點上維護 iptables 或 IPVS 規則，把送往 ClusterIP 的封包改寫目的地。
+CoreDNS 負責名稱變成 IP。Pod 查 my-service，它回答這個 Service 的 ClusterIP。kube-proxy 負責虛擬 IP 變成真實的 Pod IP，它在每個節點維護 iptables 或 IPVS 規則，把送往 ClusterIP 的封包改寫目的地。
 
-關鍵是 ClusterIP 其實是個不存在的位址，它不綁在任何網卡上，ping 不到，也沒有任何行程在監聽。它可達純粹是因為封包離開 Pod 時被節點上那套規則改寫了。這也直接解釋了為什麼叢集外打不到 ClusterIP，因為外面沒有這套規則。
+關鍵是 ClusterIP 其實是個不存在的位址，不綁在任何網卡上，ping 不到，也沒有行程在監聽。它可達純粹是因為封包離開 Pod 時被節點上那套規則改寫了。這也解釋了為什麼叢集外打不到，因為外面沒有這套規則。
 
-還有一點常被誤解，kube-proxy 不是流量的中繼站，它只負責寫規則，真正轉發是核心在做。所以 kube-proxy 掛掉時既有連線不受影響，只是規則不再更新。
+還有一點常被誤解：kube-proxy 不是流量的中繼站，它只寫規則，真正轉發是核心在做。所以它掛掉時既有連線不受影響，只是規則不再更新。
 
-規則的來源是 Endpoints，由 controller 依 label selector 維護，而且只收錄通過 Readiness 探針的 Pod。所謂「未就緒的 Pod 不會收到流量」，實作上就是它沒被寫進去。
+規則的來源是 Endpoints，只收錄通過 Readiness 探針的 Pod。所謂「未就緒不收流量」，實作上就是它沒被寫進去。
 
-排查時這個分辨很省時間：解析不了是 DNS 的問題，解析得到但連不上或連到死掉的 Pod，那就是 kube-proxy 或 Endpoints 那一段。
+排查時這個分辨很省時間：解析不了是 DNS 的問題，解析得到但連不上，那是 kube-proxy 或 Endpoints 那一段。
 
 ## 常見追問
 

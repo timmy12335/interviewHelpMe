@@ -36,15 +36,15 @@ K8s 的 Job 和 CronJob 差在哪？既然 GCP 有 Cloud Run Jobs 與 Cloud Sche
 
 ## 講稿
 
-先釐清一件事，Job 和 CronJob 不是平行的選項。Job 是跑完就結束的一次性任務，CronJob 是它的排程器，時間到就建一個新的 Job 出來。兩者是模板跟實例的關係。
+先釐清一件事，Job 和 CronJob 不是平行的選項。Job 是跑完就結束的一次性任務，CronJob 是它的排程器，時間到就建一個新的 Job。兩者是模板跟實例的關係。
 
 至於該不該用 K8s 跑批次，我的判準是看依賴，不是看任務本身。
 
-如果這個任務要存取 ClusterIP Service、要掛 PVC、要用叢集的 Secret、或者要走 NetworkPolicy 管控的內網，那就留在 K8s，因為 Cloud Run 拿不到這些東西。但如果它只是定期打一支 API、處理一批資料、寫回資料庫這種自足的任務，Cloud Run Jobs 配 Cloud Scheduler 通常更划算，不用管節點，按執行秒數計費，閒置零成本。
+如果任務要存取 ClusterIP、要掛 PVC、要用叢集的 Secret，那就留在 K8s，因為 Cloud Run 拿不到這些。但如果只是定期打一支 API、處理一批資料、寫回資料庫這種自足的任務，Cloud Run Jobs 配 Cloud Scheduler 通常更划算，不用管節點，按秒計費，閒置零成本。
 
-實務上有三個坑值得提。第一，concurrencyPolicy 預設是 Allow，任務變慢之後會疊跑，三份同時搶資料庫連線，批次任務通常該設成 Forbid。第二，Job 完成後 Pod 不會自動消失，要設 ttlSecondsAfterFinished，不然會愈積愈多。
+實務上有三個坑。concurrencyPolicy 預設是 Allow，任務變慢之後會疊跑，三份同時搶資料庫連線，批次任務通常該設成 Forbid。Job 完成後 Pod 不會自動消失，要設 ttlSecondsAfterFinished。
 
-第三，CronJob 其實不保證一定會執行，controller 停擺超過期限的排程會被跳過而不是補跑。所以對帳、結算這種不能漏的任務，不能只靠它，要另外有補跑或對帳機制。
+第三個最容易忽略：CronJob 不保證一定會執行，controller 停擺超過期限的排程會被跳過而不是補跑。對帳、結算這種不能漏的任務，要另外有補跑機制。
 
 ## 常見追問
 
