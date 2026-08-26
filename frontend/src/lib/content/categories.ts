@@ -14,7 +14,8 @@ export const CATEGORY_META: CategoryMeta[] = [
   { slug: "database", nameZh: "資料庫面試題", sortOrder: 6 },
   { slug: "backend-engineering", nameZh: "後端工程面試題", sortOrder: 7 },
   { slug: "system-design", nameZh: "系統設計面試題", sortOrder: 8 },
-  { slug: "ai-llm", nameZh: "AI 大模型面試題", sortOrder: 9 },
-  { slug: "ai-agent", nameZh: "AI Agent 面試題", sortOrder: 10 },
-  { slug: "real-interviews", nameZh: "實戰面試題（真實公司考題風格）", sortOrder: 11 },
+  { slug: "kubernetes", nameZh: "Kubernetes 面試題", sortOrder: 9 },
+  { slug: "ai-llm", nameZh: "AI 大模型面試題", sortOrder: 10 },
+  { slug: "ai-agent", nameZh: "AI Agent 面試題", sortOrder: 11 },
+  { slug: "real-interviews", nameZh: "實戰面試題（真實公司考題風格）", sortOrder: 12 },
 ];

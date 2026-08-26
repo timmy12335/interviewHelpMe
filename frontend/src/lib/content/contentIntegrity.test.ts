@@ -196,6 +196,15 @@ describe("分類註冊", () => {
     expect(inSql).toEqual([...CATEGORY_META].map(({ slug }) => slug).sort());
   });
 
+  it("每個註冊的分類都有題目", () => {
+    // 註冊了分類卻忘了補內容，站上會出現一個點進去空無一物的頁面。
+    const empty = CATEGORIES.filter(
+      (category) => !QUESTIONS.some((question) => question.category === category),
+    );
+
+    expect(empty).toEqual([]);
+  });
+
   it("sortOrder 不重複且連續", () => {
     const orders = [...CATEGORY_META].map(({ sortOrder }) => sortOrder).sort((a, b) => a - b);
 
