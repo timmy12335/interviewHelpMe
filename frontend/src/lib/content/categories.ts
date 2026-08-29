@@ -20,4 +20,5 @@ export const CATEGORY_META: CategoryMeta[] = [
   { slug: "real-interviews", nameZh: "實戰面試題（真實公司考題風格）", sortOrder: 12 },
   { slug: "algorithms", nameZh: "演算法與資料結構面試題", sortOrder: 13 },
   { slug: "behavioral", nameZh: "行為面試題", sortOrder: 14 },
+  { slug: "frontend", nameZh: "前端面試題", sortOrder: 15 },
 ];

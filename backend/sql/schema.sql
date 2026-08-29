@@ -63,4 +63,5 @@ INSERT INTO category (slug, name_zh, name_en, sort_order) VALUES
     ('ai-agent', 'AI Agent 面試題', 'AI Agent', 11),
     ('real-interviews', '實戰面試題（真實公司考題風格）', 'Real Company Interviews', 12),
     ('algorithms', '演算法與資料結構面試題', 'Algorithms and Data Structures', 13),
-    ('behavioral', '行為面試題', 'Behavioral', 14);
+    ('behavioral', '行為面試題', 'Behavioral', 14),
+    ('frontend', '前端面試題', 'Frontend', 15);
