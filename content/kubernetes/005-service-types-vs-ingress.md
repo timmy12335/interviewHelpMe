@@ -48,7 +48,7 @@ ClusterIP 是基礎，給一個只有叢集內可達的虛擬 IP。NodePort 在�
 
 ## 常見追問
 
-### 為什麼 `kubectl get ingress` 看到 ADDRESS 欄位一直是空的？
+### 為什麼 kubectl get ingress 看到 ADDRESS 欄位一直是空的？
 
 **核心答案**：最常見的原因是**叢集裡沒有 Ingress Controller**，或者 Ingress 沒有指定正確的 `ingressClassName`。Ingress 只是一份規則宣告，本身不會產生任何網路設定；ADDRESS 是 Controller 實際配置好代理之後回填的，沒有 Controller 讀它，這個欄位就永遠空著，而且不會有任何錯誤訊息——這正是它難查的原因。
 
@@ -56,7 +56,7 @@ ClusterIP 是基礎，給一個只有叢集內可達的虛擬 IP。NodePort 在�
 
 **面試回答方式**：直接點出 Ingress 是宣告、Controller 才做事，沒有 Controller 就永遠空白且不報錯。給出排查順序：有沒有 Controller、`ingressClassName` 對不對、describe 看事件。加分點是提到 GKE 上 GCLB 佈建本來就要幾分鐘，以及 GCE Ingress 要求後端是 NodePort。
 
-### Service 的 `externalTrafficPolicy` 設成 Local 和 Cluster 有什麼差別？
+### Service 的 externalTrafficPolicy 設成 Local 和 Cluster 有什麼差別？
 
 **核心答案**：差在**流量進到節點後還會不會再跳一次**，以及**來源 IP 保不保得住**。預設的 `Cluster` 會讓封包在節點之間再做一次負載平衡，好處是流量分佈均勻，代價是多一跳延遲、而且經過 SNAT 之後**後端看到的來源 IP 是節點 IP，不是真實客戶端 IP**。設成 `Local` 則只轉給**本節點上的 Pod**，沒有額外跳躍、保留真實來源 IP，但如果某個節點上剛好沒有這個服務的 Pod，打到那個節點的流量就會被丟棄。
 

@@ -20,7 +20,7 @@ Java 執行緒有哪些狀態？`BLOCKED` 和 `WAITING` 有什麼區別？
 
 **六種狀態**：`NEW`（尚未啟動）、`RUNNABLE`（涵蓋作業系統的就緒與執行中）、`BLOCKED`（等待 synchronized 鎖）、`WAITING`（`wait()`、`join()`、`park()` 無逾時版本）、`TIMED_WAITING`（帶逾時參數的版本）、`TERMINATED`（已結束）。
 
-**`BLOCKED` 與 `WAITING` 的核心差異**：觸發原因不同（`BLOCKED` 只在競爭 synchronized 鎖失敗時出現，`WAITING` 是主動呼叫等待方法）；能否被中斷不同（`BLOCKED` 無法回應 interrupt，`WAITING` 可以）。
+**BLOCKED 與 WAITING 的核心差異**：觸發原因不同（`BLOCKED` 只在競爭 synchronized 鎖失敗時出現，`WAITING` 是主動呼叫等待方法）；能否被中斷不同（`BLOCKED` 無法回應 interrupt，`WAITING` 可以）。
 
 **排查應用**：分析 `jstack` 堆疊時大量 `BLOCKED` 通常代表鎖競爭激烈或死鎖；長時間 `WAITING`/`TIMED_WAITING` 則要看在等待什麼條件。
 

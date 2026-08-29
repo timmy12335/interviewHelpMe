@@ -24,7 +24,7 @@ Fork/Join 框架用於把一個大任務遞迴拆分成多個可以並行執行�
 
 **為什麼比傳統執行緒池（Thread Pool）更適合分治任務**：避免大量細粒度並行任務在共用佇列上競爭同一把鎖，只有真正閒置時才需要跨執行緒協調。
 
-**`ForkJoinPool.commonPool()`**：`parallelStream()` 和 `CompletableFuture` 預設非同步方法都用同一個全域共用池，長時間或阻塞任務可能互相搶佔。
+**ForkJoinPool.commonPool()**：`parallelStream()` 和 `CompletableFuture` 預設非同步方法都用同一個全域共用池，長時間或阻塞任務可能互相搶佔。
 
 ## 面試回答方式
 

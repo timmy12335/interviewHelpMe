@@ -46,7 +46,7 @@ CORS 就是伺服器用回應標頭告訴瀏覽器我允許這個來源讀。請
 
 ## 常見追問
 
-### 為什麼帶憑證時 `Access-Control-Allow-Origin` 不能用萬用字元？
+### 為什麼帶憑證時 Access-Control-Allow-Origin 不能用萬用字元？
 
 **核心答案**：因為那等於允許**任何網站**帶著使用者的 Cookie 去讀取你的 API。使用者只要登入過你的站，之後造訪任何惡意網站，那個網站的 JavaScript 就能以使用者的身分發請求並讀到回應——等於帳號資料完全外洩。所以規範強制：一旦 `Allow-Credentials` 為 `true`，`Allow-Origin` 必須是**具體的單一來源**。
 

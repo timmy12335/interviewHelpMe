@@ -27,7 +27,7 @@ Java 的註解是什麼？元註解有哪些？`@Retention` 的三種保留策�
 3. **`@Documented`**：標註此註解是否要被納入 Javadoc 文件。
 4. **`@Inherited`**：標註此註解是否能被子類別自動繼承（預設註解不會被繼承）。
 
-**`@Retention` 的三種保留策略**：
+**@Retention 的三種保留策略**：
 
 - **`SOURCE`**：只在原始碼階段存在，編譯後就被丟棄，不會進入 class 檔。用於「只給編譯器或原始碼工具看」的註解，例如 `@Override`、`@SuppressWarnings`、Lombok 的註解（編譯期生成程式碼後就不需要了）。
 - **`CLASS`**（預設）：保留到 class 檔案中，但 JVM 載入類別時不會讀入，執行期反射看不到。用於「編譯後的位元組碼（Bytecode）工具」場景。

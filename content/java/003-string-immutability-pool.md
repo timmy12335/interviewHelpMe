@@ -28,7 +28,7 @@ source: original
 
 **字串常數池（String Pool）**：JVM 維護一塊特殊的記憶體區域（在現代 JDK 中位於堆記憶體），用來存放字串字面量。當程式碼中出現字串字面量（如 `String s = "hello"`）時，JVM 會先檢查池中是否已有內容相同的字串——有就直接回傳池中那個物件的引用，沒有才建立並放入池中。因此 `String a = "hello"; String b = "hello";` 中 `a` 和 `b` 指向池中同一個物件（`a == b` 為 true），節省了記憶體。
 
-**`new String("hello")` 的差異**：用 `new` 明確要求在堆上建立一個「新的」物件，所以 `new String("hello") == "hello"` 為 false（一個是新建的堆物件，一個是池中物件）。可以呼叫 `.intern()` 方法手動把字串放入池中或取得池中已有的引用。
+**new String("hello") 的差異**：用 `new` 明確要求在堆上建立一個「新的」物件，所以 `new String("hello") == "hello"` 為 false（一個是新建的堆物件，一個是池中物件）。可以呼叫 `.intern()` 方法手動把字串放入池中或取得池中已有的引用。
 
 ## 面試回答方式
 

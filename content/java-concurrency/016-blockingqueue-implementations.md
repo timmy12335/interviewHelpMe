@@ -18,13 +18,13 @@ source: original
 
 ## 詳細解析
 
-**`ArrayBlockingQueue`**：底層固定大小陣列，讀寫共用同一把鎖，同一時間只能有一個執行緒在存取。適合需要明確控制記憶體上限的場景。
+**ArrayBlockingQueue**：底層固定大小陣列，讀寫共用同一把鎖，同一時間只能有一個執行緒在存取。適合需要明確控制記憶體上限的場景。
 
-**`LinkedBlockingQueue`**：底層鏈結串列，讀鎖與寫鎖分開（`takeLock`、`putLock`）並行度比 `ArrayBlockingQueue` 高。若不指定容量預設等同無界，需注意 OOM 風險。
+**LinkedBlockingQueue**：底層鏈結串列，讀鎖與寫鎖分開（`takeLock`、`putLock`）並行度比 `ArrayBlockingQueue` 高。若不指定容量預設等同無界，需注意 OOM 風險。
 
-**`SynchronousQueue`**：本質上是「執行緒對執行緒」的直接交接點，不是真正的儲存容器。`Executors.newCachedThreadPool()` 就是用它。
+**SynchronousQueue**：本質上是「執行緒對執行緒」的直接交接點，不是真正的儲存容器。`Executors.newCachedThreadPool()` 就是用它。
 
-**`PriorityBlockingQueue`**：底層用二元堆實作，元素出列順序由 `Comparable`/`Comparator` 決定而非先進先出。
+**PriorityBlockingQueue**：底層用二元堆實作，元素出列順序由 `Comparable`/`Comparator` 決定而非先進先出。
 
 **選型速查表**：需要嚴格控制記憶體用 `ArrayBlockingQueue`；高吞吐讀寫分離（Read-Write Splitting）用 `LinkedBlockingQueue`；需要立即交接用 `SynchronousQueue`；需要按優先級處理用 `PriorityBlockingQueue`。
 

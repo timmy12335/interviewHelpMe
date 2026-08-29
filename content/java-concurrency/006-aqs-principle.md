@@ -31,7 +31,7 @@ AQS 是 `java.util.concurrent.locks` 包下的一個抽象基礎框架，核心�
 
 **為什麼要抽象出 AQS**：如果沒有 AQS，每個同步工具都要自己實作「執行緒排隊、阻塞、喚醒、避免虛假喚醒」這套複雜且容易出錯的邏輯。AQS 把這套通用機制抽出來，讓上層工具只需要專注於「資源狀態的語意判斷」，大幅降低了實作正確、高效能同步工具的門檻，這也是 Doug Lea 設計 `java.util.concurrent` 包的核心思想之一。
 
-**與 `synchronized` 的本質差異**：`synchronized` 的 Monitor 是 JVM／作業系統層級實作，行為固定；AQS 是純 Java 程式碼實作的框架，可以被靈活擴展出各種不同語意的同步工具，這也是 `java.util.concurrent.locks` 包比內建 `synchronized` 更靈活的根本原因。
+**與 synchronized 的本質差異**：`synchronized` 的 Monitor 是 JVM／作業系統層級實作，行為固定；AQS 是純 Java 程式碼實作的框架，可以被靈活擴展出各種不同語意的同步工具，這也是 `java.util.concurrent.locks` 包比內建 `synchronized` 更靈活的根本原因。
 
 ## 面試回答方式
 

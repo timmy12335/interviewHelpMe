@@ -64,7 +64,7 @@ CSRF 則是驗證請求來源。SameSite 現在預設是 Lax，已經擋掉大�
 
 **面試回答方式**：核心是避免 `unsafe-inline` 並改用 nonce 或雜湊，以及先用 Report-Only 模式導入。點出第三方腳本是最大阻力，建議逐步收緊。加分點是提到 `frame-ancestors` 防點擊劫持，並強調 CSP 是縱深防禦不能取代輸出編碼。
 
-### 如果 token 放在 `localStorage`，被 XSS 之後會怎樣？
+### 如果 token 放在 localStorage，被 XSS 之後會怎樣？
 
 **核心答案**：**token 會被完整竊取**，攻擊者可以在自己的環境用它冒充使用者，直到 token 過期為止。相對地，`HttpOnly` Cookie 中的 token 讀不到，攻擊者只能在受害者的瀏覽器中發請求（仍然危險，但**無法把憑證帶走**），影響範圍與持續時間都小得多。這個差別是選擇儲存位置時最實際的考量。
 

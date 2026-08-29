@@ -18,14 +18,14 @@ source: original
 
 ## 詳細解析
 
-**`Future` 的限制**：
+**Future 的限制**：
 
 1. **只能阻塞取得結果**：`get()` 會阻塞當前執行緒直到任務完成，無法註冊「完成後自動觸發下一步」的回呼。
 2. **無法鏈式組合**：如果任務 B 依賴任務 A 的結果，用 `Future` 只能先 `get()` A 的結果（阻塞），再手動提交 B。
 3. **無法合併多個 Future**：例如「等待多個 Future 全部完成」，用原生 `Future` 需要自己寫輪詢或搭配其他工具手動實作。
 4. **例外處理不便**：任務內拋出的例外只有在呼叫 `get()` 時才會被包裝成 `ExecutionException` 拋出。
 
-**`CompletableFuture` 的改進**：
+**CompletableFuture 的改進**：
 
 - **鏈式回呼**：`thenApply`、`thenAccept`、`thenRun`、`thenCompose`。
 - **多任務組合**：`allOf`、`anyOf`、`thenCombine`。

@@ -22,7 +22,7 @@ source: original
 
 **對物件（引用型別）**：`==` 比較的是兩個變數是否持有相同的引用（指向同一個堆記憶體位址）。例如 `new String("a") == new String("a")` 為 false，因為 `new` 產生了兩個不同的物件，兩個引用指向不同的記憶體位址，即使它們的內容都是 "a"。
 
-**`equals()` 的預設與覆寫**：`Object.equals()` 的預設實作就是 `return this == other`，也就是比較引用。但 `String`、`Integer`、`Double` 等類別覆寫了 `equals()`，改為比較實際內容——`new String("a").equals(new String("a"))` 為 true，因為 `String` 的 `equals()` 逐字元比較內容。
+**equals() 的預設與覆寫**：`Object.equals()` 的預設實作就是 `return this == other`，也就是比較引用。但 `String`、`Integer`、`Double` 等類別覆寫了 `equals()`，改為比較實際內容——`new String("a").equals(new String("a"))` 為 true，因為 `String` 的 `equals()` 逐字元比較內容。
 
 **常見陷阱**：因此比較字串內容時應該用 `str1.equals(str2)`（或 `Objects.equals()` 避免 NPE），而不是 `str1 == str2`。用 `==` 比較字串有時「碰巧」為 true（例如兩個字面量因字串池而是同一物件），有時為 false（例如其中一個是 `new` 出來的），行為不一致且難以除錯。
 

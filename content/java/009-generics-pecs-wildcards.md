@@ -20,12 +20,12 @@ source: original
 
 **為什麼需要通配符**：Java 泛型是「不變（invariant）」的——`List<Integer>` 不是 `List<Number>` 的子型別即使 `Integer` 是 `Number` 的子型別。這在需要「接受一個裝著某種 Number 子型別的 List」時很不方便，通配符就是用來放寬這種限制的。
 
-**`? extends T`（上界生產者）**：`List<? extends Number>` 可以指向 `List<Integer>`、`List<Double>` 等。因為編譯器只知道「元素是某種 Number 的子型別，但不確定具體是哪一種」，所以：
+**? extends T（上界生產者）**：`List<? extends Number>` 可以指向 `List<Integer>`、`List<Double>` 等。因為編譯器只知道「元素是某種 Number 的子型別，但不確定具體是哪一種」，所以：
 
 - **可以讀取**：取出的元素一定是 `Number`（或其子型別），賦值給 `Number` 型別是安全的。
 - **不能寫入**：你不知道這個 List 實際上是 `List<Integer>` 還是 `List<Double>`，往裡面塞任何具體型別都可能型別不符，所以除了 `null` 什麼都不能加。
 
-**`? super T`（下界消費者）**：`List<? super Integer>` 可以指向 `List<Integer>`、`List<Number>`、`List<Object>`。因為編譯器知道「元素型別是 Integer 或其某個父型別」，所以：
+**? super T（下界消費者）**：`List<? super Integer>` 可以指向 `List<Integer>`、`List<Number>`、`List<Object>`。因為編譯器知道「元素型別是 Integer 或其某個父型別」，所以：
 
 - **可以寫入 Integer（或其子型別）**：不管實際是 `List<Number>` 還是 `List<Object>`塞一個 `Integer` 進去一定型別相容。
 - **讀取只能當 Object**：取出的元素可能是 Integer 的任何父型別，唯一確定的共同上界是 `Object`。

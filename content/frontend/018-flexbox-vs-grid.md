@@ -18,13 +18,13 @@ source: original
 
 ## 詳細解析
 
-**`flex: 1` 到底代表什麼**：它是 `flex-grow: 1`、`flex-shrink: 1`、`flex-basis: 0%` 的縮寫。關鍵是 **`flex-basis: 0%`** ——它讓分配從零開始，所以多個 `flex: 1` 的子項會**等寬**。相對地 `flex: auto`（`flex-basis: auto`）是先依內容大小分配、再把剩餘空間平均分，所以內容長的會比較寬。這兩者的差異是實務上「為什麼我的欄位沒有等寬」最常見的答案。
+**flex: 1 到底代表什麼**：它是 `flex-grow: 1`、`flex-shrink: 1`、`flex-basis: 0%` 的縮寫。關鍵是 **`flex-basis: 0%`** ——它讓分配從零開始，所以多個 `flex: 1` 的子項會**等寬**。相對地 `flex: auto`（`flex-basis: auto`）是先依內容大小分配、再把剩餘空間平均分，所以內容長的會比較寬。這兩者的差異是實務上「為什麼我的欄位沒有等寬」最常見的答案。
 
-**Grid 的 `minmax` 與自動填充**：`repeat(auto-fill, minmax(200px, 1fr))` 這個組合可以做出**不需要媒體查詢的響應式格線**——容器夠寬就放更多欄，不夠就自動減少。`auto-fill` 與 `auto-fit` 的差別在於沒有內容時是否保留空軌道，`auto-fit` 會摺疊空軌道讓現有項目撐滿。這是 Grid 相對 Flexbox 最有價值的能力之一。
+**Grid 的 minmax 與自動填充**：`repeat(auto-fill, minmax(200px, 1fr))` 這個組合可以做出**不需要媒體查詢的響應式格線**——容器夠寬就放更多欄，不夠就自動減少。`auto-fill` 與 `auto-fit` 的差別在於沒有內容時是否保留空軌道，`auto-fit` 會摺疊空軌道讓現有項目撐滿。這是 Grid 相對 Flexbox 最有價值的能力之一。
 
 **對齊屬性的兩套命名**：`justify-*` 處理**主軸**（Grid 中是列方向即水平），`align-*` 處理**交叉軸**。容易混淆的是 Flexbox 中主軸方向會隨 `flex-direction` 改變——設成 `column` 之後 `justify-content` 變成控制垂直方向。Grid 則固定：`justify` 是水平、`align` 是垂直，比較不容易搞錯。`place-items` 與 `place-content` 是兩者的簡寫。
 
-**`gap` 取代了 margin 的間距處理**：以前用 margin 加上「最後一個不要」的選擇器來做間距，現在 `gap` 直接由容器控制，且**不會在邊緣產生多餘的間距**。它現在在 Flexbox 中也普遍支援，是應該優先使用的做法。
+**gap 取代了 margin 的間距處理**：以前用 margin 加上「最後一個不要」的選擇器來做間距，現在 `gap` 直接由容器控制，且**不會在邊緣產生多餘的間距**。它現在在 Flexbox 中也普遍支援，是應該優先使用的做法。
 
 **什麼時候兩者都不適合**：**文字流動的排版**（文章中圖片環繞文字）仍然用 `float` 或 `shape-outside`；**元素重疊**（卡片上的標籤、覆蓋層）用絕對定位或 Grid 的重疊區域；**依內容多寡自動換行的標籤雲**用 Flexbox 加 `flex-wrap` 就好，用 Grid 反而綁手綁腳。認得出這些邊界，比會用兩者更能顯示判斷力。
 
@@ -46,7 +46,7 @@ source: original
 
 ## 常見追問
 
-### `auto-fill` 和 `auto-fit` 差在哪？
+### auto-fill 和 auto-fit 差在哪？
 
 **核心答案**：差在**項目不足以填滿時的行為**。`auto-fill` 會**保留空軌道**——容器能放五欄但只有兩個項目時，仍然建立五個軌道，項目靠左排、右邊留三個空位。`auto-fit` 會**摺疊空軌道**，讓現有的兩個項目撐滿整個容器寬度。項目數量足以填滿時，兩者行為完全相同。
 

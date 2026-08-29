@@ -40,7 +40,7 @@ source: community
 
 ## 常見追問
 
-### 如果不用雙向鏈結串列，改用 Java 現成的 `LinkedHashMap` 可以嗎？
+### 如果不用雙向鏈結串列，改用 Java 現成的 LinkedHashMap 可以嗎？
 
 **核心答案**：**可以——`LinkedHashMap` 本身已經內建了「依照存取順序排序」的功能，某種程度上直接就是一個現成的 LRU Cache 實作基礎**——`LinkedHashMap` 建構時可以傳入一個 `accessOrder=true` 參數，讓它**每次被存取（get 或 put）**就自動地把這個元素**移動到內部順序的末端**，再額外地覆寫它的 `removeEldestEntry` 方法，讓它在**元素數量超過設定的容量上限**時自動地**移除最舊（最久沒被存取）**的元素。這種做法能**大幅簡化**手動實作雙向鏈結串列和雜湊表整合的工作量。
 

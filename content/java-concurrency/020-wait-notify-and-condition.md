@@ -20,7 +20,7 @@ source: original
 
 **為什麼必須持鎖才能呼叫**：`wait()` 的語意是「釋放目前持有的鎖，並讓當前執行緒進入這個物件 Monitor 的等待集合中阻塞」；`notify()`/`notifyAll()` 是「從等待集合中喚醒一個/所有執行緒」，這些操作直接涉及 Monitor 內部狀態的變更，必須確保呼叫者當下正持有這把鎖。
 
-**為什麼 `wait()` 要放在 `while` 而不是 `if`**：
+**為什麼 wait() 要放在 while 而不是 if**：
 
 ```java
 synchronized (lock) {
@@ -32,7 +32,7 @@ synchronized (lock) {
 
 原因：虛假喚醒（JVM 規範允許）、`notifyAll()` 喚醒多個執行緒但條件只滿足一次、被喚醒後重新競爭鎖之前條件可能又被改變。
 
-**`Condition` 是什麼**：透過 `lock.newCondition()` 建立提供 `await()`/`signal()`/`signalAll()`。一個 `Lock` 可以建立多個獨立的 `Condition`，比只有單一等待集合的內建 Monitor 更精細。
+**Condition 是什麼**：透過 `lock.newCondition()` 建立提供 `await()`/`signal()`/`signalAll()`。一個 `Lock` 可以建立多個獨立的 `Condition`，比只有單一等待集合的內建 Monitor 更精細。
 
 ## 面試回答方式
 

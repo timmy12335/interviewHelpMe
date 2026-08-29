@@ -18,7 +18,7 @@ source: original
 
 ## 詳細解析
 
-**`@Autowired`（Spring）**：
+**@Autowired（Spring）**：
 
 - 預設按「型別」注入——找容器中型別匹配的 Bean。
 - 如果型別匹配到多個，會退化為按「名稱」匹配（用欄位名/參數名去匹配 Bean 名稱）。
@@ -26,7 +26,7 @@ source: original
 - 預設要求依賴必須存在（找不到會報錯），可用 `@Autowired(required=false)` 允許不存在。
 - 可搭配 `@Qualifier` 指定具體 Bean 名稱。
 
-**`@Resource`（JSR-250 標準）**：
+**@Resource（JSR-250 標準）**：
 
 - 是 Java 標準註解（`javax.annotation`/`jakarta.annotation`），不綁定 Spring（換框架也能用）。
 - 預設按「名稱」注入——用 `@Resource(name="xxx")` 指定的名稱、或欄位名去匹配 Bean。
