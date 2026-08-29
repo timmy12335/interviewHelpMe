@@ -18,4 +18,5 @@ export const CATEGORY_META: CategoryMeta[] = [
   { slug: "ai-llm", nameZh: "AI 大模型面試題", sortOrder: 10 },
   { slug: "ai-agent", nameZh: "AI Agent 面試題", sortOrder: 11 },
   { slug: "real-interviews", nameZh: "實戰面試題（真實公司考題風格）", sortOrder: 12 },
+  { slug: "algorithms", nameZh: "演算法與資料結構面試題", sortOrder: 13 },
 ];

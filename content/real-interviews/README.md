@@ -60,4 +60,4 @@ InterviewHelpMe 第 12 個內容類別，共 24 題，是在前面已完成的 1
 
 ## 進度
 
-第 12 個內容類別，建立在前面已完成的 11 大知識類別（Java 核心、Java 併發、JVM、Spring、Redis、資料庫、後端工程、系統設計、Kubernetes、AI 大模型、AI Agent）之上。目前共 297 題面試題（273 題基礎知識 + 24 題實戰應用）。
+第 12 個內容類別，建立在其餘 12 大知識類別（Java 核心、Java 併發、JVM、Spring、Redis、資料庫、後端工程、系統設計、Kubernetes、AI 大模型、AI Agent、演算法與資料結構）之上。目前共 321 題面試題（297 題基礎知識 + 24 題實戰應用）。
