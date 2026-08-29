@@ -39,4 +39,4 @@ InterviewHelpMe 第十個、也是最後一個內容類別，共 24 題，涵蓋
 
 ## 進度
 
-12 大知識類別已完成：Java 核心、Java 併發、JVM、Spring、Redis、資料庫、後端工程、系統設計、Kubernetes、AI 大模型、AI Agent、演算法與資料結構，另有實戰面試題類別。共 321 題面試題。
+12 大知識類別已完成：Java 核心、Java 併發、JVM、Spring、Redis、資料庫、後端工程、系統設計、Kubernetes、AI 大模型、AI Agent、演算法與資料結構，另有實戰面試題類別。共 345 題面試題。
