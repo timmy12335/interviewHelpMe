@@ -51,3 +51,20 @@ npm test
 |------|------|
 | `content/` | Markdown 題目與分類 |
 | `frontend/` | Next.js 靜態匯出前端 |
+
+## 資料來源
+
+題庫的**題目範圍與命題方向**參考下列公開的面試準備專案。內容本身是自行撰寫的——每題的
+`source` frontmatter 標為 `original`（`real-interviews` 類別標為 `community`），**沒有複製
+原文**，因此各來源專案的授權條款不及於本專案的內容。列在這裡是為了說明選題的依據，也方便
+想往下深挖的人回到原始出處。
+
+| 來源 | 涵蓋範圍 | 對應的分類 |
+|------|----------|------------|
+| [yangshun/tech-interview-handbook](https://github.com/yangshun/tech-interview-handbook) | 演算法題型與解題模式、行為面試、前端面試、求職流程 | `algorithms`、`behavioral`、`frontend` |
+| [Snailclimb/JavaGuide](https://github.com/Snailclimb/JavaGuide) | Java 基礎與集合、併發、JVM、Spring、MySQL、Redis、計算機基礎、分散式、高效能與高可用 | `java`、`java-concurrency`、`jvm`、`spring`、`database`、`redis`、`backend-engineering`、`system-design` |
+| [yongxinz/backend-interview](https://github.com/yongxinz/backend-interview) | 後端共通題：MySQL、Redis、訊息佇列、網路、作業系統、系統設計與架構 | `database`、`redis`、`backend-engineering`、`system-design` |
+
+`kubernetes`、`ai-llm`、`ai-agent` 三類沒有對應的來源專案，題目來自官方文件與實務經驗。
+
+各分類自己的 `README.md` 會再說明該類別的選題邏輯與難度分布。
