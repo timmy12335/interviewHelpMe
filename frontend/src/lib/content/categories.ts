@@ -21,4 +21,5 @@ export const CATEGORY_META: CategoryMeta[] = [
   { slug: "algorithms", nameZh: "演算法與資料結構面試題", sortOrder: 13 },
   { slug: "behavioral", nameZh: "行為面試題", sortOrder: 14 },
   { slug: "frontend", nameZh: "前端面試題", sortOrder: 15 },
+  { slug: "computer-network", nameZh: "計算機網路面試題", sortOrder: 16 },
 ];
