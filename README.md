@@ -62,8 +62,8 @@ npm test
 | 來源 | 涵蓋範圍 | 對應的分類 |
 |------|----------|------------|
 | [yangshun/tech-interview-handbook](https://github.com/yangshun/tech-interview-handbook) | 演算法題型與解題模式、行為面試、前端面試、求職流程 | `algorithms`、`behavioral`、`frontend` |
-| [Snailclimb/JavaGuide](https://github.com/Snailclimb/JavaGuide) | Java 基礎與集合、併發、JVM、Spring、MySQL、Redis、計算機基礎、分散式、高效能與高可用 | `java`、`java-concurrency`、`jvm`、`spring`、`database`、`redis`、`backend-engineering`、`system-design` |
-| [yongxinz/backend-interview](https://github.com/yongxinz/backend-interview) | 後端共通題：MySQL、Redis、訊息佇列、網路、作業系統、系統設計與架構 | `database`、`redis`、`backend-engineering`、`system-design` |
+| [Snailclimb/JavaGuide](https://github.com/Snailclimb/JavaGuide) | Java 基礎與集合、併發、JVM、Spring、MySQL、Redis、計算機基礎、設計模式、分散式、高效能與高可用 | `java`、`java-concurrency`、`jvm`、`spring`、`database`、`redis`、`backend-engineering`、`system-design`、`computer-network`、`message-queue`、`design-patterns` |
+| [yongxinz/backend-interview](https://github.com/yongxinz/backend-interview) | 後端共通題：MySQL、Redis、訊息佇列、網路、作業系統、系統設計與架構 | `database`、`redis`、`backend-engineering`、`system-design`、`computer-network`、`message-queue` |
 
 `kubernetes`、`ai-llm`、`ai-agent` 三類沒有對應的來源專案，題目來自官方文件與實務經驗。
 

@@ -66,4 +66,5 @@ INSERT INTO category (slug, name_zh, name_en, sort_order) VALUES
     ('behavioral', '行為面試題', 'Behavioral', 14),
     ('frontend', '前端面試題', 'Frontend', 15),
     ('computer-network', '計算機網路面試題', 'Computer Network', 16),
-    ('message-queue', '訊息佇列面試題', 'Message Queue', 17);
+    ('message-queue', '訊息佇列面試題', 'Message Queue', 17),
+    ('design-patterns', '設計模式面試題', 'Design Patterns', 18);
