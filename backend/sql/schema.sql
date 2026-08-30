@@ -65,4 +65,5 @@ INSERT INTO category (slug, name_zh, name_en, sort_order) VALUES
     ('algorithms', '演算法與資料結構面試題', 'Algorithms and Data Structures', 13),
     ('behavioral', '行為面試題', 'Behavioral', 14),
     ('frontend', '前端面試題', 'Frontend', 15),
-    ('computer-network', '計算機網路面試題', 'Computer Network', 16);
+    ('computer-network', '計算機網路面試題', 'Computer Network', 16),
+    ('message-queue', '訊息佇列面試題', 'Message Queue', 17);

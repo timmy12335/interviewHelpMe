@@ -22,4 +22,5 @@ export const CATEGORY_META: CategoryMeta[] = [
   { slug: "behavioral", nameZh: "行為面試題", sortOrder: 14 },
   { slug: "frontend", nameZh: "前端面試題", sortOrder: 15 },
   { slug: "computer-network", nameZh: "計算機網路面試題", sortOrder: 16 },
+  { slug: "message-queue", nameZh: "訊息佇列面試題", sortOrder: 17 },
 ];
