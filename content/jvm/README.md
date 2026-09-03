@@ -1,10 +1,18 @@
 # JVM 面試題（樣板類別）
 
-InterviewHelpMe 第三個內容類別，共 24 題，涵蓋 JVM 記憶體結構、分代與 GC（演算法、收集器 G1/ZGC）、類別載入與雙親委派、物件建立與記憶體佈局、四種引用、JIT/逃逸分析/TLAB、安全點與 STW、調優與 OOM 排查。
+InterviewHelpMe 第三個內容類別，共 50 題，涵蓋 JVM 記憶體結構、分代與 GC（演算法、收集器 G1/ZGC）、類別載入與雙親委派、物件建立與記憶體佈局、四種引用、JIT/逃逸分析/TLAB、安全點與 STW、調優與 OOM 排查。
+
+## 這個類別的設計
+
+001 到 024 是最初的樣板，覆蓋 JVM 面試最高頻的機制題。025 到 050 是後續補充的第二批，往四個方向延伸：**低停頓收集器的原理**（ZGC 的著色指標、Shenandoah 的併發移動、三色標記與漏標、卡表與記憶集）、**診斷工具鏈**（GC 日誌判讀、NMT、堆積轉儲、JFR）、**執行期最佳化**（分層編譯、原生映像檔、位元組碼增強、反射效能），以及**容量與工程判斷**（堆積規劃、容器設定、壓縮指標的 32GB 邊界、分代假設何時失效、升級風險、調優方法論）。
+
+第二批刻意把重心放在**判準與失敗模式**上——029 的重點不是日誌格式而是「分配速率是最有診斷價值的衍生指標」，042 的重點是「GC 只是六類停頓來源之一」，050 則主張「先確認是不是 JVM 的問題」。這條線把工具題與判斷題串起來，050 是收束題。
+
+Java 語言與集合本身的題目歸在 [java](../java/)，併發相關歸在 [java-concurrency](../java-concurrency/)，本類別只在需要時交叉連結。
 
 ## 檔案格式
 
-與其他類別相同：每題一個 `NNN-slug.md`，frontmatter 對應 [schema.sql](../../backend/sql/schema.sql) 的 `question` 表（`category: jvm`）。正文含：題目、核心答案、詳細解析、面試回答方式、常見追問（3 題，各含核心答案／詳細解析／面試回答方式）、相關。部分題目透過 `[[../category/file.md]]` 交叉連結到 Java 核心與 Java 併發類別。
+與其他類別相同：每題一個 `NNN-slug.md`，frontmatter 對應 [schema.sql](../../backend/sql/schema.sql) 的 `question` 表（`category: jvm`）。正文含：題目、核心答案、詳細解析、面試回答方式、講稿、常見追問（3 題，各含核心答案／詳細解析／面試回答方式）、相關。部分題目透過 `[[../category/file.md]]` 交叉連結到 Java 核心與 Java 併發類別。
 
 ## 題目清單
 
@@ -34,9 +42,31 @@ InterviewHelpMe 第三個內容類別，共 24 題，涵蓋 JVM 記憶體結構�
 | 022 | 字串常數池與 intern() 的行為 | medium |
 | 023 | 位元組碼與執行引擎 | medium |
 | 024 | OutOfMemoryError 的種類與成因 | medium |
+| 025 | ZGC 的著色指標與併發回收 | hard |
+| 026 | Shenandoah 與併發物件移動 | hard |
+| 027 | 三色標記與併發標記的漏標問題 | hard |
+| 028 | 卡表與記憶集：跨代引用怎麼處理 | hard |
+| 029 | GC 日誌怎麼讀 | medium |
+| 030 | 堆積大小與 GC 選型的容量規劃 | medium |
+| 031 | 容器環境下的 JVM 設定 | medium |
+| 032 | 原生記憶體追蹤與堆外記憶體排查 | hard |
+| 033 | 堆積轉儲的分析方法 | medium |
+| 034 | JFR 與低開銷的生產剖析 | medium |
+| 035 | 分層編譯與 JIT 的預熱 | hard |
+| 036 | GraalVM 原生映像檔的取捨 | hard |
+| 037 | 類別檔結構與常數池 | easy |
+| 038 | 位元組碼增強：Instrumentation 與 Agent | hard |
+| 039 | 反射為什麼慢、JVM 做了什麼最佳化 | medium |
+| 040 | 物件的大小與記憶體佔用估算 | easy |
+| 041 | 壓縮指標與 32GB 邊界 | medium |
+| 042 | 停頓的來源：GC 之外的延遲 | hard |
+| 043 | finalize 的問題與 Cleaner 的正確用法 | medium |
+| 044 | JVM 的執行緒實作與作業系統的關係 | easy |
+| 045 | JVM 參數的分類與查詢方法 | medium |
+| 046 | JVM 的啟動流程：從 main 到位元組碼執行 | medium |
+| 047 | 分代假設為什麼成立，什麼場景下不成立 | hard |
+| 048 | 大物件與巨型物件的處理 | hard |
+| 049 | JDK 版本升級的相容性風險 | medium |
+| 050 | JVM 調優的整體方法論 | hard |
 
-難度分布：easy 1、medium 16、hard 7（JVM 主題整體偏深，入門題較少）。
-
-## 進度
-
-9 大類第 3 類。已完成：Java 核心、Java 併發、JVM。待做：Spring、Redis、資料庫、後端工程、系統設計、AI 大模型、AI Agent。
+難度分布：easy 4、medium 27、hard 19（JVM 主題整體偏深，入門題較少；第二批的收集器原理與診斷題深度題比例更高）。
