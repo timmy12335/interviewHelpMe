@@ -1,10 +1,12 @@
 # 訊息佇列面試題
 
-InterviewHelpMe 第 17 個內容類別，共 24 題，取材自 [JavaGuide](https://github.com/Snailclimb/JavaGuide) 的高效能章節與 [backend-interview](https://github.com/yongxinz/backend-interview) 的中介軟體章節，以 Kafka 為主軸，並涵蓋 RabbitMQ 與 RocketMQ 的模型差異。
+InterviewHelpMe 第 17 個內容類別，共 50 題，取材自 [JavaGuide](https://github.com/Snailclimb/JavaGuide) 的高效能章節與 [backend-interview](https://github.com/yongxinz/backend-interview) 的中介軟體章節，以 Kafka 為主軸，並涵蓋 RabbitMQ 與 RocketMQ 的模型差異。
 
 ## 這個類別的設計
 
 `backend-engineering` 已經有兩題入門（訊息佇列的核心作用、投遞語義），所以這裡**直接從內部機制開始**，不重複解釋「什麼是訊息佇列」。001 到 013 是 Kafka 的機制與使用（架構、分區、副本、消費者群組、位移、效能、保留策略），014 到 016 是與其他中介的模型比較，017 到 024 是可靠性、維運與選型判斷。
+
+第 025 到 050 題是第二批，往兩個方向深入：**Kafka 的內部機制與運維**（儲存佈局、controller 與 KRaft、副本同步、unclean 選舉、生產與消費調校、rebalance 協定、位移管理、擴縮容、跨機房、升級、故障恢復、安全），以及**設計與判斷**（schema 演進、大訊息、事件設計、分區鍵與傾斜、消費端交易邊界、重放與修復、流式處理、端到端精確一次、託管服務、成本、佇列與日誌兩種模型的根本差異、選型判斷，以及收束題「非同步的代價」）。
 
 貫穿這個類別的主張是：**可靠性是三個環節各自的責任，而且終點一定是消費端冪等**。生產端、broker、消費端任何一段沒處理好都會丟訊息；而所有能防止遺失的機制都建立在重試之上，重試必然帶來重複——所以冪等不是可選項。017 與 018 兩題專門處理這條主線。
 
@@ -44,5 +46,31 @@ InterviewHelpMe 第 17 個內容類別，共 24 題，取材自 [JavaGuide](http
 | 022 | Kafka 與 Pulsar：儲存與運算分離的差別 | hard |
 | 023 | 用訊息佇列做資料同步：CDC 與 binlog | medium |
 | 024 | 什麼時候不該用訊息佇列 | medium |
+| 025 | Kafka 的儲存結構：segment、索引與檔案佈局 | medium |
+| 026 | Controller 與中繼資料：從 ZooKeeper 到 KRaft | hard |
+| 027 | 副本同步的細節：fetch 流程與同步落後 | hard |
+| 028 | Unclean leader election：可用性與一致性的取捨 | medium |
+| 029 | 生產者的批次、壓縮與吞吐調校 | medium |
+| 030 | 消費者的並行模型：分區、執行緒與拉取 | medium |
+| 031 | Rebalance 協定的演進：eager、cooperative 與靜態成員 | hard |
+| 032 | 消費位移的儲存與重設 | medium |
+| 033 | Kafka 的擴容與分區重分配 | medium |
+| 034 | 跨機房與多叢集：MirrorMaker 與 stretch cluster | hard |
+| 035 | Kafka 的升級與相容性 | medium |
+| 036 | Broker 故障與資料恢復 | medium |
+| 037 | Kafka 的安全：認證、授權與加密 | medium |
+| 038 | 訊息格式與 schema 演進 | medium |
+| 039 | 訊息大小與大訊息的處理 | medium |
+| 040 | 事件的設計：事件、命令與狀態 | medium |
+| 041 | 分區鍵的設計與資料傾斜 | medium |
+| 042 | 消費端的批次處理與交易邊界 | medium |
+| 043 | 訊息重放與資料修復 | medium |
+| 044 | 訊息佇列上的流式處理 | medium |
+| 045 | 端到端的精確一次：範圍與代價 | hard |
+| 046 | 雲端託管的訊息服務：SQS、Pub/Sub 與 Kinesis | medium |
+| 047 | 訊息佇列的成本 | medium |
+| 048 | 佇列與日誌：兩種模型的根本差異 | hard |
+| 049 | 訊息佇列的選型判斷 | medium |
+| 050 | 訊息系統的整體判斷：非同步的代價 | hard |
 
-難度分布：easy 3、medium 16、hard 5。
+難度分布：easy 3、medium 35、hard 12。
