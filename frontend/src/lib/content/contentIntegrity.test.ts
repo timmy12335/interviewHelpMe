@@ -228,6 +228,27 @@ describe("題目之間的交叉連結", () => {
     // 解析不到的連結不會消失，會原封不動印在頁面上讓使用者看到 `[[...]]`。
     expect([...new Set(broken)]).toEqual([]);
   });
+
+  it("每一題都至少被另一題連到", () => {
+    // 「相關」是照著撰寫順序長出來的：寫新題時指向已經存在的舊題，於是
+    // 每個分類的後半段只有出向連結、沒有反向連結。曾經有 153 題（17%）
+    // 只能從分類列表進去，順著「相關」走永遠走不到。
+    const linked = new Set<string>();
+    for (const question of QUESTIONS) {
+      for (const match of question.markdown.matchAll(/\[\[([^\]\[]+)\]\]/g)) {
+        const target = parseWikiTarget(match[1].trim(), question.category);
+        if (target) {
+          linked.add(`${target.categorySlug}/${target.slug}`);
+        }
+      }
+    }
+
+    const unreachable = QUESTIONS.filter(
+      (question) => !linked.has(`${question.category}/${expectedSlug(question.fileName)}`),
+    ).map((question) => `${question.label} 沒有任何題目連過來`);
+
+    expect(unreachable).toEqual([]);
+  });
 });
 
 describe("分類註冊", () => {
