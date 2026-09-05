@@ -76,3 +76,4 @@ Java 的 Object.clone 預設就是淺拷貝，這點很多人會踩到。
 
 - [[017-serialization-serialversionuid.md]]
 - [[003-string-immutability-pool.md]]
+- [[031-pass-by-value.md]]

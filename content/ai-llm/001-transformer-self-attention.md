@@ -71,3 +71,4 @@ Transformer 的核心創新，是丟掉 RNN 依序處理的做法，改用自注
 - [[002-multi-head-attention.md]]
 - [[004-positional-encoding.md]]
 - [[012-kv-cache-inference.md]]
+- [[025-decoder-architecture-causal-mask.md]]

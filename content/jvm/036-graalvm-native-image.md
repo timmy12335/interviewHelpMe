@@ -76,3 +76,4 @@ source: original
 
 - [[035-tiered-compilation.md]]
 - [[031-jvm-in-containers.md]]
+- [[039-reflection-performance.md]]

@@ -73,3 +73,4 @@ Top-p 就是來解這個的。它動態取機率累加到 p 門檻的最小一�
 - [[006-prompt-engineering.md]]
 - [[022-function-calling.md]]
 - [[014-hallucination-problem.md]]
+- [[040-structured-output.md]]

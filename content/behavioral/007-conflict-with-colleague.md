@@ -77,3 +77,4 @@ source: original
 - [[008-technical-decision-challenged.md]]
 - [[012-cross-team-influence.md]]
 - [[018-saying-no.md]]
+- [[026-underperforming-teammate.md]]

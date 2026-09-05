@@ -89,3 +89,4 @@ JDK 8 換成元空間，搬到本地記憶體，不再佔堆。大小只受實�
 - [[001-jvm-memory-structure.md]]
 - [[009-class-loader-types.md]]
 - [[../java/003-string-immutability-pool.md]]
+- [[022-string-intern.md]]

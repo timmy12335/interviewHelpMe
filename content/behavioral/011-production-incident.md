@@ -75,3 +75,4 @@ source: original
 - [[006-biggest-failure.md]]
 - [[010-taking-over-legacy-system.md]]
 - [[016-proactive-improvement.md]]
+- [[043-spotting-what-others-missed.md]]

@@ -74,3 +74,4 @@ CPU 限制該不該設是一個有爭議的問題。設了的好處是可預測�
 
 - [[037-startup-dependencies.md]]
 - [[019-bulkhead-pattern.md]]
+- [[045-dependency-and-supply-chain.md]]

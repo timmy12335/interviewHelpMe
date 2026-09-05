@@ -80,3 +80,4 @@ source: original
 
 - [[002-api-versioning.md]]
 - [[036-expand-contract-migration.md]]
+- [[030-serialization-formats.md]]

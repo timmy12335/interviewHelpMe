@@ -74,3 +74,4 @@ source: community
 - [[../database/017-sharding.md]]
 - [[../database/007-transaction-acid.md]]
 - [[004-meituan-flash-sale-system-design.md]]
+- [[020-microsoft-ood-parking-lot.md]]

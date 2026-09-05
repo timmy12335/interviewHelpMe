@@ -87,3 +87,4 @@ ReentrantLock 功能多。等鎖時能回應中斷，能 tryLock 設逾時，建
 
 - [[006-aqs-principle.md]]
 - [[005-reentrantlock-fair-vs-unfair.md]]
+- [[027-readwritelock-stampedlock.md]]

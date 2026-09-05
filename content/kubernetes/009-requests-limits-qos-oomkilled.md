@@ -81,3 +81,4 @@ QoS 由這兩個值的關係決定。都設且相等是 Guaranteed，有設但�
 - [[010-hpa-vpa-cluster-autoscaler.md]]
 - [[020-namespace-quota-limitrange.md]]
 - [[015-kube-scheduler.md]]
+- [[048-kubernetes-cost.md]]

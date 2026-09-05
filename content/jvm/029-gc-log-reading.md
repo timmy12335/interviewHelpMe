@@ -74,3 +74,4 @@ JDK 9 之後用統一日誌框架，我會開啟所有 GC 標籤，帶絕對時�
 
 - [[014-gc-troubleshooting.md]]
 - [[030-heap-sizing.md]]
+- [[034-jfr-profiling.md]]

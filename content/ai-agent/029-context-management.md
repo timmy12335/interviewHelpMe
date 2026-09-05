@@ -84,3 +84,4 @@ Agent 執行久了上下文會滿，有哪些管理策略？各自的代價是�
 
 - [[004-memory-systems.md]]
 - [[030-context-rot.md]]
+- [[045-agent-latency.md]]

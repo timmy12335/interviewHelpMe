@@ -80,3 +80,4 @@ source: original
 
 - [[020-dynamic-programming-thinking.md]]
 - [[010-recursion-and-backtracking.md]]
+- [[033-divide-and-conquer.md]]

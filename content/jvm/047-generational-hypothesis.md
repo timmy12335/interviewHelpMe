@@ -76,3 +76,4 @@ source: original
 
 - [[002-heap-generations.md]]
 - [[028-card-table-remembered-set.md]]
+- [[048-humongous-objects.md]]

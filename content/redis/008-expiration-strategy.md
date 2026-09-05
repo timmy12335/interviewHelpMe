@@ -79,3 +79,4 @@ Redis 用「惰性刪除 + 定期刪除」兩種策略結合來刪除過期的 k
 - [[009-eviction-policy.md]]
 - [[016-master-slave-replication.md]]
 - [[004-io-multiplexing.md]]
+- [[042-expiration-in-replication.md]]

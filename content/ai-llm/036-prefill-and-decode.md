@@ -80,3 +80,4 @@ LLM 推理為什麼要分成 prefill 與 decode？它們的效能瓶頸有什麼
 
 - [[012-kv-cache-inference.md]]
 - [[037-continuous-batching.md]]
+- [[038-speculative-decoding.md]]

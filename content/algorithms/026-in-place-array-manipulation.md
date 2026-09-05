@@ -78,3 +78,4 @@ source: original
 
 - [[002-two-pointers.md]]
 - [[025-sorting-as-preprocessing.md]]
+- [[027-matrix-problems.md]]

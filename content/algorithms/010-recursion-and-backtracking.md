@@ -75,3 +75,4 @@ source: original
 - [[011-tree-traversal.md]]
 - [[020-dynamic-programming-thinking.md]]
 - [[001-complexity-analysis.md]]
+- [[036-search-optimization.md]]

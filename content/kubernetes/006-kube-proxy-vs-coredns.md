@@ -79,3 +79,4 @@ CoreDNS 負責名稱變成 IP。Pod 查 my-service，它回答這個 Service 的
 - [[005-service-types-vs-ingress.md]]
 - [[008-probes-liveness-readiness-startup.md]]
 - [[018-pod-lifecycle-and-termination.md]]
+- [[034-cni-and-pod-network.md]]

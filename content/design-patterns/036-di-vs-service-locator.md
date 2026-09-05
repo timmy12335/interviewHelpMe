@@ -82,3 +82,4 @@ source: original
 
 - [[023-dependency-inversion-vs-ioc.md]]
 - [[024-solid-in-practice.md]]
+- [[045-test-patterns.md]]

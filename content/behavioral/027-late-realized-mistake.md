@@ -76,3 +76,4 @@ source: original
 
 - [[006-biggest-failure.md]]
 - [[037-measuring-your-impact.md]]
+- [[033-abandoning-your-own-work.md]]

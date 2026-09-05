@@ -78,3 +78,4 @@ source: original
 
 - [[016-proactive-improvement.md]]
 - [[009-quality-vs-deadline.md]]
+- [[042-explaining-tech-to-non-engineers.md]]

@@ -76,3 +76,4 @@ DP 的空間怎麼優化？降維的條件與風險是什麼？
 
 - [[034-memoization-vs-tabulation.md]]
 - [[037-interval-and-tree-dp.md]]
+- [[040-lis-and-variants.md]]

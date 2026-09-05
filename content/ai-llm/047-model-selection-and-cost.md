@@ -76,3 +76,4 @@ source: original
 
 - [[039-inference-serving-and-cost.md]]
 - [[048-llm-application-security.md]]
+- [[029-vocabulary-and-tokenizer.md]]

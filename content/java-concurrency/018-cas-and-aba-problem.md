@@ -74,3 +74,4 @@ ABA 問題我用一個時間序列講會比較清楚。執行緒一讀到值是 
 
 - [[019-atomicinteger-vs-longadder.md]]
 - [[002-volatile-semantics.md]]
+- [[044-atomics-and-varhandle.md]]

@@ -76,3 +76,4 @@ LinkedList 是雙向鏈結串列。插入刪除只要改指標，O(1)。但沒�
 ## 相關
 
 - [[005-hashmap-internals.md]]
+- [[028-fail-fast-iterator.md]]

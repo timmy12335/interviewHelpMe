@@ -71,3 +71,4 @@ source: community
 - [[../ai-agent/020-guardrails.md]]
 - [[../system-design/021-monitoring-and-alerting.md]]
 - [[005-baidu-jvm-gc-tuning.md]]
+- [[049-microsoft-alerting-dedup.md]]

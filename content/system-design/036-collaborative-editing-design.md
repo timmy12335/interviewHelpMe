@@ -76,3 +76,5 @@ source: original
 
 - [[010-chat-system-design.md]]
 - [[029-vector-clock-conflict.md]]
+- [[035-distributed-job-scheduler.md]]
+- [[044-game-state-sync-design.md]]

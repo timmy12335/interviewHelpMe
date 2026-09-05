@@ -72,3 +72,4 @@ Redis 扣減庫存的關鍵細節——一定要用原子操作避免超賣：�
 - [[../redis/003-single-thread-model.md]]
 - [[../system-design/016-capacity-estimation.md]]
 - [[001-alibaba-distributed-lock-redis.md]]
+- [[039-shopee-tw-peak-traffic.md]]

@@ -77,3 +77,4 @@ source: original
 - [[006-adapter-pattern.md]]
 - [[010-bridge-and-composition-over-inheritance.md]]
 - [[016-chain-of-responsibility.md]]
+- [[044-caching-patterns.md]]

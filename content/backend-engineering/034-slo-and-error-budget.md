@@ -78,3 +78,4 @@ SLI 是量測，SLO 是內部的目標，SLA 是對外的承諾而且通常有�
 
 - [[033-metrics-design.md]]
 - [[048-incident-response.md]]
+- [[../real-interviews/040-chailease-monolith-decomposition.md]]

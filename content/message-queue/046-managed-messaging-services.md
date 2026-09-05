@@ -80,3 +80,4 @@ source: original
 
 - [[048-queue-vs-log.md]]
 - [[049-mq-selection.md]]
+- [[047-mq-cost.md]]

@@ -76,3 +76,4 @@ PDB 保護的是「副本數」而非「服務健康」。它不知道那些副�
 
 - [[026-topology-spread-constraints.md]]
 - [[018-pod-lifecycle-and-termination.md]]
+- [[047-cluster-upgrade-strategy.md]]

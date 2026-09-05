@@ -74,3 +74,4 @@ K8s 的 Secret 到底安不安全？外部密鑰管理該怎麼整合？
 
 - [[007-configmap-vs-secret.md]]
 - [[021-rbac-serviceaccount-workload-identity.md]]
+- [[036-ingress-controller-and-tls.md]]

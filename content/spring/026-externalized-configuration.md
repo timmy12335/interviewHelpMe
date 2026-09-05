@@ -78,3 +78,4 @@ Spring Boot 從十幾個來源讀取設定並合併，後面的覆蓋前面的�
 
 - [[027-configuration-properties.md]]
 - [[024-conditional-profiles.md]]
+- [[030-resource-environment.md]]

@@ -77,3 +77,5 @@ ClusterIP 是基礎，給一個只有叢集內可達的虛擬 IP。NodePort 在�
 - [[006-kube-proxy-vs-coredns.md]]
 - [[012-gke-ingress-vs-gateway.md]]
 - [[022-networkpolicy.md]]
+- [[004-job-cronjob-vs-cloud-run.md]]
+- [[035-endpointslice-and-traffic-policy.md]]

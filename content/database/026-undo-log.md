@@ -78,3 +78,4 @@ undo log 的內容是**反向操作**：`INSERT` 的 undo 記錄是刪除、`DEL
 
 - [[009-mvcc.md]]
 - [[035-long-transactions.md]]
+- [[../real-interviews/026-didi-order-state-machine.md]]

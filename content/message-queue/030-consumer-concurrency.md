@@ -80,3 +80,4 @@ source: original
 
 - [[006-consumer-group-rebalance.md]]
 - [[010-consumer-lag-backlog.md]]
+- [[031-rebalance-protocols.md]]

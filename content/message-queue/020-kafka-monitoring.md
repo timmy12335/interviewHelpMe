@@ -79,3 +79,4 @@ broker 端看健康。未同步的分區數跟 ISR 收縮次數是副本跟不�
 - [[010-consumer-lag-backlog.md]]
 - [[004-isr-hw-leader-epoch.md]]
 - [[021-partition-count-sizing.md]]
+- [[037-kafka-security.md]]

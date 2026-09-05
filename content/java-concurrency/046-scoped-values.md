@@ -76,3 +76,4 @@ ThreadLocal 在這個用途上有三個問題。第一是可變，任何程式�
 
 - [[037-context-propagation.md]]
 - [[045-structured-concurrency.md]]
+- [[047-virtual-thread-pinning.md]]

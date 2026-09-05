@@ -74,3 +74,4 @@ source: original
 
 - [[019-multi-region-disaster-recovery.md]]
 - [[../backend-engineering/034-slo-and-error-budget.md]]
+- [[048-cost-aware-design.md]]

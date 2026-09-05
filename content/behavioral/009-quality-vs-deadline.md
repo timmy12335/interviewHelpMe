@@ -77,3 +77,4 @@ source: original
 - [[008-technical-decision-challenged.md]]
 - [[017-changing-requirements.md]]
 - [[018-saying-no.md]]
+- [[032-doing-more-with-less.md]]

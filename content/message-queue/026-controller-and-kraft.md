@@ -76,3 +76,4 @@ KRaft 把中繼資料本身做成一個 Kafka 的內部 topic，**用 Raft 協�
 
 - [[001-kafka-architecture.md]]
 - [[004-isr-hw-leader-epoch.md]]
+- [[035-kafka-upgrade.md]]

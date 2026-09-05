@@ -77,3 +77,4 @@ source: original
 - [[013-strategy-replacing-if-else.md]]
 - [[024-solid-in-practice.md]]
 - [[010-bridge-and-composition-over-inheritance.md]]
+- [[025-interpreter-and-small-languages.md]]

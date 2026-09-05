@@ -74,3 +74,4 @@ source: original
 
 - [[009-vector-database-similarity-search.md]]
 - [[041-rag-retrieval-quality.md]]
+- [[045-multimodal-models.md]]

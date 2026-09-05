@@ -80,3 +80,4 @@ source: original
 
 - [[033-subquery-rewriting.md]]
 - [[017-sharding.md]]
+- [[040-keyset-pagination.md]]

@@ -75,3 +75,4 @@ source: original
 - [[002-partition-tradeoffs.md]]
 - [[011-ordering-guarantees.md]]
 - [[012-idempotent-producer-transaction.md]]
+- [[041-partition-key-and-hotspots.md]]

@@ -69,3 +69,5 @@ JDK 8 把 Segment 整個拿掉，直接用 Node 陣列。寫入先用 CAS 試著
 ## 相關
 
 - [[015-copyonwritearraylist.md]]
+- [[040-lock-granularity.md]]
+- [[043-concurrent-collections-map.md]]

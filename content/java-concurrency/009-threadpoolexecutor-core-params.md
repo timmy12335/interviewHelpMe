@@ -82,3 +82,4 @@ ThreadPoolExecutor 有七個建構參數：corePoolSize、maximumPoolSize、keep
 
 - [[010-thread-pool-rejection-policy.md]]
 - [[011-why-avoid-executors-factory-methods.md]]
+- [[033-scheduled-executor.md]]

@@ -76,3 +76,4 @@ Redis 的 Lua 腳本為什麼是原子的？寫腳本時有哪些限制與陷阱
 
 - [[020-redis-transaction.md]]
 - [[038-rate-limiting.md]]
+- [[045-redis-functions-and-modules.md]]

@@ -76,3 +76,4 @@ NULL 等於 NULL 是未知而不是真，所以要用 IS NULL。不等於某個�
 
 - [[033-subquery-rewriting.md]]
 - [[041-data-types.md]]
+- [[044-constraints-vs-application.md]]

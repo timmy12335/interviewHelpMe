@@ -76,3 +76,4 @@ source: original
 
 - [[013-strategy-replacing-if-else.md]]
 - [[017-command-and-undo.md]]
+- [[041-fluent-and-named-arguments.md]]

@@ -84,3 +84,4 @@ source: original
 
 - [[008-probes-liveness-readiness-startup.md]]
 - [[032-node-pressure-and-eviction.md]]
+- [[041-cluster-observability.md]]

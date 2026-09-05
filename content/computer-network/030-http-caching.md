@@ -78,3 +78,4 @@ HTTP 快取分兩層，而它們的成本差一個數量級。
 
 - [[009-http-status-and-message.md]]
 - [[040-cdn-caching.md]]
+- [[033-content-negotiation-compression.md]]

@@ -74,3 +74,4 @@ source: original
 
 - [[029-value-objects-and-entities.md]]
 - [[004-builder-pattern.md]]
+- [[043-concurrency-patterns.md]]

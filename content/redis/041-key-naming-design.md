@@ -76,3 +76,4 @@ Redis 的鍵該怎麼命名與設計？有哪些會在後期造成麻煩的決�
 
 - [[032-memory-management.md]]
 - [[035-cluster-resharding.md]]
+- [[046-redis-security.md]]

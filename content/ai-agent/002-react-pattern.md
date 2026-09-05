@@ -71,3 +71,4 @@ ReAct 的核心做法，是讓模型在每一輪循環裡輪流產生思考、�
 - [[../ai-llm/021-chain-of-thought.md]]
 - [[../ai-llm/022-function-calling.md]]
 - [[009-self-correction-reflection.md]]
+- [[024-agent-framework-selection.md]]

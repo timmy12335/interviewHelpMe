@@ -87,3 +87,4 @@ Semaphore 維護一組許可證，acquire() 拿不到就阻塞，release() 再�
 ## 相關
 
 - [[006-aqs-principle.md]]
+- [[032-exchanger-and-phaser.md]]

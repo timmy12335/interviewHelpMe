@@ -84,3 +84,4 @@ Throwable
 ## 相關
 
 - [[012-try-with-resources.md]]
+- [[044-exception-design.md]]

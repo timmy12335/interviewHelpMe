@@ -68,3 +68,5 @@ source: community
 
 - [[../ai-agent/009-self-correction-reflection.md]]
 - [[022-amazon-inventory-system-design.md]]
+- [[021-google-googleyness-behavioral.md]]
+- [[048-amazon-decision-with-incomplete-data.md]]

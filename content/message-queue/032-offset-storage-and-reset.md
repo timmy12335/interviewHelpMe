@@ -76,3 +76,4 @@ source: original
 
 - [[007-offset-commit-duplicate.md]]
 - [[018-consumer-idempotency.md]]
+- [[043-replay-and-repair.md]]

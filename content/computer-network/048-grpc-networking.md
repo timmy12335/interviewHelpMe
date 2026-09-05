@@ -78,3 +78,4 @@ gRPC 建立在 HTTP/2 上，而它的兩個特性直接造成了網路層的差�
 
 - [[031-http2-multiplexing.md]]
 - [[038-l4-vs-l7-load-balancing.md]]
+- [[049-internal-service-communication.md]]

@@ -73,3 +73,4 @@ PriorityBlockingQueue 底層是二元堆，無界，出列順序由 Comparable �
 ## 相關
 
 - [[009-threadpoolexecutor-core-params.md]]
+- [[031-producer-consumer.md]]

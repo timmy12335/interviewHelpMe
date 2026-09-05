@@ -71,3 +71,4 @@ Transformer 為什麼需要額外引入「位置編碼」？原始論文提出�
 - [[001-transformer-self-attention.md]]
 - [[015-long-context-handling.md]]
 - [[012-kv-cache-inference.md]]
+- [[027-rope-and-length-extrapolation.md]]

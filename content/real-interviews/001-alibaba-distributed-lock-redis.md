@@ -71,3 +71,4 @@ source: community
 - [[../java-concurrency/017-deadlock-conditions-and-troubleshooting.md]]
 - [[../database/024-optimistic-vs-pessimistic-lock.md]]
 - [[004-meituan-flash-sale-system-design.md]]
+- [[008-netease-cache-avalanche-penetration.md]]

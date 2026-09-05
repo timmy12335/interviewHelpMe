@@ -81,3 +81,4 @@ source: community
 - [[../backend-engineering/019-bulkhead-pattern.md]]
 - [[../system-design/006-caching-strategies.md]]
 - [[../java-concurrency/012-future-vs-completablefuture.md]]
+- [[037-kkday-supplier-inventory-sync.md]]

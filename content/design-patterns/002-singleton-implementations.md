@@ -75,3 +75,4 @@ source: original
 - [[003-factory-method-abstract-factory.md]]
 - [[023-dependency-inversion-vs-ioc.md]]
 - [[012-flyweight-and-object-pool.md]]
+- [[048-patterns-across-languages.md]]

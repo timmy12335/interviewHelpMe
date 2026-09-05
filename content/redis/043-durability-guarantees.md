@@ -82,3 +82,4 @@ Redis 在各種故障下最多會丟失多少資料？怎麼設定才能把損�
 
 - [[034-fork-and-cow.md]]
 - [[006-aof-persistence.md]]
+- [[048-backup-and-migration.md]]

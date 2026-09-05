@@ -86,3 +86,4 @@ Java 的四種引用（強引用、軟引用、弱引用、虛引用）有什麼
 
 - [[003-gc-roots-reachability.md]]
 - [[../java-concurrency/008-threadlocal-memory-leak.md]]
+- [[043-cleaner-vs-finalize.md]]

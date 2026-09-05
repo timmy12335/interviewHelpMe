@@ -73,3 +73,4 @@ AOP 其實就是代理的一般化跟自動化。我不用為每個類別手寫�
 - [[006-adapter-pattern.md]]
 - [[016-chain-of-responsibility.md]]
 - [[023-dependency-inversion-vs-ioc.md]]
+- [[037-middleware-and-pipeline.md]]

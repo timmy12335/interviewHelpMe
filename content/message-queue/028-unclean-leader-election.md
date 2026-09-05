@@ -76,3 +76,4 @@ Kafka 的預設是關閉，也就是選一致性。因為對多數場景，靜�
 
 - [[004-isr-hw-leader-epoch.md]]
 - [[017-message-reliability-three-stages.md]]
+- [[034-multi-cluster-and-geo.md]]

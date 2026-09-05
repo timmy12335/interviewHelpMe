@@ -74,3 +74,4 @@ source: original
 - [[../backend-engineering/019-bulkhead-pattern.md]]
 - [[../backend-engineering/018-retry-and-backoff.md]]
 - [[008-url-shortener-design.md]]
+- [[045-email-system-design.md]]

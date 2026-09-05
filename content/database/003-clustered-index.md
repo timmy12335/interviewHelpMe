@@ -85,3 +85,4 @@ source: original
 - [[001-btree-index.md]]
 - [[004-composite-index.md]]
 - [[006-explain.md]]
+- [[029-primary-key-choice.md]]

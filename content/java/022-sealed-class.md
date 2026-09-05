@@ -86,3 +86,4 @@ JDK 17 正式定案的密封類別，寫法是用 sealed 修飾，再用 permits
 
 - [[020-interface-default-methods.md]]
 - [[021-record-class.md]]
+- [[045-enum-internals.md]]

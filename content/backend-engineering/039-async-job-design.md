@@ -80,3 +80,4 @@ source: original
 
 - [[015-outbox-pattern.md]]
 - [[003-idempotency-design.md]]
+- [[../real-interviews/033-fubon-batch-window.md]]

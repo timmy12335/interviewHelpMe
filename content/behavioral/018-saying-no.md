@@ -75,3 +75,4 @@ source: original
 - [[009-quality-vs-deadline.md]]
 - [[017-changing-requirements.md]]
 - [[012-cross-team-influence.md]]
+- [[034-unfair-workload.md]]

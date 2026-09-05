@@ -76,3 +76,4 @@ A/B 測試最常見的錯誤是統計上的。過早結束、樣本量不足、�
 
 - [[031-config-and-feature-flags.md]]
 - [[047-chaos-engineering.md]]
+- [[../real-interviews/034-trend-micro-signature-matching.md]]

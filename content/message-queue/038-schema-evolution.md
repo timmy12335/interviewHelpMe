@@ -76,3 +76,4 @@ source: original
 
 - [[../backend-engineering/027-api-contract-evolution.md]]
 - [[039-large-messages.md]]
+- [[040-event-design.md]]

@@ -81,3 +81,5 @@ source: community
 - [[../system-design/020-batch-vs-stream-processing.md]]
 - [[../redis/029-geo-queries.md]]
 - [[../backend-engineering/026-clocks-and-ordering.md]]
+- [[036-wistron-factory-anomaly-detection.md]]
+- [[038-gogoro-battery-swap-dispatch.md]]

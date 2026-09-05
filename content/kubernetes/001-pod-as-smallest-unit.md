@@ -75,3 +75,4 @@ Container 這個抽象少了一樣東西，就是沒辦法表達「這幾個東�
 - [[002-deployment-vs-statefulset.md]]
 - [[005-service-types-vs-ingress.md]]
 - [[018-pod-lifecycle-and-termination.md]]
+- [[030-init-and-sidecar-containers.md]]

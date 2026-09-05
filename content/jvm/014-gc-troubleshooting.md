@@ -86,3 +86,4 @@ CPU 飆高有固定流程。top 找到吃 CPU 的執行緒，ID 轉成十六進�
 - [[013-jvm-tuning-params.md]]
 - [[015-memory-leak-vs-overflow.md]]
 - [[../java-concurrency/017-deadlock-conditions-and-troubleshooting.md]]
+- [[024-oom-types.md]]

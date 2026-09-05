@@ -73,3 +73,4 @@ Human-in-the-Loop 是指 Agent 自主跑任務時，刻意在關鍵節點停下�
 - [[010-sandbox-code-execution-security.md]]
 - [[020-guardrails.md]]
 - [[009-self-correction-reflection.md]]
+- [[039-audit-and-accountability.md]]

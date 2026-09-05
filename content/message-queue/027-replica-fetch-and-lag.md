@@ -74,3 +74,4 @@ follower 是怎麼從 leader 同步資料的？什麼情況會被踢出 ISR？
 
 - [[004-isr-hw-leader-epoch.md]]
 - [[005-acks-and-min-insync-replicas.md]]
+- [[036-broker-failure-recovery.md]]

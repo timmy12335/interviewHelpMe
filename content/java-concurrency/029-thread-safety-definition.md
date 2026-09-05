@@ -76,3 +76,4 @@ source: original
 
 - [[003-jmm-happens-before.md]]
 - [[030-safe-publication.md]]
+- [[050-when-not-to-use-concurrency.md]]

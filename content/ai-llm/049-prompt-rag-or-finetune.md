@@ -80,3 +80,4 @@ source: original
 
 - [[006-prompt-engineering.md]]
 - [[042-rag-failure-and-evaluation.md]]
+- [[050-capability-boundaries.md]]

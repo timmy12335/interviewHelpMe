@@ -76,3 +76,4 @@ Repository 的原始定義是「讓領域層感覺自己在操作一個記憶體
 
 - [[027-unit-of-work.md]]
 - [[028-domain-model-vs-anemic.md]]
+- [[032-specification-and-query-object.md]]

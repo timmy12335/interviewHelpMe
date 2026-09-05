@@ -76,3 +76,4 @@ source: original
 
 - [[020-batch-vs-stream-processing.md]]
 - [[040-metrics-storage-design.md]]
+- [[041-metering-and-billing-design.md]]

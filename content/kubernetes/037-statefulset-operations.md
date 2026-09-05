@@ -74,3 +74,4 @@ StatefulSet 給了穩定的網路標識與獨立的儲存，但它不幫你處�
 
 - [[002-deployment-vs-statefulset.md]]
 - [[019-pv-pvc-storageclass.md]]
+- [[038-csi-snapshots-and-expansion.md]]

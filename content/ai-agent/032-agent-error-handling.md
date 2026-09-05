@@ -78,3 +78,4 @@ Agent 的錯誤處理跟一般服務有什麼不同？
 
 - [[025-tool-design.md]]
 - [[031-loop-control.md]]
+- [[043-caching-and-idempotency.md]]

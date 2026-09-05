@@ -76,3 +76,4 @@ binlog 的三種格式差在哪？半同步複製能提供什麼保證？
 
 - [[013-binlog-and-2pc.md]]
 - [[019-read-write-separation.md]]
+- [[038-backup-and-pitr.md]]

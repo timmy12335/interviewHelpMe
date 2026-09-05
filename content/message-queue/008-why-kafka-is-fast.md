@@ -77,3 +77,4 @@ Kafka 的資料是寫在磁碟上的，為什麼還能有這麼高的吞吐？
 - [[009-log-retention-compaction.md]]
 - [[001-kafka-architecture.md]]
 - [[021-partition-count-sizing.md]]
+- [[025-kafka-storage-layout.md]]

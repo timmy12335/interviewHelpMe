@@ -73,3 +73,4 @@ Kafka 的核心概念有哪些？它和傳統的訊息佇列在架構上最大�
 - [[002-partition-tradeoffs.md]]
 - [[006-consumer-group-rebalance.md]]
 - [[008-why-kafka-is-fast.md]]
+- [[022-kafka-vs-pulsar.md]]

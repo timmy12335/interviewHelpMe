@@ -76,3 +76,4 @@ CPU 快取的最小交換單位不是位元組，是六十四位元組的快取�
 
 - [[019-atomicinteger-vs-longadder.md]]
 - [[016-blockingqueue-implementations.md]]
+- [[036-disruptor-ring-buffer.md]]

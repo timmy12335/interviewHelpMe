@@ -74,3 +74,4 @@ AutoCloseable 是 JDK 7 為此新增的，close() 可以拋 Exception。Closeabl
 
 - [[008-parent-delegation.md]]
 - [[010-object-creation-process.md]]
+- [[046-jvm-startup-sequence.md]]

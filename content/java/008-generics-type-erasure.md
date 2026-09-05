@@ -75,3 +75,4 @@ Java 的泛型和 C# 走的不是同一條路，它是純編譯期的東西。
 ## 相關
 
 - [[009-generics-pecs-wildcards.md]]
+- [[043-var-type-inference.md]]

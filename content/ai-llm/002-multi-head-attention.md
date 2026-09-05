@@ -71,3 +71,4 @@ Transformer 裡的「多頭注意力機制」是什麼？為什麼不直接用�
 - [[001-transformer-self-attention.md]]
 - [[024-model-distillation.md]]
 - [[../backend-engineering/019-bulkhead-pattern.md]]
+- [[028-attention-efficiency.md]]

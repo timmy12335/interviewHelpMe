@@ -69,3 +69,6 @@ source: community
 - [[../java-concurrency/014-concurrenthashmap-internals.md]]
 - [[../redis/009-eviction-policy.md]]
 - [[../java-concurrency/016-blockingqueue-implementations.md]]
+- [[010-mediatek-backend-fundamentals.md]]
+- [[023-meta-serialize-deserialize-binary-tree.md]]
+- [[047-meta-kv-store-with-ttl.md]]

@@ -89,3 +89,4 @@ ZSet 是有序集合，每個元素關聯一個分數並依此排序。最經典
 
 - [[002-underlying-encoding.md]]
 - [[022-skiplist.md]]
+- [[../system-design/022-leaderboard-design.md]]

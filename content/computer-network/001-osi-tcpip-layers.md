@@ -75,3 +75,4 @@ OSI 七層是理論上的參考模型，TCP/IP 四層才是真正被實作出來
 - [[002-tcp-three-way-handshake.md]]
 - [[019-nat-and-private-network.md]]
 - [[024-layered-troubleshooting.md]]
+- [[050-where-abstractions-leak.md]]

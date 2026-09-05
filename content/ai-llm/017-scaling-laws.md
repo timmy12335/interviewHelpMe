@@ -71,3 +71,4 @@ Chinchilla 那篇研究是很具體的例子。它發現固定運算預算下，
 - [[007-in-context-learning.md]]
 - [[016-perplexity-evaluation-metrics.md]]
 - [[../system-design/016-capacity-estimation.md]]
+- [[030-pretraining-data.md]]

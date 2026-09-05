@@ -78,3 +78,4 @@ source: original
 
 - [[026-module-systems.md]]
 - [[016-web-performance-core-web-vitals.md]]
+- [[037-web-workers.md]]

@@ -71,3 +71,4 @@ source: original
 - [[012-observability-tracing.md]]
 - [[018-cost-control-rate-limiting.md]]
 - [[001-agent-fundamentals.md]]
+- [[042-agent-deployment-shapes.md]]

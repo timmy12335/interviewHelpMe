@@ -70,3 +70,4 @@ source: community
 - [[018-meta-newsfeed-system-design.md]]
 - [[../ai-agent/020-guardrails.md]]
 - [[019-amazon-leadership-principles-behavioral.md]]
+- [[024-uber-ride-matching-system-design.md]]

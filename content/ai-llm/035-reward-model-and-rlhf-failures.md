@@ -74,3 +74,4 @@ source: original
 
 - [[019-rlhf.md]]
 - [[020-dpo.md]]
+- [[046-reasoning-and-test-time-compute.md]]

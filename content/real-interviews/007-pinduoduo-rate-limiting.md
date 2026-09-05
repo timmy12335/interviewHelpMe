@@ -69,3 +69,4 @@ source: community
 - [[../backend-engineering/006-rate-limiting-algorithms.md]]
 - [[../backend-engineering/018-retry-and-backoff.md]]
 - [[004-meituan-flash-sale-system-design.md]]
+- [[046-google-distributed-rate-limiter.md]]

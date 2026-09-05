@@ -77,3 +77,4 @@ NAT 做的是位址轉換。內網機器用的是私有位址，在公網上不�
 - [[017-socket-and-port-exhaustion.md]]
 - [[020-mtu-ip-fragmentation.md]]
 - [[022-network-troubleshooting-tools.md]]
+- [[047-ipv6-dual-stack.md]]

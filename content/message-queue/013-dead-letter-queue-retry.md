@@ -77,3 +77,4 @@ source: original
 - [[007-offset-commit-duplicate.md]]
 - [[018-consumer-idempotency.md]]
 - [[010-consumer-lag-backlog.md]]
+- [[042-consumer-batching-and-transactions.md]]

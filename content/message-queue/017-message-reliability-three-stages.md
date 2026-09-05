@@ -77,3 +77,4 @@ source: original
 - [[005-acks-and-min-insync-replicas.md]]
 - [[018-consumer-idempotency.md]]
 - [[016-rocketmq-transactional-message.md]]
+- [[050-cost-of-async.md]]

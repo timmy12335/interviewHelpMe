@@ -73,3 +73,4 @@ source: community
 - [[004-meituan-flash-sale-system-design.md]]
 - [[../backend-engineering/012-message-delivery-semantics.md]]
 - [[../backend-engineering/018-retry-and-backoff.md]]
+- [[043-stripe-idempotent-payments-api.md]]
