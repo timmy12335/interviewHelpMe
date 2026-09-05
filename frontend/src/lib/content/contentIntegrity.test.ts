@@ -79,6 +79,23 @@ function expectedSlug(fileName: string): string {
   return fileName.replace(/\.md$/, "").replace(/^\d+-/, "");
 }
 
+/**
+ * 程式碼區塊與行內程式碼換成等長的空白，讓後面數 `**` 時不會把
+ * `securityMatcher("/api/**")` 這種 Ant 路徑當成粗體標記。
+ */
+function maskCode(markdown: string): string {
+  return markdown.replace(/```[\s\S]*?```|`[^`\n]*`/g, (code) =>
+    code.replace(/[^\n]/g, " "),
+  );
+}
+
+function countCjk(text: string): number {
+  return text.match(/[\u4e00-\u9fff]/g)?.length ?? 0;
+}
+
+/** 粗體片段超過這個 CJK 字數，標的就是整個子句而不是術語。 */
+const MAX_BOLD_CJK = 12;
+
 describe("題庫結構", () => {
   it("有題目可以檢查", () => {
     expect(QUESTIONS.length).toBeGreaterThan(0);
@@ -156,6 +173,38 @@ describe("題庫結構", () => {
     });
 
     expect(gaps).toEqual([]);
+  });
+
+  it("粗體標記都成對", () => {
+    // 落單的 `**` 會原封不動印在頁面上。撰寫當下有 18 行是這個狀況，
+    // 多半是整句粗體改寫到一半留下的。
+    const unpaired = QUESTIONS.flatMap((question) =>
+      maskCode(question.markdown)
+        .split("\n")
+        .flatMap((line, index) =>
+          (line.match(/\*\*/g)?.length ?? 0) % 2 === 1
+            ? [`${question.label}:${index + 1} 有落單的 **`]
+            : [],
+        ),
+    );
+
+    expect(unpaired).toEqual([]);
+  });
+
+  it("粗體只標術語與短片語，不標整個子句", () => {
+    // 這是會整批漂移的東西：一批一批寫下來，粗體從「標術語」變成「標整句」，
+    // 而每一篇單獨看都不覺得奇怪。曾經漂到全篇 75% 的字都是粗體，
+    // 那時粗體已經不帶任何訊息。
+    const tooLong = QUESTIONS.flatMap((question) =>
+      [...maskCode(question.markdown).matchAll(/\*\*([^\n*][^\n]*?)\*\*/g)]
+        .filter((match) => countCjk(match[1]) > MAX_BOLD_CJK)
+        .map(
+          (match) =>
+            `${question.label} 有 ${countCjk(match[1])} 字的粗體：${match[1].slice(0, 20)}…`,
+        ),
+    );
+
+    expect(tooLong).toEqual([]);
   });
 });
 
