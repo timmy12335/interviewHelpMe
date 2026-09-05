@@ -16,7 +16,7 @@ ConfigMap 和 Secret 有什麼差別？Secret 只是 base64 編碼，這樣算�
 
 功能上兩者幾乎一樣——都是鍵值對，都能以**環境變數**或**掛載成檔案**的方式提供給 Pod，都能讓設定與映像檔解耦。差別在**用途語意與周邊處理**：ConfigMap 放非敏感設定，Secret 放密碼、Token、憑證。
 
-至於 base64，**它不是加密，只是編碼**，任何人拿到都能還原。Secret 真正的安全性來自別的地方：**RBAC 可以獨立控管誰能讀 Secret**（不會因為能看 ConfigMap 就能看 Secret）、**值不會出現在 `kubectl describe` 與多數日誌裡**、**可以設定 etcd 靜態加密（encryption at rest）**、掛載時用 tmpfs 放在記憶體而非寫進磁碟。所以正確的說法是：**Secret 預設並不安全，它提供的是「可以被保護的位置」，實際安全程度取決於你有沒有開啟那些保護**。真正敏感的東西，實務上會交給外部密鑰管理服務（GCP Secret Manager、Vault），K8s 只保留取用的憑證。
+至於 base64，**它不是加密，只是編碼**，任何人拿到都能還原。Secret 真正的安全性來自別的地方：**RBAC 可以獨立控管誰能讀 Secret**（不會因為能看 ConfigMap 就能看 Secret）、**值不會出現在 `kubectl describe` 與多數日誌裡**、**可以設定 etcd 靜態加密（encryption at rest）**、掛載時用 tmpfs 放在記憶體而非寫進磁碟。所以正確的說法是：Secret 預設並不安全，它提供的是「可以被保護的位置」，實際安全程度取決於你有沒有開啟那些保護。真正敏感的東西，實務上會交給外部密鑰管理服務（GCP Secret Manager、Vault），K8s 只保留取用的憑證。
 
 ## 詳細解析
 
@@ -32,7 +32,7 @@ ConfigMap 和 Secret 有什麼差別？Secret 只是 base64 編碼，這樣算�
 
 ## 面試回答方式
 
-先講兩者功能幾乎相同，差別在用途語意與周邊處理，不要一開始就陷進 base64。接著正面回答 base64 那一半——它是編碼不是加密，存在理由是讓二進位內容能放進 YAML。重點放在「Secret 真正的保護來自哪裡」：獨立的 RBAC、不出現在 describe、可開啟 etcd 靜態加密、掛載走 tmpfs。給出那句定調——**Secret 預設不安全，它提供的是可以被保護的位置**。加分點有三個：環境變數注入無法熱更新且容易外洩、檔案掛載會自動同步但應用要自己重讀、以及「能在該 namespace 建立 Pod 的人就能讀該 namespace 的 Secret」這個常被忽略的邊界。
+先講兩者功能幾乎相同，差別在用途語意與周邊處理，不要一開始就陷進 base64。接著正面回答 base64 那一半——它是編碼不是加密，存在理由是讓二進位內容能放進 YAML。重點放在「Secret 真正的保護來自哪裡」：獨立的 RBAC、不出現在 describe、可開啟 etcd 靜態加密、掛載走 tmpfs。給出那句定調——Secret 預設不安全，它提供的是可以被保護的位置。加分點有三個：環境變數注入無法熱更新且容易外洩、檔案掛載會自動同步但應用要自己重讀、以及「能在該 namespace 建立 Pod 的人就能讀該 namespace 的 Secret」這個常被忽略的邊界。
 
 ## 講稿
 
@@ -68,7 +68,7 @@ Secret 真正的保護來自別的地方。RBAC 可以獨立控管誰能讀，�
 
 **核心答案**：因為 RBAC 對 Secret 的保護只在 **API 層面**——它擋的是 `kubectl get secret`。但如果某人有權在某個 namespace 建立 Pod，他可以寫一個 Pod spec 去掛載該 namespace 的**任何** Secret，然後在容器裡直接把內容印出來或送到外部。整個過程完全合法，不需要 `get secret` 權限。
 
-**詳細解析**：這代表 Secret 的實際隔離邊界是 **namespace 加上「誰能在這個 namespace 建立工作負載」**，而不是單純的 Secret 讀取權限。所以真正的隔離要靠 namespace 切分——把不同信任等級的工作負載放在不同 namespace，並嚴格控管每個 namespace 的建立權限。這也是為什麼多租戶場景下「一個叢集多個 namespace」的隔離強度有限，安全要求高時會傾向用多個叢集。延伸來看，這個道理對 ServiceAccount 也成立：能建立 Pod 就能指定要用哪個 ServiceAccount，等於能取得那個身分的權限，所以高權限的 ServiceAccount 必須放在受管控的 namespace 裡。
+**詳細解析**：這代表 Secret 的實際隔離邊界是 namespace 加上「誰能在這個 namespace 建立工作負載」，而不是單純的 Secret 讀取權限。所以真正的隔離要靠 namespace 切分——把不同信任等級的工作負載放在不同 namespace，並嚴格控管每個 namespace 的建立權限。這也是為什麼多租戶場景下「一個叢集多個 namespace」的隔離強度有限，安全要求高時會傾向用多個叢集。延伸來看，這個道理對 ServiceAccount 也成立：能建立 Pod 就能指定要用哪個 ServiceAccount，等於能取得那個身分的權限，所以高權限的 ServiceAccount 必須放在受管控的 namespace 裡。
 
 **面試回答方式**：講清楚 RBAC 只擋 API 層面，而建立 Pod 是另一條合法路徑。點出真正的邊界是 namespace 加建立工作負載的權限。加分點有兩個：多租戶時 namespace 隔離強度有限、安全要求高會用多叢集；以及同樣道理適用於 ServiceAccount，高權限帳號要放在受控 namespace。
 

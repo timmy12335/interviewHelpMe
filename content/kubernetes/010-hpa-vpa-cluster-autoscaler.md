@@ -18,13 +18,13 @@ HPA、VPA 和 Cluster Autoscaler 分別在調整什麼？它們可以同時使�
 
 **HPA（Horizontal Pod Autoscaler）調 Pod 的數量**——依 CPU、記憶體或自訂指標增減副本數，是最常用的一種。**VPA（Vertical Pod Autoscaler）調單一 Pod 的 requests／limits**——它觀察實際用量，建議或自動修正資源配置。**Cluster Autoscaler 調節點的數量**——當有 Pod 因為資源不足而 **Pending** 時增加節點，節點長時間低使用率時移除。
 
-接力關係是：HPA 加了 Pod → 現有節點放不下、Pod 進入 Pending → Cluster Autoscaler 開新節點。所以 **HPA 和 Cluster Autoscaler 是天生搭配、幾乎一定要一起用**。
+接力關係是：HPA 加了 Pod → 現有節點放不下、Pod 進入 Pending → Cluster Autoscaler 開新節點。所以 HPA 和 Cluster Autoscaler 是天生搭配、幾乎一定要一起用。
 
-但 **HPA 和 VPA 不能同時對「同一個指標」作用**——兩者都盯 CPU 的話會互相打架：VPA 調高 requests 讓每個 Pod 的使用率下降，HPA 看到使用率降低就縮減副本，然後負載又集中回來，形成震盪。要並用必須讓它們看不同維度（例如 VPA 只管記憶體、HPA 用自訂指標）。
+但 HPA 和 VPA 不能同時對「同一個指標」作用——兩者都盯 CPU 的話會互相打架：VPA 調高 requests 讓每個 Pod 的使用率下降，HPA 看到使用率降低就縮減副本，然後負載又集中回來，形成震盪。要並用必須讓它們看不同維度（例如 VPA 只管記憶體、HPA 用自訂指標）。
 
 ## 詳細解析
 
-**HPA 的計算方式決定了它的行為**：目標副本數大致是「目前副本數 × (目前指標 ÷ 目標指標)」。注意它算的是**平均值**，所以少數 Pod 特別忙不會觸發擴容。另外 HPA 的 CPU 使用率是相對於 **requests** 而非 limits——requests 設得太低會讓使用率虛高、動不動就擴容；設太高則永遠擴不起來。**HPA 的行為好壞，一半取決於 requests 設得準不準**。
+**HPA 的計算方式決定了它的行為**：目標副本數大致是「目前副本數 × (目前指標 ÷ 目標指標)」。注意它算的是**平均值**，所以少數 Pod 特別忙不會觸發擴容。另外 HPA 的 CPU 使用率是相對於 **requests** 而非 limits——requests 設得太低會讓使用率虛高、動不動就擴容；設太高則永遠擴不起來。HPA 的行為好壞，一半取決於 requests 設得準不準。
 
 **HPA 依賴 Metrics Server**：沒有安裝 Metrics Server，HPA 的 TARGETS 欄位會顯示 `<unknown>` 而完全不動作。這是「HPA 設了沒反應」最常見的原因。要用 QPS、佇列長度這類自訂指標，還需要額外的 adapter（Prometheus Adapter，或 GKE 上的 Custom Metrics Stackdriver Adapter）。
 

@@ -14,9 +14,9 @@ resources 的 requests 和 limits 差在哪？它們怎麼決定 Pod 的 QoS 等
 
 ## 核心答案
 
-**requests 是排程的依據，limits 是執行期的天花板**。Scheduler 只看 **requests** 決定這個 Pod 放得進哪個節點——它比對的是節點上**已被 request 的總量**，不是實際用量。limits 則由 kubelet 與 cgroup 在執行期強制執行。
+requests 是排程的依據，limits 是執行期的天花板。Scheduler 只看 **requests** 決定這個 Pod 放得進哪個節點——它比對的是節點上**已被 request 的總量**，不是實際用量。limits 則由 kubelet 與 cgroup 在執行期強制執行。
 
-**CPU 和記憶體超限的後果完全不同**，這是最該記住的差異：**CPU 超過 limit 會被 throttle（限速變慢，但不會死）**；**記憶體超過 limit 會直接被核心 OOMKill（沒有商量餘地，因為記憶體無法回收）**。
+CPU 和記憶體超限的後果完全不同，這是最該記住的差異：**CPU 超過 limit 會被 throttle（限速變慢，但不會死）**；記憶體超過 limit 會直接被核心 OOMKill（沒有商量餘地，因為記憶體無法回收）。
 
 **QoS 由 requests 與 limits 的關係決定**：兩者都設且相等是 **Guaranteed**；有設但不相等（或只設其一）是 **Burstable**；兩者都沒設是 **BestEffort**。QoS 決定**節點資源不足時誰先被驅逐**——BestEffort 先死，接著是用量超過 requests 最多的 Burstable，Guaranteed 最後。
 
@@ -24,7 +24,7 @@ resources 的 requests 和 limits 差在哪？它們怎麼決定 Pod 的 QoS 等
 
 ## 詳細解析
 
-**Scheduler 看 requests 而非實際用量造成的兩種病**：requests 設太高，節點看起來滿了但實際 CPU 只用 10%，白白浪費（也讓 Cluster Autoscaler 開出不必要的節點）；requests 設太低，一堆 Pod 被塞進同一台，實際用量一上來就互相搶資源、集體變慢。所以 requests 應該貼近**穩態的實際用量**，用監控數據來定，而不是拍腦袋。
+Scheduler 看 requests 而非實際用量造成的兩種病：requests 設太高，節點看起來滿了但實際 CPU 只用 10%，白白浪費（也讓 Cluster Autoscaler 開出不必要的節點）；requests 設太低，一堆 Pod 被塞進同一台，實際用量一上來就互相搶資源、集體變慢。所以 requests 應該貼近**穩態的實際用量**，用監控數據來定，而不是拍腦袋。
 
 **CPU limit 的爭議**：因為超過只是被 throttle，很多團隊主張**不要設 CPU limit**——設了會讓應用在節點明明還有空閒 CPU 時仍被限速，尤其對延遲敏感的服務傷害明顯（GC、突發流量都會被卡住）。反方意見是不設 limit 會讓吵鬧的鄰居影響同節點的其他 Pod。折衷做法是設一個寬鬆的 limit，或用 Guaranteed 等級把重要服務隔離出來。
 
@@ -36,7 +36,7 @@ resources 的 requests 和 limits 差在哪？它們怎麼決定 Pod 的 QoS 等
 
 ## 面試回答方式
 
-先用一句話定調：requests 是排程依據、limits 是執行期天花板，Scheduler 只看 requests。接著立刻講最重要的非對稱——**CPU 超限只是變慢，記憶體超限直接被殺**，因為記憶體無法回收。QoS 三級用 requests 與 limits 的關係說明，並點出它決定的是**驅逐順序**。一定要區分 OOMKilled 與驅逐：前者是容器自己超過 limit、跟節點壓力無關，後者是節點整體不足由 kubelet 挑人。實務加分點：Exit Code 137 就是 OOMKilled 的訊號；JVM 的容器 limit 要大於最大堆加上堆外開銷；以及「該不該設 CPU limit」這個有爭議的實務議題，能講出兩邊理由比選邊站更好。
+先用一句話定調：requests 是排程依據、limits 是執行期天花板，Scheduler 只看 requests。接著立刻講最重要的非對稱——CPU 超限只是變慢，記憶體超限直接被殺，因為記憶體無法回收。QoS 三級用 requests 與 limits 的關係說明，並點出它決定的是**驅逐順序**。一定要區分 OOMKilled 與驅逐：前者是容器自己超過 limit、跟節點壓力無關，後者是節點整體不足由 kubelet 挑人。實務加分點：Exit Code 137 就是 OOMKilled 的訊號；JVM 的容器 limit 要大於最大堆加上堆外開銷；以及「該不該設 CPU limit」這個有爭議的實務議題，能講出兩邊理由比選邊站更好。
 
 ## 講稿
 
@@ -70,7 +70,7 @@ QoS 由這兩個值的關係決定。都設且相等是 Guaranteed，有設但�
 
 ### Guaranteed、Burstable、BestEffort 這三級，實務上該怎麼選？
 
-**核心答案**：**看這個工作負載被犧牲的代價**。核心線上服務用 **Guaranteed**（requests 等於 limits），換取最低的驅逐優先序與最穩定的資源；一般服務用 **Burstable**，requests 設在穩態用量、limits 留一些突發空間，這是多數情況的合理選擇；**BestEffort** 幾乎不該用在正式環境——它第一個被驅逐，而且完全不參與資源保障，只適合真正可有可無的實驗性工作負載。
+**核心答案**：看這個工作負載被犧牲的代價。核心線上服務用 **Guaranteed**（requests 等於 limits），換取最低的驅逐優先序與最穩定的資源；一般服務用 **Burstable**，requests 設在穩態用量、limits 留一些突發空間，這是多數情況的合理選擇；**BestEffort** 幾乎不該用在正式環境——它第一個被驅逐，而且完全不參與資源保障，只適合真正可有可無的實驗性工作負載。
 
 **詳細解析**：Guaranteed 的代價是**資源利用率低**——requests 等於 limits 代表你必須按峰值預留，平常那些空間誰也用不到。所以不該全部都設成 Guaranteed，那會讓叢集成本大幅上升。實務上的分配通常是少數關鍵服務用 Guaranteed、大多數用 Burstable。另外要記得 QoS 只在**節點資源不足**時才起作用，平常三級的行為沒有差別，所以它是一種「壞事發生時的保險」而不是效能設定。還有一個細節：Guaranteed 需要 Pod 內**每一個容器**的每一種資源都設定且相等，只要有一個 sidecar 沒設，整個 Pod 就掉到 Burstable——這是設定完卻發現等級不對的常見原因。
 

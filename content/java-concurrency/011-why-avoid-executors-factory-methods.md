@@ -18,7 +18,7 @@ source: original
 
 ## 詳細解析
 
-**逐一分析常見工廠方法的問題**：
+逐一分析常見工廠方法的問題：
 
 - **`newFixedThreadPool(n)`**：`corePoolSize = maximumPoolSize = n`，但佇列用的是 `LinkedBlockingQueue`（預設容量 `Integer.MAX_VALUE`，等同無界）。任務提交速度長期大於處理速度時，佇列會無限堆積，最終耗盡記憶體。
 - **`newCachedThreadPool()`**：佇列用 `SynchronousQueue`，但 `maximumPoolSize` 是 `Integer.MAX_VALUE`，執行緒數量沒有上限，任務提交過快會不斷建立新執行緒，可能耗盡系統資源。
@@ -63,7 +63,7 @@ newCachedThreadPool 反過來。佇列是 SynchronousQueue 不存任務，但 ma
 
 ### Spring 的 @Async 預設使用的執行緒池有這個問題嗎？
 
-**核心答案**：有。Spring Boot 若未額外設定，`@Async` 預設使用 `SimpleAsyncTaskExecutor`，這個執行器**每次呼叫都會建立一個新執行緒**，完全不做執行緒重複使用，也沒有上限控制，在高並發下同樣可能因為建立過多執行緒而導致資源耗盡，甚至比 `Executors` 的問題更直接。
+**核心答案**：有。Spring Boot 若未額外設定，`@Async` 預設使用 `SimpleAsyncTaskExecutor`，這個執行器每次呼叫都會建立一個新執行緒，完全不做執行緒重複使用，也沒有上限控制，在高並發下同樣可能因為建立過多執行緒而導致資源耗盡，甚至比 `Executors` 的問題更直接。
 
 **詳細解析**：`SimpleAsyncTaskExecutor` 顧名思義是一個「簡單」的實作，它不維護執行緒池，每次提交任務都直接 `new Thread` 執行，執行緒用完即丟，完全沒有 `corePoolSize`/`maximumPoolSize`/佇列的概念。這在低頻率呼叫的場景下沒有明顯問題，但如果 `@Async` 方法被高頻呼叫，會導致系統不斷建立新執行緒，很快就會耗盡系統資源。正確做法是在設定類別中自訂並註冊一個 `ThreadPoolTaskExecutor`（Spring 對 `ThreadPoolExecutor` 的封裝），明確設定核心/最大執行緒數與有界佇列，並透過 `@Async("自訂執行器名稱")` 指定使用這個執行器，而不是依賴預設值。
 

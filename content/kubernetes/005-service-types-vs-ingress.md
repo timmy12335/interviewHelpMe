@@ -16,7 +16,7 @@ ClusterIP、NodePort、LoadBalancer 這三種 Service 型別各自解決什麼�
 
 三種 Service 型別是**逐層往外疊加**的關係，不是三選一：**ClusterIP** 是基礎，給一個只有叢集內部可達的虛擬 IP；**NodePort** 在 ClusterIP 之上，額外在**每個節點**開一個高位 port（30000–32767），從叢集外打任一節點的那個 port 就會被轉進來；**LoadBalancer** 又在 NodePort 之上，額外請雲端供應商配一個外部負載平衡器指向這些 NodePort。所以建立一個 LoadBalancer，底下其實同時存在 ClusterIP 與 NodePort。
 
-需要 Ingress 的原因是**層級不同**：Service 工作在 L4（只認 IP 與 port），而每個 LoadBalancer Service 都會**各自佔用一個外部 IP 與一台雲端負載平衡器**——十個服務就是十個 IP、十份帳單。Ingress 工作在 **L7**，能依照 **HTTP 主機名與路徑**把流量路由到不同 Service，讓所有服務**共用一個入口與一個 IP**，並在這一層統一處理 TLS 憑證。
+需要 Ingress 的原因是**層級不同**：Service 工作在 L4（只認 IP 與 port），而每個 LoadBalancer Service 都會各自佔用一個外部 IP 與一台雲端負載平衡器——十個服務就是十個 IP、十份帳單。Ingress 工作在 **L7**，能依照 **HTTP 主機名與路徑**把流量路由到不同 Service，讓所有服務**共用一個入口與一個 IP**，並在這一層統一處理 TLS 憑證。
 
 ## 詳細解析
 
@@ -26,7 +26,7 @@ ClusterIP、NodePort、LoadBalancer 這三種 Service 型別各自解決什麼�
 
 **LoadBalancer 為什麼貴**：每一個 LoadBalancer Service 都會觸發 cloud-controller-manager 去雲端申請一台負載平衡器與一個外部 IP。這是實實在在的雲端資源，按小時計費。微服務架構下服務數量一多，這筆費用與 IP 管理成本會很可觀。
 
-**Ingress 本身不做事，Ingress Controller 才做**：Ingress 只是一份路由規則的宣告，叢集裡必須有 Ingress Controller（NGINX Ingress、GKE 內建的 GCE Ingress 等）去讀取它並實際配置代理。**只建立 Ingress 資源而沒有安裝 Controller，是最常見的「設定完全沒有生效」原因**，而且不會有明顯報錯，只會看到 Ingress 的 ADDRESS 欄位一直空著。
+**Ingress 本身不做事，Ingress Controller 才做**：Ingress 只是一份路由規則的宣告，叢集裡必須有 Ingress Controller（NGINX Ingress、GKE 內建的 GCE Ingress 等）去讀取它並實際配置代理。只建立 Ingress 資源而沒有安裝 Controller，是最常見的「設定完全沒有生效」原因，而且不會有明顯報錯，只會看到 Ingress 的 ADDRESS 欄位一直空著。
 
 **什麼時候仍然該用 LoadBalancer**：Ingress 是為 HTTP／HTTPS 設計的。如果要對外的是 gRPC 以外的 TCP／UDP 服務（資料庫、遊戲伺服器、MQTT），Ingress 幫不上忙，還是得用 LoadBalancer Service，或改用能表達多協定的 Gateway API。
 
@@ -58,7 +58,7 @@ ClusterIP 是基礎，給一個只有叢集內可達的虛擬 IP。NodePort 在�
 
 ### Service 的 externalTrafficPolicy 設成 Local 和 Cluster 有什麼差別？
 
-**核心答案**：差在**流量進到節點後還會不會再跳一次**，以及**來源 IP 保不保得住**。預設的 `Cluster` 會讓封包在節點之間再做一次負載平衡，好處是流量分佈均勻，代價是多一跳延遲、而且經過 SNAT 之後**後端看到的來源 IP 是節點 IP，不是真實客戶端 IP**。設成 `Local` 則只轉給**本節點上的 Pod**，沒有額外跳躍、保留真實來源 IP，但如果某個節點上剛好沒有這個服務的 Pod，打到那個節點的流量就會被丟棄。
+**核心答案**：差在流量進到節點後還會不會再跳一次，以及**來源 IP 保不保得住**。預設的 `Cluster` 會讓封包在節點之間再做一次負載平衡，好處是流量分佈均勻，代價是多一跳延遲、而且經過 SNAT 之後後端看到的來源 IP 是節點 IP，不是真實客戶端 IP。設成 `Local` 則只轉給**本節點上的 Pod**，沒有額外跳躍、保留真實來源 IP，但如果某個節點上剛好沒有這個服務的 Pod，打到那個節點的流量就會被丟棄。
 
 **詳細解析**：這個取捨在需要記錄客戶端 IP、或做 IP 白名單、限流的場景特別重要——用預設的 `Cluster`，你的存取日誌會全部變成節點 IP，限流也會誤把整個節點當成同一個客戶端。改成 `Local` 能解決，但必須配合讓 Pod 分佈到每個節點（否則部分節點成為黑洞），雲端負載平衡器的健康檢查也會據此把沒有 Pod 的節點標成不健康而不再送流量過去——這正是 `Local` 能運作的關鍵機制。另一個常見的替代方案是不動這個設定，改由 L7 層取得真實 IP：Ingress Controller 會把客戶端 IP 放進 `X-Forwarded-For` 標頭，應用讀標頭而不是讀 TCP 來源位址。
 
@@ -68,7 +68,7 @@ ClusterIP 是基礎，給一個只有叢集內可達的虛擬 IP。NodePort 在�
 
 **核心答案**：預設是**近似隨機**的分配，由 kube-proxy 的規則決定——iptables 模式是機率式的隨機選擇，IPVS 模式則支援輪詢、最少連線等演算法。可以透過 `sessionAffinity: ClientIP` 做到黏著，讓同一個來源 IP 固定導到同一個 Pod，並用 `sessionAffinityConfig` 設定逾時。
 
-**詳細解析**：要注意 `ClientIP` 黏著的可靠度受前面提過的 SNAT 影響——如果流量經過 `externalTrafficPolicy: Cluster` 或某些負載平衡器，kube-proxy 看到的來源 IP 已經不是真實客戶端，那麼「同一個 IP」可能代表一整批不同的使用者，黏著就失去意義甚至造成負載傾斜。另外 L4 的黏著粒度很粗，只能綁 IP，行動網路下使用者 IP 會變、企業網路下大量使用者共用同一個出口 IP，兩種情況都會出問題。所以實務上如果真的需要會話一致性，**比較穩健的做法是在 L7 用 cookie 做黏著**（Ingress Controller 多半支援），或者更根本地把 session 狀態外部化到 Redis，讓應用真正無狀態——這樣就不需要黏著了。
+**詳細解析**：要注意 `ClientIP` 黏著的可靠度受前面提過的 SNAT 影響——如果流量經過 `externalTrafficPolicy: Cluster` 或某些負載平衡器，kube-proxy 看到的來源 IP 已經不是真實客戶端，那麼「同一個 IP」可能代表一整批不同的使用者，黏著就失去意義甚至造成負載傾斜。另外 L4 的黏著粒度很粗，只能綁 IP，行動網路下使用者 IP 會變、企業網路下大量使用者共用同一個出口 IP，兩種情況都會出問題。所以實務上如果真的需要會話一致性，比較穩健的做法是在 L7 用 cookie 做黏著（Ingress Controller 多半支援），或者更根本地把 session 狀態外部化到 Redis，讓應用真正無狀態——這樣就不需要黏著了。
 
 **面試回答方式**：先講預設近似隨機、以及 iptables 與 IPVS 模式的差別。給出 `sessionAffinity: ClientIP` 這個直接答案，但重點放在它的限制：SNAT 會讓來源 IP 失真、IP 粒度太粗（行動網路會變、企業網路共用）。加分點是給出更穩健的兩條路——L7 cookie 黏著，或把 session 外部化到 Redis 讓應用真正無狀態。
 

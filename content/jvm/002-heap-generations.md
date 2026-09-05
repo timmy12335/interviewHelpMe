@@ -26,7 +26,7 @@ JVM 的堆為什麼要分代？新生代和老年代如何劃分？物件是怎�
 - Eden 滿了觸發 Minor GC：把 Eden 和其中一個 Survivor 中存活的物件複製到另一個 Survivor，然後清空 Eden 和剛才那個 Survivor。
 - 兩個 Survivor 輪流當「To」，保證總有一個是空的，用複製演算法避免記憶體碎片。
 
-**物件晉升到老年代的幾種情況**：
+物件晉升到老年代的幾種情況：
 
 1. **年齡達到閾值**：物件每熬過一次 Minor GC，年齡 +1，達到閾值（預設 15，由 `-XX:MaxTenuringThreshold` 控制）就晉升老年代。
 2. **大物件直接進老年代**：超過 `-XX:PretenureSizeThreshold` 的大物件（如大陣列）直接在老年代分配，避免在 Survivor 之間來回複製的開銷。

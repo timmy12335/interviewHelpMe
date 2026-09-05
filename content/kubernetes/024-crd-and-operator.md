@@ -16,9 +16,9 @@ CRD 和 Operator 是什麼關係？什麼情況下值得自己寫一個 Operator
 
 **CRD（CustomResourceDefinition）讓你在 K8s 裡定義新的資源型別**——定義完之後，`kubectl get mydatabase` 就能用，而且這個新資源**自動享有認證、授權、Admission、watch、樂觀併發**這整套 apiserver 的機制。但 CRD 本身**只是資料結構**，建立一個自訂資源不會發生任何事。
 
-**Operator = CRD + 自訂控制器**。控制器監聽這個自訂資源，執行和內建控制器完全相同的 **reconcile 迴圈**：比對期望與實際、有差異就採取動作。所以 Operator 的本質是**把原本要人工執行的運維步驟寫成持續執行的程式**——你宣告「我要一個三節點、每天備份的 PostgreSQL 叢集」，Operator 負責建立 StatefulSet、設定主從複製、排程備份、在主節點故障時執行切換。
+**Operator = CRD + 自訂控制器**。控制器監聽這個自訂資源，執行和內建控制器完全相同的 **reconcile 迴圈**：比對期望與實際、有差異就採取動作。所以 Operator 的本質是把原本要人工執行的運維步驟寫成持續執行的程式——你宣告「我要一個三節點、每天備份的 PostgreSQL 叢集」，Operator 負責建立 StatefulSet、設定主從複製、排程備份、在主節點故障時執行切換。
 
-**值得自己寫的判準是「這套運維知識是否複雜、重複、且對你的業務特有」**。有現成 Operator 的（PostgreSQL、Redis、Kafka、cert-manager）直接用；只是要部署幾個 Deployment 加 Service 的，用 Helm 就夠了——**Operator 的價值在 day-2 運維**（備份、升級、故障切換、擴縮），不在初次部署。
+值得自己寫的判準是「這套運維知識是否複雜、重複、且對你的業務特有」。有現成 Operator 的（PostgreSQL、Redis、Kafka、cert-manager）直接用；只是要部署幾個 Deployment 加 Service 的，用 Helm 就夠了——**Operator 的價值在 day-2 運維**（備份、升級、故障切換、擴縮），不在初次部署。
 
 ## 詳細解析
 
@@ -70,7 +70,7 @@ CRD 和 Operator 是什麼關係？什麼情況下值得自己寫一個 Operator
 
 **核心答案**：兩者都是擴充 K8s API 的方式，差別在**誰負責儲存與處理**。**CRD** 由 apiserver 直接處理，資料存在 **etcd**，你只需要定義 schema，不必寫 API 伺服器——這是絕大多數情況的正確選擇。**API Aggregation** 則是註冊一個**你自己實作的 API 伺服器**，apiserver 把該路徑的請求轉發過去，儲存與處理邏輯完全由你決定。
 
-**詳細解析**：Aggregation 的使用時機非常特定：需要**不存在 etcd 的資料**（例如 metrics-server 提供的即時指標，那是即算即回的，不該持久化）、需要**自訂的儲存後端**、或需要 CRD 表達不了的 API 行為（例如特殊的子資源語意）。代價是你要自己負責高可用、效能、版本管理與儲存——工作量比 CRD 大一個數量級。實務上的建議很明確：**先用 CRD，除非遇到它真的做不到的需求**。metrics-server 是最經典的 Aggregation 案例，因為即時指標寫進 etcd 既沒必要又會拖垮控制平面——這個例子也剛好呼應了「不該把高頻變動的資料放進 etcd」這個原則。
+**詳細解析**：Aggregation 的使用時機非常特定：需要**不存在 etcd 的資料**（例如 metrics-server 提供的即時指標，那是即算即回的，不該持久化）、需要**自訂的儲存後端**、或需要 CRD 表達不了的 API 行為（例如特殊的子資源語意）。代價是你要自己負責高可用、效能、版本管理與儲存——工作量比 CRD 大一個數量級。實務上的建議很明確：先用 CRD，除非遇到它真的做不到的需求。metrics-server 是最經典的 Aggregation 案例，因為即時指標寫進 etcd 既沒必要又會拖垮控制平面——這個例子也剛好呼應了「不該把高頻變動的資料放進 etcd」這個原則。
 
 **面試回答方式**：用「誰負責儲存與處理」切開兩者。強調 CRD 是絕大多數情況的正確選擇。給出 Aggregation 的特定使用時機（資料不該存 etcd、自訂儲存後端），並用 metrics-server 當例子。加分點是把 metrics-server 的理由接回「高頻變動的資料不該進 etcd」這個原則。
 

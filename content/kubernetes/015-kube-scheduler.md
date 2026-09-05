@@ -28,7 +28,7 @@ kube-scheduler 排程一個 Pod 的流程是什麼？nodeSelector、affinity、t
 
 **Pending 的兩種成因要分清楚**：`kubectl describe pod` 的事件會直接告訴你。`FailedScheduling` 代表 **Filter 之後沒有可行節點**，訊息會列出每個節點被刷掉的原因（幾個因為資源不足、幾個因為 taint）——這是排查 Pending 最直接的線索。另一種 Pending 是**已經綁定但容器還沒起來**，那是映像檔拉取或 volume 掛載的問題，不歸 scheduler 管。
 
-**taint 的三種效果差別很大**：`NoSchedule` 只擋新的排程，已在節點上的 Pod 不受影響；`PreferNoSchedule` 是軟性的，沒有更好的選擇時仍會排上去；`NoExecute` 最強，會**驅逐已經在節點上且不容忍的 Pod**。節點失聯時 K8s 自動加上的就是 `NoExecute` 類的 taint，這也是節點故障後 Pod 會被重新排程的機制。
+**taint 的三種效果差別很大**：`NoSchedule` 只擋新的排程，已在節點上的 Pod 不受影響；`PreferNoSchedule` 是軟性的，沒有更好的選擇時仍會排上去；`NoExecute` 最強，會驅逐已經在節點上且不容忍的 Pod。節點失聯時 K8s 自動加上的就是 `NoExecute` 類的 taint，這也是節點故障後 Pod 會被重新排程的機制。
 
 **podAntiAffinity 的實務價值與代價**：把同一個服務的副本分散到不同節點或可用區，是避免單點故障的標準做法（用 `topologyKey` 指定分散的維度）。但硬性的 `required` 反親和在節點不足時會讓 Pod 直接 Pending——例如要求三個副本各在不同節點，但叢集只有兩個節點。所以多數情況該用 `preferred`，或改用更晚出現、專門為此設計的 **Pod Topology Spread Constraints**，它能表達「盡量均勻，但允許偏差多少」這種更精確的意圖。
 

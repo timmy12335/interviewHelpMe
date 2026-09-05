@@ -18,7 +18,7 @@ source: original
 
 ## 詳細解析
 
-**問題背景——配置類別內 @Bean 方法互相呼叫**：
+問題背景——配置類別內 @Bean 方法互相呼叫：
 
 ```java
 @Configuration

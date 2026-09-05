@@ -18,7 +18,7 @@ source: original
 
 ## 詳細解析
 
-**根源一：AOP 代理沒生效（呼叫沒經過代理）**
+根源一：AOP 代理沒生效（呼叫沒經過代理）
 
 1. **自我呼叫（self-invocation）**：類別內部 `this.B()` 呼叫繞過代理，B 的 @Transactional 失效（見 [[006-aop-concept.md]]）。這是最常見的失效。解法——把 B 抽到另一個 Bean、或用 `AopContext.currentProxy()`、或自注入。
 2. **方法不是 public**：Spring AOP 的交易只作用於 public 方法（protected/private/default 方法上的 @Transactional 被忽略）。因為代理機制的限制。

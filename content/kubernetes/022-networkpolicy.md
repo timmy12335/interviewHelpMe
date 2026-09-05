@@ -16,9 +16,9 @@ K8s 的 Pod 網路預設是什麼行為？NetworkPolicy 怎麼運作？為什麼
 
 **K8s 的預設是「全通」**——任何 Pod 都能直接連到叢集裡任何其他 Pod，跨 namespace 也一樣，沒有任何限制。這對安全是個大缺口：一個被入侵的前端 Pod 可以直接掃描並連線到資料庫 Pod，namespace 完全擋不住。
 
-**NetworkPolicy 是白名單機制，而且是「選擇性啟用」的**：只要某個 Pod **沒有被任何 NetworkPolicy 選中**，它維持全通；一旦有任何一條 policy 選中它，該方向（Ingress 或 Egress）就變成**預設拒絕，只放行明確列出的來源**。這個「被選中才生效」的語意是理解它的關鍵。
+NetworkPolicy 是白名單機制，而且是「選擇性啟用」的：只要某個 Pod **沒有被任何 NetworkPolicy 選中**，它維持全通；一旦有任何一條 policy 選中它，該方向（Ingress 或 Egress）就變成預設拒絕，只放行明確列出的來源。這個「被選中才生效」的語意是理解它的關鍵。
 
-**設了卻沒效果，最常見的原因是 CNI 不支援**——NetworkPolicy 是一份宣告，實際執行由網路外掛負責。Calico、Cilium 支援；如果叢集用的是不支援的 CNI，policy 會被正常建立、`kubectl get` 看得到，但**完全不會生效，也不會有任何警告**。GKE 需要明確啟用網路政策（或使用 Dataplane V2）。
+設了卻沒效果，最常見的原因是 CNI 不支援——NetworkPolicy 是一份宣告，實際執行由網路外掛負責。Calico、Cilium 支援；如果叢集用的是不支援的 CNI，policy 會被正常建立、`kubectl get` 看得到，但完全不會生效，也不會有任何警告。GKE 需要明確啟用網路政策（或使用 Dataplane V2）。
 
 ## 詳細解析
 
@@ -30,7 +30,7 @@ K8s 的 Pod 網路預設是什麼行為？NetworkPolicy 怎麼運作？為什麼
 
 **選擇器的三種來源**：規則的來源可以是 `podSelector`（同 namespace 的特定 Pod）、`namespaceSelector`（特定 namespace 的所有 Pod）、`ipBlock`（CIDR 網段，用於叢集外的來源）。要注意 `podSelector` 與 `namespaceSelector` 寫在同一個項目裡是 **AND**（那個 namespace 裡的那些 Pod），分成兩個項目則是 **OR**——YAML 縮排差一格語意就完全不同，這是很常見的設定錯誤。
 
-**NetworkPolicy 管不到的東西**：它作用在 L3／L4，只認 IP、port、協定，**無法表達 HTTP 路徑或方法層級的規則**。要做「這個服務只能呼叫那個服務的 GET 端點」這種控制，需要 service mesh 的授權政策。另外它也管不到節點層級的流量與 hostNetwork 的 Pod。
+**NetworkPolicy 管不到的東西**：它作用在 L3／L4，只認 IP、port、協定，無法表達 HTTP 路徑或方法層級的規則。要做「這個服務只能呼叫那個服務的 GET 端點」這種控制，需要 service mesh 的授權政策。另外它也管不到節點層級的流量與 hostNetwork 的 Pod。
 
 ## 面試回答方式
 
@@ -52,7 +52,7 @@ NetworkPolicy 是白名單機制，但語意有個關鍵細節：它是選擇性
 
 ### 要怎麼實作「預設拒絕」？
 
-**核心答案**：在每個 namespace 建立一條**選中所有 Pod 但不放行任何來源**的 policy——`podSelector: {}` 選中全部，`policyTypes` 列出 Ingress 與 Egress，規則留空。因為「被選中就翻轉成預設拒絕」，這條 policy 等於把整個 namespace 的網路關閉，接著再逐一加上必要的放行規則。**順序很重要：先收再開，不要先開再收**。
+**核心答案**：在每個 namespace 建立一條**選中所有 Pod 但不放行任何來源**的 policy——`podSelector: {}` 選中全部，`policyTypes` 列出 Ingress 與 Egress，規則留空。因為「被選中就翻轉成預設拒絕」，這條 policy 等於把整個 namespace 的網路關閉，接著再逐一加上必要的放行規則。順序很重要：先收再開，不要先開再收。
 
 **詳細解析**：實務導入的難點不在寫這條規則，而在**盤點出必要的放行清單**——通常會漏掉 DNS、監控代理抓取指標的路徑、健康檢查（來自節點的 kubelet）、以及對外部服務的呼叫。建議的做法是先在測試環境套用預設拒絕，觀察什麼壞掉並逐一補上，或者先用可觀測的方式收集實際的連線關係（Cilium 的 Hubble 這類工具可以視覺化 Pod 之間的實際流量）再據此產生規則。切忌在生產環境直接套用預設拒絕再慢慢修，那會造成大規模中斷。另外要記得 NetworkPolicy 是 namespace 層級的資源，新建的 namespace 不會自動繼承，需要用政策工具或 namespace 範本確保每個新 namespace 都套用了基準規則。
 
@@ -60,7 +60,7 @@ NetworkPolicy 是白名單機制，但語意有個關鍵細節：它是選擇性
 
 ### 啟用 NetworkPolicy 之後，應用突然報 DNS 解析失敗，為什麼？
 
-**核心答案**：因為 **Egress 的預設拒絕把往 CoreDNS 的流量也擋掉了**。Pod 要解析任何名稱都必須先連到 kube-system 裡的 DNS 服務，一旦出向被預設拒絕而沒有放行 DNS，所有名稱解析都會失敗——包括連叢集內部的 Service。症狀是應用報 no such host 或連線逾時，很容易被誤判成應用程式的問題。
+**核心答案**：因為 Egress 的預設拒絕把往 CoreDNS 的流量也擋掉了。Pod 要解析任何名稱都必須先連到 kube-system 裡的 DNS 服務，一旦出向被預設拒絕而沒有放行 DNS，所有名稱解析都會失敗——包括連叢集內部的 Service。症狀是應用報 no such host 或連線逾時，很容易被誤判成應用程式的問題。
 
 **詳細解析**：修正方式是加一條 Egress 規則，放行往 kube-system namespace 的 DNS Pod、**UDP 與 TCP 的 53 埠都要**（大型回應會退回用 TCP，只開 UDP 會造成間歇性失敗，這種偶發性問題更難查）。實作上通常用 `namespaceSelector` 選中 kube-system 再用 `podSelector` 選中 DNS 的標籤。要注意如果叢集啟用了 NodeLocal DNSCache，Pod 實際查詢的目標是節點上的本地位址而不是 DNS Service 的 ClusterIP，規則要對應調整，否則一樣會被擋。這也是為什麼建議把「允許 DNS」做成每個 namespace 都會套用的基準規則，而不是每次想到才加。
 

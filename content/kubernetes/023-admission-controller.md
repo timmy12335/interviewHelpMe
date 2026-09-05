@@ -14,19 +14,19 @@ Mutating 和 Validating Admission 有什麼差別？為什麼順序是先 Mutati
 
 ## 核心答案
 
-**Admission 是請求通過認證與授權之後、寫入 etcd 之前的最後一道關卡**，它檢查的是**請求內容本身合不合規**（RBAC 只管「誰能碰哪類資源」，管不到內容）。
+Admission 是請求通過認證與授權之後、寫入 etcd 之前的最後一道關卡，它檢查的是**請求內容本身合不合規**（RBAC 只管「誰能碰哪類資源」，管不到內容）。
 
 **Mutating 可以改寫請求**——自動注入 sidecar、補上預設的資源設定、加上標籤。**Validating 只能放行或拒絕**，不能修改。
 
 **順序是先 Mutating 後 Validating，原因很關鍵**：如果反過來，改寫發生在驗證之後，那麼改寫的結果**沒有被任何規則檢查過**，等於留了一個繞過所有驗證的後門。先改後驗才能保證「最終寫進 etcd 的內容」一定通過了全部檢查。
 
-**最大的風險是 webhook 成為單點**：它是 apiserver **同步呼叫的外部服務**，`failurePolicy: Fail` 時 webhook 不可用會讓落在其作用範圍內的所有 API 請求失敗。如果範圍沒有限縮好，可能導致**整個叢集無法建立任何 Pod，連修復用的部署都送不出去**——這是真實發生過的事故型態。
+**最大的風險是 webhook 成為單點**：它是 apiserver **同步呼叫的外部服務**，`failurePolicy: Fail` 時 webhook 不可用會讓落在其作用範圍內的所有 API 請求失敗。如果範圍沒有限縮好，可能導致整個叢集無法建立任何 Pod，連修復用的部署都送不出去——這是真實發生過的事故型態。
 
 ## 詳細解析
 
 **內建的 Admission 外掛比想像中多**：`ResourceQuota`、`LimitRanger`、`NamespaceLifecycle`、`ServiceAccount`、`PodSecurity` 都是 Admission 外掛。所以「設了 ResourceQuota 之後沒宣告資源的 Pod 被拒絕」正是 Admission 在運作，不是什麼特別機制。
 
-**政策引擎讓規則可以宣告式管理**：OPA Gatekeeper 與 Kyverno 把「不准用 latest 標籤」「必須有 owner 標籤」「不准 privileged」這類規則寫成 CRD，由它們的 webhook 統一執行。相較於自己寫 webhook，好處是規則本身可以被版控、審查、測試。**Kyverno 用 YAML 表達規則，學習曲線通常比 OPA 的 Rego 語言平緩**。
+政策引擎讓規則可以宣告式管理：OPA Gatekeeper 與 Kyverno 把「不准用 latest 標籤」「必須有 owner 標籤」「不准 privileged」這類規則寫成 CRD，由它們的 webhook 統一執行。相較於自己寫 webhook，好處是規則本身可以被版控、審查、測試。Kyverno 用 YAML 表達規則，學習曲線通常比 OPA 的 Rego 語言平緩。
 
 **dry-run 與 audit 模式是導入的必要步驟**：直接在生產環境套用拒絕規則，會讓既有的、不符合新規則的工作負載在下次部署時全部失敗。成熟的做法是先用 audit 模式跑一段時間、盤點有多少既有資源違規、逐一修正之後才切成強制拒絕。
 

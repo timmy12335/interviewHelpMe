@@ -20,7 +20,7 @@ Role 和 ClusterRole 差在哪？ServiceAccount 是給誰用的？Pod 要存取 
 
 **ServiceAccount 是給 Pod 用的身分**（人類使用者由外部身分系統提供）。每個 Pod 都會有一個，沒指定就用該 namespace 的 `default`。
 
-**Workload Identity 解決的是「Pod 怎麼安全存取 GCP 服務」**：傳統做法是產生服務帳號的 JSON 金鑰、放進 Secret 掛給 Pod——這等於**製造了一個長期有效、可被複製、難以輪替、外洩後難以察覺的憑證**。Workload Identity 讓 K8s 的 ServiceAccount 直接對應到 GCP 服務帳號，Pod 取得的是**短期自動輪替的權杖**，完全不需要金鑰檔存在。
+**Workload Identity 解決的是「Pod 怎麼安全存取 GCP 服務」**：傳統做法是產生服務帳號的 JSON 金鑰、放進 Secret 掛給 Pod——這等於製造了一個長期有效、可被複製、難以輪替、外洩後難以察覺的憑證。Workload Identity 讓 K8s 的 ServiceAccount 直接對應到 GCP 服務帳號，Pod 取得的是**短期自動輪替的權杖**，完全不需要金鑰檔存在。
 
 ## 詳細解析
 

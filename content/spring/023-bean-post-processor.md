@@ -18,7 +18,7 @@ source: original
 
 ## 詳細解析
 
-**時機不同（對應容器啟動的兩個階段）**：
+時機不同（對應容器啟動的兩個階段）：
 
 - **BeanFactoryPostProcessor**：在容器啟動的「BeanDefinition 註冊完成後、Bean 實例化之前」執行。此時所有 Bean 的「定義（BeanDefinition）」已經載入到容器，但還沒有任何 Bean 被實例化。它能「修改這些定義」。
 - **BeanPostProcessor**：在「每個 Bean 被實例化和屬性填充之後、初始化方法前後」執行。它為每個 Bean 提供 `postProcessBeforeInitialization`（初始化前）和 `postProcessAfterInitialization`（初始化後）兩個攔截點。

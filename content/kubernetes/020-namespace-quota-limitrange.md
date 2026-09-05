@@ -14,13 +14,13 @@ Namespace 提供了什麼隔離？ResourceQuota 和 LimitRange 差在哪？多�
 
 ## 核心答案
 
-**Namespace 是「命名與管理」的邊界，不是安全邊界**。它提供的是：資源名稱的作用域（不同 namespace 可以有同名的 Service）、RBAC 授權的範圍、以及 ResourceQuota 的套用單位。它**預設不提供網路隔離**——不同 namespace 的 Pod 彼此可以自由通訊，要隔離必須另外用 NetworkPolicy。
+Namespace 是「命名與管理」的邊界，不是安全邊界。它提供的是：資源名稱的作用域（不同 namespace 可以有同名的 Service）、RBAC 授權的範圍、以及 ResourceQuota 的套用單位。它**預設不提供網路隔離**——不同 namespace 的 Pod 彼此可以自由通訊，要隔離必須另外用 NetworkPolicy。
 
 **ResourceQuota 管的是「這個 namespace 總共能用多少」**——CPU、記憶體的 requests 與 limits 總量、Pod／Service／PVC 的物件數量上限。它是**團隊層級的天花板**。
 
 **LimitRange 管的是「單一個 Pod 或容器的範圍」**——最小值、最大值，以及**沒設定時的預設值**。它是**個體層級的約束**。
 
-兩者常常必須搭配：一旦設定了 ResourceQuota 限制 CPU 總量，該 namespace 裡**沒有設定 requests 的 Pod 會直接被拒絕建立**（因為無法計入配額）。這時 LimitRange 提供預設值就成了必要配套，否則所有沒寫資源設定的 YAML 都會突然失敗。
+兩者常常必須搭配：一旦設定了 ResourceQuota 限制 CPU 總量，該 namespace 裡沒有設定 requests 的 Pod 會直接被拒絕建立（因為無法計入配額）。這時 LimitRange 提供預設值就成了必要配套，否則所有沒寫資源設定的 YAML 都會突然失敗。
 
 ## 詳細解析
 
@@ -54,7 +54,7 @@ ResourceQuota 跟 LimitRange 的差別是總量對個體。前者管這個 names
 
 ### 導入 ResourceQuota 之後，為什麼原本好好的 Deployment 突然建不出 Pod？
 
-**核心答案**：因為 ResourceQuota 一旦限制了 CPU 或記憶體，該 namespace 裡**所有 Pod 都必須明確宣告對應的 requests 與 limits**，否則 apiserver 無法把它計入配額，會直接拒絕建立。原本沒有寫資源設定的 Deployment 就會開始失敗——而且症狀在 ReplicaSet 層級，`kubectl get pods` 看不到任何 Pod，要 `describe` ReplicaSet 才會看到 `FailedCreate` 的錯誤訊息。
+**核心答案**：因為 ResourceQuota 一旦限制了 CPU 或記憶體，該 namespace 裡所有 Pod 都必須明確宣告對應的 requests 與 limits，否則 apiserver 無法把它計入配額，會直接拒絕建立。原本沒有寫資源設定的 Deployment 就會開始失敗——而且症狀在 ReplicaSet 層級，`kubectl get pods` 看不到任何 Pod，要 `describe` ReplicaSet 才會看到 `FailedCreate` 的錯誤訊息。
 
 **詳細解析**：這個症狀的難查之處在於**錯誤不在 Deployment 上**。Deployment 顯示副本數不足，但沒有 Pod 可以 describe，很多人會卡在這裡。正確的排查路徑是 `kubectl describe rs` 或看 namespace 的事件。解法有兩條：一是同時部署 LimitRange 提供預設的 requests 與 limits，讓沒寫的 Pod 自動被補上；二是修改所有工作負載明確宣告資源。實務上建議兩者都做——LimitRange 當安全網，同時逐步讓各團隊明確設定，因為預設值終究只是猜測，明確設定才能反映真實需求。導入順序上，應該先部署 LimitRange，再啟用 ResourceQuota。
 
@@ -70,7 +70,7 @@ ResourceQuota 跟 LimitRange 的差別是總量對個體。前者管這個 names
 
 ### ResourceQuota 限制的是 requests 還是 limits？
 
-**核心答案**：**兩者都可以，而且意義完全不同**。限制 `requests.cpu` 與 `requests.memory` 管的是**保證配置的總量**，直接對應這個 namespace 在叢集裡佔掉的排程額度；限制 `limits.cpu` 與 `limits.memory` 管的是**允許突發到的上限總和**。實務上通常兩者都設，因為只設 requests 會讓團隊把 limits 開得很大而影響鄰居，只設 limits 則無法控制實際佔掉的排程空間。
+**核心答案**：兩者都可以，而且意義完全不同。限制 `requests.cpu` 與 `requests.memory` 管的是**保證配置的總量**，直接對應這個 namespace 在叢集裡佔掉的排程額度；限制 `limits.cpu` 與 `limits.memory` 管的是**允許突發到的上限總和**。實務上通常兩者都設，因為只設 requests 會讓團隊把 limits 開得很大而影響鄰居，只設 limits 則無法控制實際佔掉的排程空間。
 
 **詳細解析**：兩者的比值其實表達了一種**超賣策略**。requests 總和決定叢集必須實際保留多少資源，limits 總和則是理論上的最大用量——允許 limits 總和大於 requests 總和，等於賭「不會所有工作負載同時衝到上限」，這在多數場景是合理的，因為峰值不會同時發生。比值設多少取決於工作負載的特性與你能承受的風險。要注意配額計算用的是**已建立物件的宣告值**而非實際用量，所以一個 request 很高卻閒置的 Pod 一樣佔滿配額——這也是為什麼要求團隊把 requests 設得誠實，不只是為了排程準確，也是為了不浪費自己的配額。另外 GKE Autopilot 因為按 request 計費，配額管理與成本管理在那裡幾乎是同一件事。
 

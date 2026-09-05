@@ -14,7 +14,7 @@ Kubernetes 排程與管理的最小單位是 Pod 而不是 Container。為什麼
 
 ## 核心答案
 
-因為有些容器必須**共享網路與儲存、被綁在一起排程**，而 Container 這個抽象沒有辦法表達這種「這幾個東西必須一起活、一起死、一起被放到同一台機器」的關係。Pod 就是這個關係的容器——同一個 Pod 裡的所有 Container **共享同一個 network namespace**（彼此可以用 `localhost` 互通、共用同一個 Pod IP 與 port 空間）、**可以掛載同一組 Volume**，而且**永遠被排程到同一個 Node 上**。實作上 K8s 會先啟動一個幾乎不做事的 **pause container** 持有這些 namespace，其他 Container 再加入它，所以就算業務容器重啟，Pod IP 也不會變。多容器 Pod 的合理場景是 **Sidecar 模式**——主容器跑業務，旁邊掛一個日誌收集、憑證輪替或 service mesh proxy 的輔助容器，兩者關係緊密到不該被分開排程。反過來說，如果兩個容器可以各自獨立擴縮、獨立部署，那它們就該是兩個 Pod，而不是塞進同一個。
+因為有些容器必須共享網路與儲存、被綁在一起排程，而 Container 這個抽象沒有辦法表達這種「這幾個東西必須一起活、一起死、一起被放到同一台機器」的關係。Pod 就是這個關係的容器——同一個 Pod 裡的所有 Container **共享同一個 network namespace**（彼此可以用 `localhost` 互通、共用同一個 Pod IP 與 port 空間）、**可以掛載同一組 Volume**，而且**永遠被排程到同一個 Node 上**。實作上 K8s 會先啟動一個幾乎不做事的 **pause container** 持有這些 namespace，其他 Container 再加入它，所以就算業務容器重啟，Pod IP 也不會變。多容器 Pod 的合理場景是 **Sidecar 模式**——主容器跑業務，旁邊掛一個日誌收集、憑證輪替或 service mesh proxy 的輔助容器，兩者關係緊密到不該被分開排程。反過來說，如果兩個容器可以各自獨立擴縮、獨立部署，那它們就該是兩個 Pod，而不是塞進同一個。
 
 ## 詳細解析
 

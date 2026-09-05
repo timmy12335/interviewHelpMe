@@ -16,7 +16,7 @@ source: original
 
 **LoadBalancer Service** 工作在 **L4**，把一個 Service 直接映射到一台雲端負載平衡器與一個外部 IP。**優點是支援任意 TCP／UDP 協定**（資料庫、遊戲伺服器、MQTT），缺點是每個服務各佔一個 IP 與一台 LB，數量一多成本與管理都很難看。
 
-**Ingress** 工作在 **L7**，讓多個服務共用一個入口，依主機名與路徑分流並統一處理 TLS。在 GKE 上它會被翻譯成 Google Cloud Load Balancer。**問題是 Ingress 的規範能表達的東西太少**——重試、逾時、流量權重切分、標頭改寫這些常見需求都不在規範裡，各家 Controller 只能用**廠商專屬的 annotation** 各自實作，結果是設定完全無法跨環境移植，而且一份 Ingress 資源同時混雜了平台團隊與應用團隊該管的東西。
+**Ingress** 工作在 **L7**，讓多個服務共用一個入口，依主機名與路徑分流並統一處理 TLS。在 GKE 上它會被翻譯成 Google Cloud Load Balancer。問題是 Ingress 的規範能表達的東西太少——重試、逾時、流量權重切分、標頭改寫這些常見需求都不在規範裡，各家 Controller 只能用**廠商專屬的 annotation** 各自實作，結果是設定完全無法跨環境移植，而且一份 Ingress 資源同時混雜了平台團隊與應用團隊該管的東西。
 
 **Gateway API** 是為了解決這兩件事而生的後繼者：它把設定拆成**角色分明的多層資源**——`GatewayClass`（基礎設施提供者定義）、`Gateway`（平台團隊管入口與憑證）、`HTTPRoute`／`TCPRoute` 等（應用團隊管自己的路由），並把權重切分、標頭操作、跨命名空間授權這些能力**寫進規範本身**而不是 annotation。它也不再限於 HTTP，能表達多種協定。
 

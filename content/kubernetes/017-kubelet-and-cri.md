@@ -14,7 +14,7 @@ kubelet 在節點上做哪些事？它和 containerd 這類 Container Runtime �
 
 ## 核心答案
 
-**kubelet 是每個節點上的代理人，負責讓「這台機器上該跑的 Pod」真的跑起來並保持健康**。它的核心迴圈是：從 apiserver 取得**被綁定到自己這個節點**的 Pod 清單 → 比對節點上實際跑著什麼 → 有差異就呼叫 Container Runtime 建立或刪除容器 → 持續執行探針、回報 Pod 與節點狀態。
+kubelet 是每個節點上的代理人，負責讓「這台機器上該跑的 Pod」真的跑起來並保持健康。它的核心迴圈是：從 apiserver 取得**被綁定到自己這個節點**的 Pod 清單 → 比對節點上實際跑著什麼 → 有差異就呼叫 Container Runtime 建立或刪除容器 → 持續執行探針、回報 Pod 與節點狀態。
 
 **kubelet 自己不跑容器**，它透過 **CRI（Container Runtime Interface）** 這個 gRPC 介面，指揮真正的執行環境（containerd、CRI-O）去拉映像檔、建立容器、管理生命週期。
 
