@@ -69,6 +69,6 @@ InterviewHelpMe 第二個內容樣板類別，共 50 題，涵蓋集合框架、
 | 047 | Java 模組系統（JPMS）解決了什麼問題 | hard |
 | 048 | java.time 與舊日期 API 的問題 | medium |
 | 049 | BigDecimal 與浮點數精度 | medium |
-| 050 | 從 Java 8 到 21：語言演進的主線 | hard |
+| 050 | 從 Java 8 到 25：語言演進的主線 | hard |
 
 難度分布：easy 11、medium 27、hard 12（鐘型分布，中等題最多）。

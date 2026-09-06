@@ -50,6 +50,7 @@ npm test
 | 路徑 | 說明 |
 |------|------|
 | `content/` | Markdown 題目與分類 |
+| `content/VERSIONS.md` | 版本對照表：題庫的版本敘述是站在什麼位置寫的 |
 | `frontend/` | Next.js 靜態匯出前端 |
 
 ## 資料來源

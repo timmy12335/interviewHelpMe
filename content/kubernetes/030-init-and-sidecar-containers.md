@@ -20,7 +20,7 @@ Init Container 與一般容器差在哪？sidecar 的生命週期問題怎麼解
 
 Sidecar 傳統上就是「Pod 裡的第二個一般容器」，**而那帶來兩個經典問題**：**啟動順序無保證**（主容器可能在 sidecar 就緒前就開始工作）、**以及關閉順序無保證**（sidecar 可能先於主容器退出，導致最後的日誌或指標丟失；或者 sidecar 不退出讓 Job 永遠無法完成）。
 
-**K8s 1.29 之後有了原生的解法**：**在 `initContainers` 裡設 `restartPolicy: Always` 的容器就是「原生 sidecar」**——它在主容器之前啟動、與主容器並行運行、並在主容器結束之後才終止。
+**K8s 有了原生的解法**（1.29 預設開啟、1.33 正式 GA）：**在 `initContainers` 裡設 `restartPolicy: Always` 的容器就是「原生 sidecar」**——它在主容器之前啟動、與主容器並行運行、並在主容器結束之後才終止。
 
 ## 詳細解析
 

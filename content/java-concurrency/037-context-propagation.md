@@ -16,7 +16,7 @@ source: original
 
 因為 `ThreadLocal` 的值**綁在執行緒物件上**（每個 `Thread` 有一個 `ThreadLocalMap` 欄位）。提交到執行緒池後，任務在**另一個執行緒**上執行，那個執行緒的 map 裡沒有你放的值——所以取到 null。日誌框架的 MDC 就是基於 `ThreadLocal`，這正是「非同步之後日誌沒有追蹤 ID」的成因。
 
-解法有四層。**`InheritableThreadLocal`** 讓**新建立的子執行緒**繼承父執行緒的值，但對執行緒池無效——池裡的執行緒是很久以前建立的，繼承的是當時那個建立者的上下文，反而更危險（拿到過期的錯誤資料）。手動捕獲與還原——提交任務前抓下當前上下文，在任務開頭設定、結尾清除，這是最可靠但最囉嗦的做法。包裝執行器——把上述邏輯封裝進一個 `ExecutorService` 的裝飾器（阿里的 TransmittableThreadLocal、Micrometer 的 `ContextSnapshot`、Spring 的 `TaskDecorator` 都是這條路）。**作用域值（Scoped Values，JDK 21 預覽）**——語言層級的新機制，值只在一個明確的作用域內有效，配合結構化併發自動傳遞給子任務。
+解法有四層。**`InheritableThreadLocal`** 讓**新建立的子執行緒**繼承父執行緒的值，但對執行緒池無效——池裡的執行緒是很久以前建立的，繼承的是當時那個建立者的上下文，反而更危險（拿到過期的錯誤資料）。手動捕獲與還原——提交任務前抓下當前上下文，在任務開頭設定、結尾清除，這是最可靠但最囉嗦的做法。包裝執行器——把上述邏輯封裝進一個 `ExecutorService` 的裝飾器（阿里的 TransmittableThreadLocal、Micrometer 的 `ContextSnapshot`、Spring 的 `TaskDecorator` 都是這條路）。**作用域值（Scoped Values，JDK 25 轉正）**——語言層級的新機制，值只在一個明確的作用域內有效，配合結構化併發自動傳遞給子任務。
 
 實務上的正確答案幾乎總是第三層：用框架已經提供的裝飾器，不要自己在每個提交點手動處理。
 
