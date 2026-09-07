@@ -1,6 +1,6 @@
 # Spring 面試題（樣板類別）
 
-InterviewHelpMe 第四個內容類別，共 50 題，涵蓋 IoC/DI、AOP、Bean 生命週期與作用域、循環依賴三級快取、宣告式交易（原理/失效/傳播）、Spring MVC 請求流程、Spring Boot 自動配置與 starter 機制、Bean 執行緒安全、設計模式、事件機制、擴展點（BeanPostProcessor）與條件裝配。
+InterviewHelpMe 第四個內容類別，共 51 題，涵蓋 IoC/DI、AOP、Bean 生命週期與作用域、循環依賴三級快取、宣告式交易（原理/失效/傳播）、Spring MVC 請求流程、Spring Boot 自動配置與 starter 機制、Bean 執行緒安全、設計模式、事件機制、擴展點（BeanPostProcessor）與條件裝配。
 
 ## 這個類別的設計
 
@@ -68,5 +68,6 @@ Java 語言本身的題目歸在 [java](../java/)，併發歸在 [java-concurren
 | 048 | Spring 的 AOT 與原生映像檔支援 | hard |
 | 049 | Spring 應用的常見反模式 | medium |
 | 050 | 從 Spring 的設計看框架的擴充點設計 | hard |
+| 051 | Spring Boot 4 的升級：模組拆分與 Jackson 3 | medium |
 
-難度分布：easy 6、medium 32、hard 12（鐘型分布，中等題最多）。
+難度分布：easy 6、medium 33、hard 12（鐘型分布，中等題最多）。

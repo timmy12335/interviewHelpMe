@@ -76,3 +76,4 @@ Spring Boot 2 升級到 3 的主要斷點是什麼？為什麼 `javax` 要改成
 
 - [[013-spring-boot-autoconfiguration.md]]
 - [[048-spring-aot-native.md]]
+- [[051-spring-boot-4-migration.md]]

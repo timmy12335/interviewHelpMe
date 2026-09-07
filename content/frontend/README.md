@@ -1,6 +1,6 @@
 # 前端面試題
 
-InterviewHelpMe 第 15 個內容類別，共 50 題，取材自 [tech-interview-handbook](https://github.com/yangshun/tech-interview-handbook) 的前端面試章節，涵蓋 JavaScript 語言核心、瀏覽器機制、網路與安全、CSS 版面，以及 React 的渲染模型。
+InterviewHelpMe 第 15 個內容類別，共 51 題，取材自 [tech-interview-handbook](https://github.com/yangshun/tech-interview-handbook) 的前端面試章節，涵蓋 JavaScript 語言核心、瀏覽器機制、網路與安全、CSS 版面，以及 React 的渲染模型。
 
 ## 這個類別的設計
 
@@ -76,5 +76,6 @@ InterviewHelpMe 第 15 個內容類別，共 50 題，取材自 [tech-interview-
 | 048 | 大型前端專案的程式碼組織 | medium |
 | 049 | 從需求到實作：前端的技術選型判斷 | medium |
 | 050 | 前端面試的整體判斷：深度該放在哪 | medium |
+| 051 | TypeScript 7 的原生改寫：快十倍換到了什麼、代價是什麼 | medium |
 
-難度分布：easy 3、medium 38、hard 9。
+難度分布：easy 3、medium 39、hard 9。
