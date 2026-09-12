@@ -82,6 +82,36 @@ describe("cheat sheet 資料", () => {
     );
     expect(broken).toEqual([]);
   });
+
+  it("每張速查表至少有一個 relatedQuestions，讓速記能接回題庫", () => {
+    // relatedQuestions 是選填欄位，漏掉不會報錯——但速查表的第三個設計目標
+    // 就是「速記 → 深挖」要走得通。漏掉這個欄位，畫面上完全看不出來，
+    // 使用者看完速查表就沒有下一步了。
+    const missing = cheatSheets
+      .filter((sheet) => (sheet.relatedQuestions ?? []).length === 0)
+      .map((sheet) => sheet.slug);
+
+    expect(missing).toEqual([]);
+  });
+
+  it("relatedQuestions 在同一張表內不重複", () => {
+    // 重複既是內容錯誤（同一題被列兩次），也是 key 隱患
+    // （CheatSheetRelated 若改回用內容當 key 會馬上撞名）。
+    const duplicated = cheatSheets.flatMap((sheet) => {
+      const refs = sheet.relatedQuestions ?? [];
+      const seen = new Set<string>();
+      const dupes = new Set<string>();
+      for (const ref of refs) {
+        if (seen.has(ref)) {
+          dupes.add(ref);
+        }
+        seen.add(ref);
+      }
+      return [...dupes].map((ref) => `${sheet.slug} 的 relatedQuestions 重複了 ${ref}`);
+    });
+
+    expect(duplicated).toEqual([]);
+  });
 });
 
 /** 攤平一張速查表的所有 block，含 compare 內嵌的那一層。 */

@@ -195,17 +195,3 @@
 .cs-table td {
   color: var(--ink-muted);
 }
-
-/* 延伸題目 */
-.cs-related {
-  margin-block-start: 28px;
-}
-
-.cs-related ul {
-  margin: 8px 0 0;
-  padding-inline-start: 20px;
-}
-
-.cs-related li + li {
-  margin-block-start: 4px;
-}

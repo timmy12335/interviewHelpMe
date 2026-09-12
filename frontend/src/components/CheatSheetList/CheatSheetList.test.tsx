@@ -1,5 +1,5 @@
 import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { CheatSheet } from "@/data/cheatsheets/types";
 
@@ -33,5 +33,27 @@ describe("CheatSheetList", () => {
       "href",
       "/cheatsheets/demo",
     );
+  });
+
+  // 標籤是手寫的，同一張卡片重複同一個標籤是自然會發生的事。
+  // tag 的 key 如果取自標籤文字本身，重複時 React 會噴 duplicate key 警告。
+  it("同一張卡片有重複標籤時不會產生 React key 警告", () => {
+    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const duplicateTagSheets: CheatSheet[] = [
+      {
+        ...sheets[0],
+        tags: ["熱門", "熱門"],
+      },
+    ];
+
+    render(<CheatSheetList sheets={duplicateTagSheets} />);
+
+    const keyWarnings = spy.mock.calls.filter((args) =>
+      args.some((arg) => typeof arg === "string" && arg.includes("same key")),
+    );
+    expect(keyWarnings).toEqual([]);
+
+    spy.mockRestore();
   });
 });

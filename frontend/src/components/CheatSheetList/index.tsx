@@ -18,11 +18,11 @@ export function CheatSheetList({ sheets }: CheatSheetListProps) {
           <h2 className="cs-card__title">{sheet.title}</h2>
           <p className="cs-card__summary">{sheet.summary}</p>
           <div className="cs-card__tags">
-            {sheet.tags.map((tag) => (
-              <Tag key={tag}>{tag}</Tag>
+            {sheet.tags.map((tag, index) => (
+              <Tag key={`${tag}-${index}`}>{tag}</Tag>
             ))}
           </div>
-          <span className="cs-card__meta">{sheet.sections.length} 個區塊</span>
+          <span className="cs-card__meta">{sheet.sections.length} 個分區</span>
         </Link>
       ))}
     </div>

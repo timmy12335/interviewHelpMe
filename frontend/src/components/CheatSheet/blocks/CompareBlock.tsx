@@ -10,7 +10,7 @@ export function CompareBlock({ block }: { block: CompareBlock }) {
     <div className="cs-compare">
       {block.items.map((item, itemIndex) => (
         <article key={`${item.name}-${itemIndex}`} className="cs-compare__card">
-          <h4 className="cs-compare__name">{item.name}</h4>
+          <h3 className="cs-compare__name">{item.name}</h3>
           {item.blocks.map((inner, index) => (
             <BlockRenderer key={`${inner.kind}-${index}`} block={inner} />
           ))}

@@ -18,15 +18,15 @@ export function CheatSheetView({ sheet }: CheatSheetViewProps) {
       </header>
 
       <div className="cs-sheet__sections">
-        {sheet.sections.map((section) => (
+        {sheet.sections.map((section, index) => (
           <section
-            key={section.title}
+            key={`${section.title}-${index}`}
             className={`cs-section cs-section--${section.accent ?? "cyan"}`}
           >
             <h2 className="cs-section__title">{section.title}</h2>
             <div className="cs-section__body">
-              {section.blocks.map((block, index) => (
-                <BlockRenderer key={`${block.kind}-${index}`} block={block} />
+              {section.blocks.map((block, blockIndex) => (
+                <BlockRenderer key={`${block.kind}-${blockIndex}`} block={block} />
               ))}
             </div>
           </section>
