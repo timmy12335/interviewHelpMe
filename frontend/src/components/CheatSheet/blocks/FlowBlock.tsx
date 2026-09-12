@@ -14,12 +14,12 @@ export function FlowBlock({ block }: { block: FlowBlock }) {
   return (
     <div className="cs-flow">
       {block.layers.map((layer, layerIndex) => (
-        <Fragment key={layer.map((node) => node.label).join("|")}>
+        <Fragment key={layerIndex}>
           {layerIndex > 0 ? <div className="cs-flow__link" aria-hidden="true" /> : null}
           <div className="cs-flow__layer">
-            {layer.map((node) => (
+            {layer.map((node, nodeIndex) => (
               <span
-                key={node.label}
+                key={`${node.label}-${nodeIndex}`}
                 className={`cs-flow__node cs-flow__node--${node.tone ?? "cyan"}`}
               >
                 {node.label}

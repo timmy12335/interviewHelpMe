@@ -8,8 +8,8 @@ type CompareBlock = Extract<Block, { kind: "compare" }>;
 export function CompareBlock({ block }: { block: CompareBlock }) {
   return (
     <div className="cs-compare">
-      {block.items.map((item) => (
-        <article key={item.name} className="cs-compare__card">
+      {block.items.map((item, itemIndex) => (
+        <article key={`${item.name}-${itemIndex}`} className="cs-compare__card">
           <h4 className="cs-compare__name">{item.name}</h4>
           {item.blocks.map((inner, index) => (
             <BlockRenderer key={`${inner.kind}-${index}`} block={inner} />

@@ -9,16 +9,16 @@ export function TableBlock({ block }: { block: TableBlock }) {
       <table className="cs-table">
         <thead>
           <tr>
-            {block.head.map((cell) => (
-              <th key={cell} scope="col">
+            {block.head.map((cell, cellIndex) => (
+              <th key={`${cell}-${cellIndex}`} scope="col">
                 {cell}
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {block.rows.map((row) => (
-            <tr key={row.join("|")}>
+          {block.rows.map((row, rowIndex) => (
+            <tr key={rowIndex}>
               {row.map((cell, cellIndex) => (
                 <td key={`${cell}-${cellIndex}`}>{cell}</td>
               ))}

@@ -1,5 +1,5 @@
 import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { Block } from "@/data/cheatsheets/types";
 
@@ -60,5 +60,49 @@ describe("BlockRenderer", () => {
 
     expect(screen.getByText("Hot-Hot")).toBeInTheDocument();
     expect(screen.getByText("雙倍成本")).toBeInTheDocument();
+  });
+
+  // 速查表的資料是手寫的，同一層出現兩個同名節點（兩台 Order Service）、
+  // 或兩列有相同的儲存格，都是很自然的寫法。如果 key 取自內容本身，
+  // 這種資料會讓 React 噴 duplicate key 警告——畫面看起來對，主控台才有跡象。
+  // 這條測試把「key 必須唯一」變成機器檢查，而不是靠下次有人剛好看主控台。
+  it("內容重複的資料不會產生 React key 警告", () => {
+    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const blocks: Block[] = [
+      {
+        kind: "flow",
+        layers: [
+          [{ label: "API Gateway" }],
+          [{ label: "Order Service" }, { label: "Order Service" }],
+        ],
+      },
+      { kind: "list", items: ["同上", "同上"] },
+      { kind: "metrics", items: [{ label: "RT", value: "1ms" }, { label: "RT", value: "2ms" }] },
+      {
+        kind: "table",
+        head: ["讀", "讀"],
+        rows: [
+          ["O(1)", "O(1)"],
+          ["O(1)", "O(1)"],
+        ],
+      },
+      {
+        kind: "compare",
+        items: [
+          { name: "同名", blocks: [{ kind: "list", items: ["a"] }] },
+          { name: "同名", blocks: [{ kind: "list", items: ["a"] }] },
+        ],
+      },
+    ];
+
+    blocks.forEach((block) => render(<BlockRenderer block={block} />));
+
+    const keyWarnings = spy.mock.calls.filter((args) =>
+      args.some((arg) => typeof arg === "string" && arg.includes("same key")),
+    );
+    expect(keyWarnings).toEqual([]);
+
+    spy.mockRestore();
   });
 });

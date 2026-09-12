@@ -6,8 +6,8 @@ type MetricsBlock = Extract<Block, { kind: "metrics" }>;
 export function MetricsBlock({ block }: { block: MetricsBlock }) {
   return (
     <dl className="cs-metrics">
-      {block.items.map((item) => (
-        <div key={item.label} className="cs-metric">
+      {block.items.map((item, index) => (
+        <div key={`${item.label}-${index}`} className="cs-metric">
           <dt className="cs-metric__label">{item.label}</dt>
           <dd className="cs-metric__body">
             <span className="cs-metric__value">{item.value}</span>
