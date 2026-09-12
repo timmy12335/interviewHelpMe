@@ -28,4 +28,8 @@ export const menus: MenuItem[] = [
     path: "/questions",
     name: "題目",
   },
+  {
+    path: "/cheatsheets",
+    name: "速查表",
+  },
 ];
