@@ -51,7 +51,8 @@ export interface CheatSheet {
   title: string;
   summary: string;              // 列表卡片用
   tags: string[];
-  relatedQuestions?: string[];  // `<分類>/<檔名去掉 .md>`，例 "system-design/034-flash-sale-design"
+  relatedQuestions?: string[];  // `<分類>/<題目 slug>`，例 "system-design/flash-sale-design"
+                                // 題目 slug 不含編號前綴，與路由 /category/<分類>/question/<slug> 一致
   sections: Section[];
 }
 
