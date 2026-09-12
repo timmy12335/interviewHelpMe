@@ -1,0 +1,211 @@
+/* 一張速查表 */
+.cs-sheet__summary {
+  margin-block: 8px 0;
+  color: var(--ink-muted);
+}
+
+.cs-sheet__sections {
+  display: grid;
+  gap: 18px;
+  margin-block-start: 24px;
+}
+
+/* 區塊：左緣能量條標示強調色，與 bank-card 的語彙一致 */
+.cs-section {
+  --accent: var(--cyan);
+
+  position: relative;
+  padding: 18px 18px 16px 22px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  overflow: hidden;
+}
+
+.cs-section--cyan { --accent: var(--cyan); }
+.cs-section--violet { --accent: var(--violet); }
+.cs-section--amber { --accent: var(--amber); }
+.cs-section--rose { --accent: var(--rose); }
+.cs-section--lime { --accent: var(--lime); }
+
+.cs-section::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 3px;
+  background: var(--accent);
+}
+
+.cs-section__title {
+  margin: 0 0 12px;
+  color: var(--accent);
+  font-size: 1.05rem;
+}
+
+.cs-section__body {
+  display: grid;
+  gap: 14px;
+}
+
+/* metrics */
+.cs-metrics {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.cs-metric {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.cs-metric__label {
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgb(255 255 255 / 8%);
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.cs-metric__body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+}
+
+.cs-metric__value {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.cs-metric__note {
+  color: var(--ink-faint);
+  font-size: 0.85rem;
+}
+
+/* list */
+.cs-list {
+  margin: 0;
+  padding-inline-start: 20px;
+  color: var(--ink-muted);
+}
+
+.cs-list li + li {
+  margin-block-start: 4px;
+}
+
+.cs-list--warning {
+  padding: 10px 12px 10px 30px;
+  border: 1px solid rgb(251 191 36 / 30%);
+  border-radius: 8px;
+  background: rgb(251 191 36 / 8%);
+  list-style-position: inside;
+}
+
+/* flow */
+.cs-flow {
+  display: grid;
+  justify-items: center;
+  gap: 0;
+}
+
+.cs-flow__layer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.cs-flow__link {
+  width: 1px;
+  height: 16px;
+  background: var(--line-strong);
+}
+
+.cs-flow__node {
+  --node: var(--cyan);
+
+  padding: 6px 12px;
+  border: 1px solid color-mix(in srgb, var(--node) 45%, transparent);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--node) 12%, transparent);
+  color: var(--ink);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.cs-flow__node--cyan { --node: var(--cyan); }
+.cs-flow__node--violet { --node: var(--violet); }
+.cs-flow__node--amber { --node: var(--amber); }
+.cs-flow__node--rose { --node: var(--rose); }
+.cs-flow__node--lime { --node: var(--lime); }
+
+/* compare */
+.cs-compare {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.cs-compare__card {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-raised);
+}
+
+.cs-compare__name {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+/* table：窄螢幕橫向捲動，頁面本體不得橫向捲動 */
+.cs-table-wrap {
+  overflow-x: auto;
+}
+
+.cs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.cs-table th,
+.cs-table td {
+  padding: 8px 10px;
+  border-block-end: 1px solid var(--line);
+  text-align: start;
+}
+
+.cs-table th {
+  color: var(--accent);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.cs-table td {
+  color: var(--ink-muted);
+}
+
+/* 延伸題目 */
+.cs-related {
+  margin-block-start: 28px;
+}
+
+.cs-related ul {
+  margin: 8px 0 0;
+  padding-inline-start: 20px;
+}
+
+.cs-related li + li {
+  margin-block-start: 4px;
+}
