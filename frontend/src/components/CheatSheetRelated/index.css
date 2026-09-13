@@ -5,9 +5,36 @@
 
 .cs-related ul {
   margin: 8px 0 0;
-  padding-inline-start: 20px;
+  padding: 0;
+  list-style: none;
 }
 
 .cs-related li + li {
-  margin-block-start: 4px;
+  margin-block-start: 2px;
+}
+
+.cs-related a {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: background var(--fast) var(--ease);
+}
+
+.cs-related a:hover,
+.cs-related a:focus-visible {
+  background: rgb(34 211 238 / 8%);
+}
+
+/* 分類標籤等寬對齊，讓題目標題在左邊形成一條直線，掃視時眼睛不用來回找 */
+.cs-related__category {
+  flex: 0 0 auto;
+  min-width: 6em;
+  color: var(--ink-muted);
+  font-size: 0.85rem;
+}
+
+.cs-related__title {
+  color: var(--cyan);
 }
