@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 
 import type { QuestionListItem } from "@/types/question";
 
+import { useT } from "@/i18n/PreferencesProvider";
+
 import "./index.css";
 
 export interface TagConstellationProps {
@@ -56,6 +58,7 @@ export function TagConstellation({
   max = 28,
 }: TagConstellationProps) {
   const [expanded, setExpanded] = useState(false);
+  const t = useT();
   const tags = useMemo(() => countTags(questions), [questions]);
   const visible = expanded ? tags : tags.slice(0, max);
   const hidden = tags.length - visible.length;
@@ -66,17 +69,17 @@ export function TagConstellation({
   }
 
   return (
-    <section className="tagmap hud-panel hud-brackets" aria-label="題庫標籤">
+    <section className="tagmap hud-panel hud-brackets" aria-label={t("tags.aria")}>
       <div className="tagmap__head">
-        <p className="hud-eyebrow">Tags // 知識面</p>
+        <p className="hud-eyebrow">{t("tags.eyebrow")}</p>
         {selected.length > 0 ? (
           <button type="button" className="tagmap__clear" onClick={onClear}>
-            清除篩選（{selected.length}）
+            {t("tags.clear", { count: selected.length })}
           </button>
         ) : null}
       </div>
       <p className="tagmap__lede">
-        字級代表該標籤在本題庫出現的次數。點擊標籤即可篩選右側題目。
+        {t("tags.lede")}
       </p>
 
       <div className="tagmap__cloud">
@@ -105,7 +108,7 @@ export function TagConstellation({
             className="tagmap__more"
             onClick={() => setExpanded(true)}
           >
-            +{hidden} 展開全部
+            {t("tags.more", { count: hidden })}
           </button>
         ) : null}
         {expanded && tags.length > max ? (
@@ -114,7 +117,7 @@ export function TagConstellation({
             className="tagmap__more"
             onClick={() => setExpanded(false)}
           >
-            收合
+            {t("tags.less")}
           </button>
         ) : null}
       </div>

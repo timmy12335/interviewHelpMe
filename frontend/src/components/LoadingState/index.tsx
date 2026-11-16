@@ -1,4 +1,8 @@
+"use client";
+
 import { Spin } from "antd";
+
+import { useT } from "@/i18n/PreferencesProvider";
 
 export interface LoadingStateProps {
   /** 載入指示下方的提示文字。 */
@@ -11,11 +15,12 @@ export interface LoadingStateProps {
  * 顯示統一的載入指示，並可在較大的內容區域中置中呈現。
  */
 export function LoadingState({
-  tip = "載入中…",
+  tip,
   fullscreen = false,
 }: LoadingStateProps) {
+  const t = useT();
   const spinner = (
-    <Spin tip={tip}>
+    <Spin tip={tip ?? t("loading")}>
       {/* Spin 需有子元素才會在 nested 模式顯示 tip。 */}
       <span aria-hidden="true" />
     </Spin>

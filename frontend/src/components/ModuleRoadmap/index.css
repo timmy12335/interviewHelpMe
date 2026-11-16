@@ -60,7 +60,7 @@
 }
 
 .roadmap__disc {
-  fill: rgb(4 6 14 / 92%);
+  fill: rgb(var(--void-rgb) / 92%);
   stroke: var(--node);
   stroke-width: 1.6;
   transform-box: fill-box;
@@ -102,7 +102,7 @@
 }
 
 .roadmap__node.is-answered .roadmap__num {
-  fill: #04060e;
+  fill: var(--void);
   font-weight: 700;
 }
 

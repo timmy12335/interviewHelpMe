@@ -2,17 +2,36 @@
 /* InterviewHelpMe — deep-space HUD theme                              */
 /* ================================================================== */
 
+/*
+ * 主題切換：預設（沒有 data-theme 或 data-theme="dark"）是深色 HUD；
+ * html[data-theme="light"] 只覆寫下面這組變數，版型與元件樣式不必分兩份。
+ * 半透明色一律寫成 rgb(var(--x-rgb) / N%)，換主題時通道值跟著換。
+ */
 :root {
+  /* 色彩通道（給半透明疊色用） */
+  --void-rgb: 4 6 14;
+  --deep-rgb: 7 11 24;
+  --cyan-rgb: 34 211 238;
+  --cyan-deep-rgb: 14 116 144;
+  --teal-rgb: 94 234 212;
+  --amber-rgb: 251 191 36;
+  --violet-rgb: 168 85 247;
+  /* 高光：深底上用白色提亮，淺底上改用深色壓暗 */
+  --hi-rgb: 255 255 255;
+
+  color-scheme: dark;
+
   /* Surfaces */
   --void: #04060e;
   --deep: #070b18;
   --panel: rgb(13 21 41 / 72%);
   --panel-solid: #0b1226;
   --panel-raised: rgb(20 32 58 / 82%);
+  --code-bg: rgb(var(--void-rgb) / 72%);
 
   /* Lines */
-  --line: rgb(94 234 212 / 14%);
-  --line-strong: rgb(34 211 238 / 42%);
+  --line: rgb(var(--teal-rgb) / 14%);
+  --line-strong: rgb(var(--cyan-rgb) / 42%);
 
   /* Accents */
   --cyan: #22d3ee;
@@ -21,6 +40,9 @@
   --amber: #fbbf24;
   --rose: #fb7185;
   --lime: #4ade80;
+  --cyan-hover: #67e8f9;
+  --on-amber: #1a1204;
+  --on-violet: #0b0518;
 
   /* Ink */
   --ink: #dce7fb;
@@ -37,12 +59,59 @@
   --normal: 320ms;
 
   /* Glows */
-  --glow-cyan: 0 0 24px -6px rgb(34 211 238 / 55%);
-  --glow-violet: 0 0 24px -6px rgb(168 85 247 / 55%);
+  --glow-cyan: 0 0 24px -6px rgb(var(--cyan-rgb) / 55%);
+  --glow-violet: 0 0 24px -6px rgb(var(--violet-rgb) / 55%);
+  --grid-alpha: 6%;
 
   --font-display: var(--font-orbitron), "Segoe UI", sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --hud-notch: 14px;
+}
+
+/*
+ * 淺色主題：白底深字。強調色全部加深一階，
+ * 讓小字（眉標、標籤、連結）在白底上仍有 WCAG AA 以上的對比。
+ */
+:root[data-theme="light"] {
+  --void-rgb: 245 247 251;
+  --deep-rgb: 236 241 248;
+  --cyan-rgb: 14 116 144;
+  --cyan-deep-rgb: 21 94 117;
+  --teal-rgb: 15 23 42;
+  --amber-rgb: 180 83 9;
+  --violet-rgb: 126 34 206;
+  --hi-rgb: 15 23 42;
+
+  color-scheme: light;
+
+  --void: #f5f7fb;
+  --deep: #ecf1f8;
+  --panel: rgb(255 255 255 / 82%);
+  --panel-solid: #ffffff;
+  --panel-raised: rgb(255 255 255 / 94%);
+  /* 程式碼區塊在淺色主題仍維持深底，配合 github-dark 語法高亮 */
+  --code-bg: #0f172a;
+
+  --line: rgb(15 23 42 / 12%);
+  --line-strong: rgb(14 116 144 / 45%);
+
+  --cyan: #0e7490;
+  --cyan-deep: #155e75;
+  --violet: #7e22ce;
+  --amber: #b45309;
+  --rose: #be123c;
+  --lime: #15803d;
+  --cyan-hover: #0891b2;
+  --on-amber: #ffffff;
+  --on-violet: #ffffff;
+
+  --ink: #0f172a;
+  --ink-muted: #334155;
+  --ink-faint: #526178;
+
+  --glow-cyan: 0 0 18px -8px rgb(14 116 144 / 45%);
+  --glow-violet: 0 0 18px -8px rgb(126 34 206 / 45%);
+  --grid-alpha: 5%;
 }
 
 * {
@@ -82,16 +151,16 @@ body::after {
 
 body::before {
   background:
-    radial-gradient(900px 620px at 12% -8%, rgb(34 211 238 / 16%), transparent 62%),
-    radial-gradient(760px 560px at 88% 4%, rgb(168 85 247 / 14%), transparent 60%),
-    radial-gradient(1100px 800px at 50% 110%, rgb(14 116 144 / 14%), transparent 65%),
+    radial-gradient(900px 620px at 12% -8%, rgb(var(--cyan-rgb) / 16%), transparent 62%),
+    radial-gradient(760px 560px at 88% 4%, rgb(var(--violet-rgb) / 14%), transparent 60%),
+    radial-gradient(1100px 800px at 50% 110%, rgb(var(--cyan-deep-rgb) / 14%), transparent 65%),
     linear-gradient(180deg, var(--deep), var(--void) 70%);
 }
 
 body::after {
   background-image:
-    linear-gradient(to right, rgb(94 234 212 / 6%) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(94 234 212 / 6%) 1px, transparent 1px);
+    linear-gradient(to right, rgb(var(--teal-rgb) / var(--grid-alpha)) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(var(--teal-rgb) / var(--grid-alpha)) 1px, transparent 1px);
   background-size: 56px 56px;
   mask-image: radial-gradient(1200px 780px at 50% 0%, #000 15%, transparent 78%);
 }
@@ -293,7 +362,7 @@ h5 {
   padding: 7px 14px;
   border: 1px solid var(--line);
   border-left: 2px solid var(--stat);
-  background: rgb(4 6 14 / 45%);
+  background: rgb(var(--void-rgb) / 45%);
 }
 
 .bank-stat--easy { --stat: var(--lime); }
@@ -344,7 +413,7 @@ h5 {
 
 .hud-cta:hover {
   color: var(--void);
-  background: #67e8f9;
+  background: var(--cyan-hover);
   box-shadow: 0 0 34px -6px var(--cyan);
   transform: translateY(-1px);
 }
@@ -386,7 +455,7 @@ h5 {
 
 .ant-card-head {
   border-bottom: 1px solid var(--line) !important;
-  background: linear-gradient(90deg, rgb(34 211 238 / 8%), transparent 60%);
+  background: linear-gradient(90deg, rgb(var(--cyan-rgb) / 8%), transparent 60%);
 }
 
 .ant-card-head-title {
@@ -408,7 +477,7 @@ h5 {
 }
 
 .ant-list-item:hover {
-  background: rgb(34 211 238 / 6%);
+  background: rgb(var(--cyan-rgb) / 6%);
 }
 
 .question-list__num {
@@ -570,7 +639,7 @@ h5 {
 
 .md-viewer .markdown-body a:hover {
   border-bottom-color: var(--cyan);
-  background: rgb(34 211 238 / 10%);
+  background: rgb(var(--cyan-rgb) / 10%);
 }
 
 .md-viewer .markdown-body a:focus-visible {
@@ -579,14 +648,14 @@ h5 {
 }
 
 .md-viewer .markdown-body code {
-  background: rgb(34 211 238 / 10%) !important;
+  background: rgb(var(--cyan-rgb) / 10%) !important;
   border: 1px solid var(--line);
   border-radius: 0;
   color: var(--cyan) !important;
 }
 
 .md-viewer .markdown-body pre {
-  background: rgb(4 6 14 / 72%) !important;
+  background: var(--code-bg) !important;
   border: 1px solid var(--line);
   border-radius: 0;
 }
@@ -594,7 +663,7 @@ h5 {
 .md-viewer .markdown-body pre code {
   background: transparent !important;
   border: none;
-  color: var(--ink) !important;
+  color: #dce7fb !important;
 }
 
 .md-viewer .markdown-body blockquote {

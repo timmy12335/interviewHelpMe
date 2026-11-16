@@ -6,6 +6,7 @@ import { useMemo } from "react";
 
 import { ProgressRing } from "@/components/ProgressRing";
 import { useProgress } from "@/hooks/useProgress";
+import { useLocalized, useT } from "@/i18n/PreferencesProvider";
 import type { ModuleSummary } from "@/lib/content/modules";
 
 import "./index.css";
@@ -35,6 +36,8 @@ export function CategoryBankList({
     [modules],
   );
   const { answeredIds, dueIds } = useProgress(allIds);
+  const t = useT();
+  const pick = useLocalized();
 
   return (
     <List
@@ -46,6 +49,7 @@ export function CategoryBankList({
           answeredIds.has(unit.id),
         ).length;
         const due = module.units.some((unit) => dueIds.has(unit.id));
+        const name = pick(module.nameZh, module.nameEn);
 
         return (
           <List.Item key={module.slug}>
@@ -60,12 +64,12 @@ export function CategoryBankList({
                 </span>
                 <span className="bank-card__count">
                   {module.units.length}
-                  <small>題</small>
+                  <small>{t("unit.questions")}</small>
                 </span>
               </div>
-              <h3 className="bank-card__title">{module.nameZh}</h3>
+              <h3 className="bank-card__title">{name}</h3>
               <div className="bank-card__foot">
-                <span className="bank-card__cta">開始練習 →</span>
+                <span className="bank-card__cta">{t("cta.start")}</span>
                 {done > 0 || due ? (
                   <span className="bank-card__progress">
                     <ProgressRing
@@ -73,7 +77,11 @@ export function CategoryBankList({
                       total={module.units.length}
                       size={30}
                       due={due}
-                      label={`${module.nameZh} 已作答 ${done} 題，共 ${module.units.length} 題`}
+                      label={t("ring.moduleLabel", {
+                        module: name,
+                        done,
+                        total: module.units.length,
+                      })}
                     />
                     <span className="bank-card__progress-text">
                       {done}/{module.units.length}

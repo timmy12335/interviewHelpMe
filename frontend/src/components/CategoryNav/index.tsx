@@ -2,6 +2,7 @@
 
 import type { MouseEvent } from "react";
 
+import { useLocalized, useT } from "@/i18n/PreferencesProvider";
 import { withBasePath } from "@/lib/paths";
 import type { Category } from "@/types/question";
 
@@ -31,6 +32,8 @@ export function CategoryNav({
   getHref = defaultGetHref,
   onNavigate,
 }: CategoryNavProps) {
+  const t = useT();
+  const pick = useLocalized();
   const handleClick = (
     event: MouseEvent<HTMLElement>,
     category: Category,
@@ -44,9 +47,10 @@ export function CategoryNav({
   };
 
   return (
-    <nav aria-label="題目分類" className="category-nav">
+    <nav aria-label={t("categoryNav.aria")} className="category-nav">
       {categories.map((category) => {
         const isActive = category.slug === activeSlug;
+        const name = pick(category.nameZh, category.nameEn);
         const count =
           category.questionCount === undefined
             ? null
@@ -56,14 +60,14 @@ export function CategoryNav({
           <a
             aria-current={isActive ? "page" : undefined}
             aria-label={
-              count === null ? category.nameZh : `${category.nameZh}（${count}）`
+              count === null ? name : t("categoryNav.count", { name, count })
             }
             className="category-chip"
             href={getHref(category)}
             key={category.slug}
             onClick={(event) => handleClick(event, category)}
           >
-            <span>{category.nameZh}</span>
+            <span>{name}</span>
             {count !== null ? (
               <span className="category-chip__count" aria-hidden>
                 {count}

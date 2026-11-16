@@ -5,6 +5,7 @@ import { useCallback, useMemo, useState } from "react";
 import { ModuleRoadmap } from "@/components/ModuleRoadmap";
 import { QuestionList } from "@/components/QuestionList";
 import { TagConstellation } from "@/components/TagConstellation";
+import { useT } from "@/i18n/PreferencesProvider";
 import type { QuestionListItem } from "@/types/question";
 
 import "./index.css";
@@ -20,6 +21,7 @@ export interface BankBoardProps {
  */
 export function BankBoard({ categorySlug, questions }: BankBoardProps) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const t = useT();
 
   const toggleTag = useCallback((tag: string) => {
     setSelectedTags((current) =>
@@ -65,17 +67,17 @@ export function BankBoard({ categorySlug, questions }: BankBoardProps) {
 
       <div className="bank-board__main">
         <div className="section-head">
-          <p className="hud-eyebrow">Units // 題目列表</p>
+          <p className="hud-eyebrow">{t("bank.unitsEyebrow")}</p>
           {selectedTags.length > 0 ? (
             <span className="bank-board__filter">
-              篩選中：{selectedTags.join("、")}
+              {t("bank.filtering", { tags: selectedTags.join(" · ") })}
             </span>
           ) : null}
         </div>
         <QuestionList
           questions={filtered}
-          title={`題目列表（${filtered.length}）`}
-          emptyText="沒有符合所選標籤的題目"
+          title={t("bank.listTitle", { count: filtered.length })}
+          emptyText={t("bank.emptyFiltered")}
           numbers={numbers}
         />
       </div>

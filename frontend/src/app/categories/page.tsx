@@ -1,5 +1,6 @@
 import { CategoryBankList } from "@/components/CategoryBankList";
 import { SiteProgressMap } from "@/components/SiteProgressMap";
+import { T } from "@/i18n/T";
 import { getModuleSummaries } from "@/lib/content/modules";
 
 /** 題庫大全：列出全部分類、題數與練習進度。 */
@@ -10,9 +11,11 @@ export default function CategoriesPage() {
   return (
     <div id="categoriesPage" className="max-width-content">
       <header>
-        <p className="hud-eyebrow">Modules // 題庫大全</p>
+        <p className="hud-eyebrow">
+          <T k="categories.eyebrow" />
+        </p>
         <h1 className="page-title">
-          全部題庫
+          <T k="categories.title" />
           <span className="page-title__sub font-display">
             {modules.length} modules / {total} units
           </span>
@@ -20,7 +23,9 @@ export default function CategoriesPage() {
       </header>
       <SiteProgressMap modules={modules} />
       <div className="section-head">
-        <p className="hud-eyebrow">Modules // 題庫卡</p>
+        <p className="hud-eyebrow">
+          <T k="categories.cardsEyebrow" />
+        </p>
       </div>
       <CategoryBankList modules={modules} />
     </div>

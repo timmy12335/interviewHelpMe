@@ -48,6 +48,7 @@ export type QuestionListItem = Pick<
 export type Category = {
   slug: string;
   nameZh: string;
+  nameEn?: string;
   description?: string;
   questionCount?: number;
 };

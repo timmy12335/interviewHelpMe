@@ -37,7 +37,7 @@
 }
 
 .site-map__row:hover {
-  background: rgb(34 211 238 / 6%);
+  background: rgb(var(--cyan-rgb) / 6%);
 }
 
 .site-map__name {
@@ -72,7 +72,7 @@
 }
 
 .site-map__cell.is-todo {
-  border-color: rgb(94 234 212 / 22%);
+  border-color: rgb(var(--teal-rgb) / 22%);
 }
 
 .site-map__cell.is-done {
@@ -131,7 +131,7 @@
 }
 
 .site-map__key.is-todo::before {
-  border-color: rgb(94 234 212 / 22%);
+  border-color: rgb(var(--teal-rgb) / 22%);
 }
 
 .site-map__key.is-done::before {

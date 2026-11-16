@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { BankBoard } from "@/components/BankBoard";
+import { L, T } from "@/i18n/T";
 import {
   getAllCategories,
   getQuestionsByCategory,
@@ -39,23 +40,34 @@ export default function CategoryPage({ params }: CategoryPageProps) {
     <div id="bankPage" className="max-width-content">
       <section className="bank-brief hud-panel hud-brackets">
         <p className="hud-eyebrow">
-          {`Module ${String(moduleIndex + 1).padStart(2, "0")} // 題庫簡報`}
+          <T
+            k="bank.eyebrow"
+            vars={{ index: String(moduleIndex + 1).padStart(2, "0") }}
+          />
         </p>
-        <h1 className="bank-brief__title">{category.nameZh}</h1>
+        <h1 className="bank-brief__title">
+          <L zh={category.nameZh} en={category.nameEn} />
+        </h1>
         <p className="page-lede">
-          共 {questions.length} 題。答案預設封存，先自己作答再解鎖比對。
+          <T k="bank.lede" vars={{ count: questions.length }} />
         </p>
         <dl className="bank-stats">
           <div className="bank-stat bank-stat--easy">
-            <dt>簡單</dt>
+            <dt>
+              <T k="difficulty.easy" />
+            </dt>
             <dd>{byDifficulty.easy}</dd>
           </div>
           <div className="bank-stat bank-stat--medium">
-            <dt>中等</dt>
+            <dt>
+              <T k="difficulty.medium" />
+            </dt>
             <dd>{byDifficulty.medium}</dd>
           </div>
           <div className="bank-stat bank-stat--hard">
-            <dt>困難</dt>
+            <dt>
+              <T k="difficulty.hard" />
+            </dt>
             <dd>{byDifficulty.hard}</dd>
           </div>
         </dl>
@@ -64,7 +76,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
             className="hud-cta"
             href={`/category/${params.slug}/question/${firstQuestionSlug}/`}
           >
-            開始練習 →
+            <T k="cta.start" />
           </Link>
         ) : null}
       </section>

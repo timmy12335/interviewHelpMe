@@ -13,7 +13,7 @@
 }
 
 .progress-ring__track {
-  stroke: rgb(94 234 212 / 16%);
+  stroke: rgb(var(--teal-rgb) / 16%);
 }
 
 .progress-ring__value {

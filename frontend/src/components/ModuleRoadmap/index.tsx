@@ -5,6 +5,7 @@ import { useMemo } from "react";
 
 import { ProgressRing } from "@/components/ProgressRing";
 import { useProgress } from "@/hooks/useProgress";
+import { useT } from "@/i18n/PreferencesProvider";
 import { REVIEW_AFTER_DAYS } from "@/lib/progress";
 import type { QuestionListItem } from "@/types/question";
 
@@ -46,6 +47,7 @@ export function ModuleRoadmap({ categorySlug, questions }: ModuleRoadmapProps) {
   );
   const { answeredIds, dueIds, answeredCount, dueCount, total } =
     useProgress(ids);
+  const t = useT();
 
   const rows = Math.ceil(questions.length / COLS);
   const viewWidth = PAD_X * 2 + (COLS - 1) * CELL_W;
@@ -58,13 +60,12 @@ export function ModuleRoadmap({ categorySlug, questions }: ModuleRoadmapProps) {
     .join(" ");
 
   return (
-    <section className="roadmap hud-panel hud-brackets" aria-label="題庫路線圖">
+    <section className="roadmap hud-panel hud-brackets" aria-label={t("roadmap.aria")}>
       <div className="roadmap__head">
         <div>
-          <p className="hud-eyebrow">Roadmap // 練習路線</p>
+          <p className="hud-eyebrow">{t("roadmap.eyebrow")}</p>
           <p className="roadmap__lede">
-            依題庫順序排列。點節點直接跳到該題；實心代表已作答，
-            {`外環閃爍代表超過 ${REVIEW_AFTER_DAYS} 天沒回來看，建議複習。`}
+            {t("roadmap.lede", { days: REVIEW_AFTER_DAYS })}
           </p>
         </div>
         <ProgressRing
@@ -79,12 +80,12 @@ export function ModuleRoadmap({ categorySlug, questions }: ModuleRoadmapProps) {
         className="roadmap__map"
         viewBox={`0 0 ${viewWidth} ${viewHeight}`}
         role="list"
-        aria-label={`共 ${questions.length} 題的練習順序`}
+        aria-label={t("roadmap.svgAria", { count: questions.length })}
       >
         <defs>
           <linearGradient id="roadmap-trail" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#22d3ee" />
-            <stop offset="100%" stopColor="#a855f7" />
+            <stop offset="0%" style={{ stopColor: "var(--cyan)" }} />
+            <stop offset="100%" style={{ stopColor: "var(--violet)" }} />
           </linearGradient>
         </defs>
 
@@ -111,7 +112,11 @@ export function ModuleRoadmap({ categorySlug, questions }: ModuleRoadmapProps) {
             >
               <title>
                 {`${index + 1}. ${question.title}${
-                  due ? "（建議複習）" : answered ? "（已作答）" : ""
+                  due
+                    ? t("roadmap.suffixDue")
+                    : answered
+                      ? t("roadmap.suffixDone")
+                      : ""
                 }`}
               </title>
               {due ? (
@@ -128,11 +133,11 @@ export function ModuleRoadmap({ categorySlug, questions }: ModuleRoadmapProps) {
       </svg>
 
       <ul className="roadmap__legend">
-        <li className="roadmap__key roadmap__key--easy">簡單</li>
-        <li className="roadmap__key roadmap__key--medium">中等</li>
-        <li className="roadmap__key roadmap__key--hard">困難</li>
-        <li className="roadmap__key roadmap__key--done">已作答</li>
-        <li className="roadmap__key roadmap__key--due">待複習</li>
+        <li className="roadmap__key roadmap__key--easy">{t("difficulty.easy")}</li>
+        <li className="roadmap__key roadmap__key--medium">{t("difficulty.medium")}</li>
+        <li className="roadmap__key roadmap__key--hard">{t("difficulty.hard")}</li>
+        <li className="roadmap__key roadmap__key--done">{t("status.done")}</li>
+        <li className="roadmap__key roadmap__key--due">{t("status.due")}</li>
       </ul>
     </section>
   );

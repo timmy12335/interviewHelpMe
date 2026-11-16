@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 
 import { QuestionSearchBoard } from "@/components/QuestionSearchBoard";
+import { T } from "@/i18n/T";
 import { getAllCategories, getAllQuestions } from "@/lib/content/loadContent";
 import { toListItems } from "@/lib/content/toListItems";
 
@@ -12,9 +13,11 @@ export default function QuestionsPage() {
   return (
     <div id="questionsPage" className="max-width-content">
       <header>
-        <p className="hud-eyebrow">Index // 題目大全</p>
+        <p className="hud-eyebrow">
+          <T k="questions.eyebrow" />
+        </p>
         <h1 className="page-title">
-          全部題目
+          <T k="questions.title" />
           <span className="page-title__sub font-display">
             {questions.length} units indexed
           </span>

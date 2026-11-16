@@ -46,7 +46,7 @@
   background: linear-gradient(
     100deg,
     transparent,
-    rgb(255 255 255 / 7%),
+    rgb(var(--hi-rgb) / 7%),
     transparent
   );
   transform: translateX(0);
