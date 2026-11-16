@@ -1,4 +1,8 @@
+"use client";
+
 import { Tag } from "antd";
+
+import { useT } from "@/i18n/PreferencesProvider";
 
 import type { Difficulty } from "@/types/question";
 
@@ -8,11 +12,11 @@ export interface DifficultyBadgeProps {
 
 const difficultyConfig: Record<
   Difficulty,
-  { label: string; color: "success" | "warning" | "error" }
+  { label: "difficulty.easy" | "difficulty.medium" | "difficulty.hard"; color: "success" | "warning" | "error" }
 > = {
-  easy: { label: "簡單", color: "success" },
-  medium: { label: "中等", color: "warning" },
-  hard: { label: "困難", color: "error" },
+  easy: { label: "difficulty.easy", color: "success" },
+  medium: { label: "difficulty.medium", color: "warning" },
+  hard: { label: "difficulty.hard", color: "error" },
 };
 
 /**
@@ -20,6 +24,7 @@ const difficultyConfig: Record<
  */
 export function DifficultyBadge({ difficulty }: DifficultyBadgeProps) {
   const { label, color } = difficultyConfig[difficulty];
+  const t = useT();
 
-  return <Tag color={color}>{label}</Tag>;
+  return <Tag color={color}>{t(label)}</Tag>;
 }

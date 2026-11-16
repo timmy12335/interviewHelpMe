@@ -6,6 +6,7 @@ import { DifficultyBadge } from "@/components/DifficultyBadge";
 import { MdViewer } from "@/components/MdViewer";
 import { TagList } from "@/components/TagList";
 import { usePersistentFlag } from "@/hooks/usePersistentFlag";
+import { useT, type TranslateFn } from "@/i18n/PreferencesProvider";
 import { notifyProgressChanged } from "@/hooks/useProgress";
 import { questionHref } from "@/lib/content/resolveLinks";
 import { fallbackLabel, parseWikiTarget } from "@/lib/content/wikiLinks";
@@ -66,12 +67,12 @@ function AnswerSection({
 }
 
 /** 把秒數說成人話：90 秒以內講秒，之後講分鐘。 */
-function formatSpoken(seconds: number): string {
+function formatSpoken(seconds: number, t: TranslateFn): string {
   if (seconds <= 90) {
-    return `約 ${seconds} 秒`;
+    return t("practice.secondsAbout", { count: seconds });
   }
 
-  return `約 ${Math.round(seconds / 60)} 分鐘`;
+  return t("practice.minutesAbout", { count: Math.round(seconds / 60) });
 }
 
 /**
@@ -79,22 +80,35 @@ function formatSpoken(seconds: number): string {
  * 知道成本才決定要不要點開，比直接被一整片文字淹沒好。
  */
 function AnswerGuide({ question }: { question: Question }) {
+  const t = useT();
   const blocks = question.detailBlocks?.filter((block) => block.heading) ?? [];
   const detailMinutes = readMinutes(question.detail);
   const scriptSeconds = speakSeconds(question.script);
 
   const chips = [
     question.coreAnswer
-      ? { key: "core", label: "核心答案", note: `${readMinutes(question.coreAnswer)} 分鐘` }
+      ? {
+          key: "core",
+          label: t("practice.core"),
+          note: t("practice.minutes", { count: readMinutes(question.coreAnswer) }),
+        }
       : null,
     blocks.length > 0
-      ? { key: "detail", label: "詳細解析", note: `${blocks.length} 段 · ${detailMinutes} 分鐘` }
+      ? {
+          key: "detail",
+          label: t("practice.detail"),
+          note: t("practice.detailNote", { blocks: blocks.length, minutes: detailMinutes }),
+        }
       : null,
     question.script
-      ? { key: "script", label: "講稿", note: formatSpoken(scriptSeconds) }
+      ? { key: "script", label: t("practice.script"), note: formatSpoken(scriptSeconds, t) }
       : null,
     question.followUps?.length
-      ? { key: "followups", label: "常見追問", note: `${question.followUps.length} 題` }
+      ? {
+          key: "followups",
+          label: t("practice.followUpsLabel"),
+          note: t("practice.followUpsNote", { count: question.followUps.length }),
+        }
       : null,
   ].filter((chip): chip is { key: string; label: string; note: string } => Boolean(chip));
 
@@ -170,6 +184,7 @@ function DetailBlockList({
   detail?: string;
 }) {
   const [expandAll, setExpandAll] = usePersistentFlag(DETAIL_OPEN_KEY);
+  const t = useT();
   const [open, setOpen] = useState<ReadonlySet<number>>(() => new Set<number>());
   const headingCount = blocks?.filter((block) => block.heading).length ?? 0;
 
@@ -189,8 +204,10 @@ function DetailBlockList({
     return (
       <section className="detail-blocks">
         <div className="detail-blocks__head">
-          <h3 className="detail-blocks__title">詳細解析</h3>
-          <span className="detail-blocks__meta">{readMinutes(detail)} 分鐘</span>
+          <h3 className="detail-blocks__title">{t("practice.detail")}</h3>
+          <span className="detail-blocks__meta">
+            {t("practice.minutes", { count: readMinutes(detail) })}
+          </span>
         </div>
         <DetailIntro body={blocks[0].body} />
       </section>
@@ -213,13 +230,13 @@ function DetailBlockList({
     <section className="detail-blocks">
       <div className="detail-blocks__head">
         {/* 段數與時間由上方的 AnswerGuide 統一交代，這裡不重複 */}
-        <h3 className="detail-blocks__title">詳細解析</h3>
+        <h3 className="detail-blocks__title">{t("practice.detail")}</h3>
         <button
           type="button"
           className="detail-blocks__toggle-all"
           onClick={() => setExpandAll(!expandAll)}
         >
-          {expandAll ? "全部收起" : "全部展開"}
+          {expandAll ? t("practice.collapseAll") : t("practice.expandAll")}
         </button>
       </div>
 
@@ -247,6 +264,8 @@ function DetailBlockList({
  * 目的是「眼睛跟得上嘴巴」，而不是拿來讀懂內容。
  */
 function AnswerScript({ value }: { value?: string }) {
+  const t = useT();
+
   if (!value) {
     return null;
   }
@@ -256,11 +275,11 @@ function AnswerScript({ value }: { value?: string }) {
   return (
     <section className="answer-script">
       <h3 className="answer-script__title">
-        <span className="answer-script__badge">講稿</span>
-        照著這樣講
+        <span className="answer-script__badge">{t("practice.script")}</span>
+        {t("practice.scriptTitle")}
       </h3>
       <p className="answer-script__meta">
-        {formatSpoken(seconds)} · 每段換一口氣
+        {t("practice.scriptMeta", { time: formatSpoken(seconds, t) })}
       </p>
       <div className="answer-script__body">
         <MdViewer value={value} />
@@ -271,6 +290,8 @@ function AnswerScript({ value }: { value?: string }) {
 
 /** 面試回答方式獨立成總結卡，放在最後、樣式與前面的解析明顯區隔。 */
 function AnswerSummary({ value }: { value?: string }) {
+  const t = useT();
+
   if (!value) {
     return null;
   }
@@ -278,8 +299,8 @@ function AnswerSummary({ value }: { value?: string }) {
   return (
     <section className="answer-summary">
       <h3 className="answer-summary__title">
-        <span className="answer-summary__badge">總結</span>
-        面試這樣答
+        <span className="answer-summary__badge">{t("practice.summaryBadge")}</span>
+        {t("practice.summaryTitle")}
       </h3>
       <MdViewer value={value} />
     </section>
@@ -289,6 +310,7 @@ function AnswerSummary({ value }: { value?: string }) {
 function FollowUpItem({ followUp }: { followUp: FollowUp }) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
+  const t = useT();
 
   return (
     <div className={`followup${open ? " is-open" : ""}`}>
@@ -306,8 +328,8 @@ function FollowUpItem({ followUp }: { followUp: FollowUp }) {
       </button>
       {open ? (
         <div className="followup__panel" id={panelId}>
-          <AnswerSection title="核心答案" value={followUp.coreAnswer} variant="core" />
-          <AnswerSection title="詳細解析" value={followUp.detail} />
+          <AnswerSection title={t("practice.core")} value={followUp.coreAnswer} variant="core" />
+          <AnswerSection title={t("practice.detail")} value={followUp.detail} />
           <AnswerSummary value={followUp.interviewTip} />
         </div>
       ) : null}
@@ -325,6 +347,7 @@ export function PracticeQuestion({ question }: { question: Question }) {
   const [refCollapsed, setRefCollapsed] = usePersistentFlag(REF_COLLAPSED_KEY);
   const inputId = useId();
   const answerPanelId = useId();
+  const t = useT();
 
   useEffect(() => {
     setShowAnswer(false);
@@ -369,17 +392,17 @@ export function PracticeQuestion({ question }: { question: Question }) {
         className="practice__ref-toggle"
         onClick={() => setRefCollapsed()}
         aria-expanded={!refCollapsed}
-        title={refCollapsed ? "展開答案欄" : "收合答案欄"}
+        title={refCollapsed ? t("practice.expandRef") : t("practice.collapseRef")}
       >
         <span aria-hidden>{refCollapsed ? "«" : "»"}</span>
         <span className="sr-only">
-          {refCollapsed ? "展開答案欄" : "收合答案欄"}
+          {refCollapsed ? t("practice.expandRef") : t("practice.collapseRef")}
         </span>
       </button>
 
       <div className="practice__col">
       <div className="practice__card hud-panel hud-brackets">
-        <p className="hud-eyebrow">Unit // 題目</p>
+        <p className="hud-eyebrow">{t("practice.unitEyebrow")}</p>
         <h1 className="practice__title">{question.title}</h1>
         <div className="practice__meta">
           <DifficultyBadge difficulty={question.difficulty} />
@@ -393,17 +416,17 @@ export function PracticeQuestion({ question }: { question: Question }) {
         <div className="practice__compose">
           {dueForReview ? (
             <p className="practice__review-note" role="status">
-              這題超過 {REVIEW_AFTER_DAYS} 天沒回來看了。先別看舊草稿，重寫一次再比對。
+              {t("practice.reviewNote", { days: REVIEW_AFTER_DAYS })}
             </p>
           ) : null}
           <label className="practice__label" htmlFor={inputId}>
-            你的作答（先想再看答案）
+            {t("practice.inputLabel")}
           </label>
           <textarea
             id={inputId}
             className="practice__input"
             rows={5}
-            placeholder="在這裡寫下你的版本…"
+            placeholder={t("practice.inputPlaceholder")}
             value={draft}
             onChange={(event) => {
               const value = event.target.value;
@@ -423,7 +446,7 @@ export function PracticeQuestion({ question }: { question: Question }) {
             <span className="practice__reveal-icon" aria-hidden>
               {showAnswer ? "◈" : "◇"}
             </span>
-            {showAnswer ? "隱藏核心答案與詳細解析" : "顯示核心答案與詳細解析"}
+            {showAnswer ? t("practice.hide") : t("practice.show")}
           </button>
         </div>
       </div>
@@ -432,12 +455,12 @@ export function PracticeQuestion({ question }: { question: Question }) {
       <div className="practice__col practice__col--ref">
       {showAnswer ? (
         <div className="practice__card hud-panel hud-brackets is-decrypted" id={answerPanelId}>
-          <p className="hud-eyebrow">Decrypted // 推薦答案</p>
+          <p className="hud-eyebrow">{t("practice.decrypted")}</p>
           <AnswerGuide question={question} />
           {hasStructured ? (
             <>
               <AnswerSection
-                title="核心答案"
+                title={t("practice.core")}
                 value={question.coreAnswer}
                 variant="core"
               />
@@ -449,30 +472,30 @@ export function PracticeQuestion({ question }: { question: Question }) {
               <AnswerScript value={question.script} />
             </>
           ) : (
-            <AnswerSection title="核心答案" value={question.answer} variant="core" />
+            <AnswerSection title={t("practice.core")} value={question.answer} variant="core" />
           )}
         </div>
       ) : (
         <div className="practice__card hud-panel hud-brackets practice__locked">
-          <p className="hud-eyebrow">Sealed // 答案封存中</p>
+          <p className="hud-eyebrow">{t("practice.sealed")}</p>
           {/*
             這裡刻意不放第二顆解鎖按鈕：兩顆按鈕做同一件事，但只有左邊那顆
             能再次收合，容易讓人以為解鎖後就收不回去了。
           */}
           <p className="practice__locked-text">
-            先在左邊寫下你的版本，再用左欄的
-            <b>「顯示核心答案與詳細解析」</b>
-            解鎖對照。解鎖後答案會固定在這一欄，捲動題目時仍看得到，不必來回滑動。
+            {t("practice.lockedBefore")}
+            <b>{t("practice.lockedButton")}</b>
+            {t("practice.lockedAfter")}
           </p>
           <p className="practice__locked-hint">
-            也可以直接按 <kbd>A</kbd> 解鎖或收合。
+            {t("practice.lockedHintBefore")} <kbd>A</kbd> {t("practice.lockedHintAfter")}
           </p>
         </div>
       )}
 
       {question.followUps && question.followUps.length > 0 ? (
         <div className="practice__card hud-panel hud-brackets">
-          <p className="hud-eyebrow">Follow-ups // 常見追問</p>
+          <p className="hud-eyebrow">{t("practice.followUps")}</p>
           <div className="followup-list">
             {question.followUps.map((followUp) => (
               <FollowUpItem key={followUp.title} followUp={followUp} />
@@ -483,7 +506,7 @@ export function PracticeQuestion({ question }: { question: Question }) {
 
       {question.related && question.related.length > 0 ? (
         <div className="practice__card hud-panel hud-brackets">
-          <p className="hud-eyebrow">Linked // 相關題目</p>
+          <p className="hud-eyebrow">{t("practice.linked")}</p>
           <div className="related-row">
             {question.related.map((item) => {
               const link = relatedLink(item, question.categorySlug);

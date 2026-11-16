@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Tag } from "antd";
 
 import type { CheatSheet } from "@/data/cheatsheets/types";
+import { T } from "@/i18n/T";
 
 import "./index.css";
 
@@ -22,7 +23,7 @@ export function CheatSheetList({ sheets }: CheatSheetListProps) {
               <Tag key={`${tag}-${index}`}>{tag}</Tag>
             ))}
           </div>
-          <span className="cs-card__meta">{sheet.sections.length} 個分區</span>
+          <span className="cs-card__meta"><T k="cheatsheets.sections" vars={{ count: sheet.sections.length }} /></span>
         </Link>
       ))}
     </div>

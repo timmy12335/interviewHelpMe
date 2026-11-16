@@ -5,6 +5,7 @@ import { Card, List, Space } from "antd";
 import { DifficultyBadge } from "@/components/DifficultyBadge";
 import { EmptyState } from "@/components/EmptyState";
 import { TagList } from "@/components/TagList";
+import { useT } from "@/i18n/PreferencesProvider";
 import { withBasePath } from "@/lib/paths";
 import type { QuestionListItem } from "@/types/question";
 
@@ -37,15 +38,17 @@ const defaultGetHref = (question: QuestionListItem) =>
  */
 export function QuestionList({
   questions,
-  title = "題目列表",
-  emptyText = "尚無題目",
+  title,
+  emptyText,
   getHref = defaultGetHref,
   numbers,
 }: QuestionListProps) {
+  const t = useT();
+
   return (
-    <Card className="question-list" title={title}>
+    <Card className="question-list" title={title ?? t("list.title")}>
       {questions.length === 0 ? (
-        <EmptyState title={emptyText} />
+        <EmptyState title={emptyText ?? t("list.empty")} />
       ) : (
         <List
           dataSource={questions}

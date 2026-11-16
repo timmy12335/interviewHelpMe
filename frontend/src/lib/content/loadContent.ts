@@ -113,9 +113,10 @@ export function getAllCategoriesFromRoot(
 
   return [...meta]
     .sort((a, b) => a.sortOrder - b.sortOrder)
-    .map(({ slug, nameZh }) => ({
+    .map(({ slug, nameZh, nameEn }) => ({
       slug,
       nameZh,
+      ...(nameEn ? { nameEn } : {}),
       questionCount: listQuestionFiles(path.join(contentRoot, slug)).length,
     }));
 }

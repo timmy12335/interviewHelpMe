@@ -7,6 +7,7 @@ import { toListItems } from "./toListItems";
 export type ModuleSummary = {
   slug: string;
   nameZh: string;
+  nameEn?: string;
   units: QuestionListItem[];
 };
 
@@ -17,6 +18,7 @@ export function getModuleSummaries(): ModuleSummary[] {
   return getAllCategories().map((category) => ({
     slug: category.slug,
     nameZh: category.nameZh,
+    ...(category.nameEn ? { nameEn: category.nameEn } : {}),
     units: questions.filter((unit) => unit.categorySlug === category.slug),
   }));
 }

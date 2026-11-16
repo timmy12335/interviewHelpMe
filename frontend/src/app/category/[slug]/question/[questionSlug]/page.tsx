@@ -36,6 +36,7 @@ export default function QuestionPage({ params }: QuestionPageProps) {
     <PracticeShell
       categorySlug={params.slug}
       categoryName={category?.nameZh ?? params.slug}
+      categoryNameEn={category?.nameEn}
       questions={siblings}
       currentSlug={params.questionSlug}
     >

@@ -1,28 +1,30 @@
 export type CategoryMeta = {
   slug: string;
   nameZh: string;
+  /** 英文介面顯示的名稱；題目內容本身仍是中文。 */
+  nameEn?: string;
   sortOrder: number;
 };
 
 /** 與 backend/sql/schema.sql INSERT INTO category 對齊。 */
 export const CATEGORY_META: CategoryMeta[] = [
-  { slug: "java", nameZh: "Java 面試題", sortOrder: 1 },
-  { slug: "spring", nameZh: "Spring 面試題", sortOrder: 2 },
-  { slug: "jvm", nameZh: "JVM 面試題", sortOrder: 3 },
-  { slug: "java-concurrency", nameZh: "Java 併發面試題", sortOrder: 4 },
-  { slug: "redis", nameZh: "Redis 面試題", sortOrder: 5 },
-  { slug: "database", nameZh: "資料庫面試題", sortOrder: 6 },
-  { slug: "backend-engineering", nameZh: "後端工程面試題", sortOrder: 7 },
-  { slug: "system-design", nameZh: "系統設計面試題", sortOrder: 8 },
-  { slug: "kubernetes", nameZh: "Kubernetes 面試題", sortOrder: 9 },
-  { slug: "ai-llm", nameZh: "AI 大模型面試題", sortOrder: 10 },
-  { slug: "ai-agent", nameZh: "AI Agent 面試題", sortOrder: 11 },
-  { slug: "real-interviews", nameZh: "實戰面試題（真實公司考題風格）", sortOrder: 12 },
-  { slug: "algorithms", nameZh: "演算法與資料結構面試題", sortOrder: 13 },
-  { slug: "behavioral", nameZh: "行為面試題", sortOrder: 14 },
-  { slug: "frontend", nameZh: "前端面試題", sortOrder: 15 },
-  { slug: "computer-network", nameZh: "計算機網路面試題", sortOrder: 16 },
-  { slug: "message-queue", nameZh: "訊息佇列面試題", sortOrder: 17 },
-  { slug: "design-patterns", nameZh: "設計模式面試題", sortOrder: 18 },
-  { slug: "leetcode-patterns", nameZh: "LeetCode 範式（Java）", sortOrder: 19 },
+  { slug: "java", nameZh: "Java 面試題", nameEn: "Java", sortOrder: 1 },
+  { slug: "spring", nameZh: "Spring 面試題", nameEn: "Spring", sortOrder: 2 },
+  { slug: "jvm", nameZh: "JVM 面試題", nameEn: "JVM", sortOrder: 3 },
+  { slug: "java-concurrency", nameZh: "Java 併發面試題", nameEn: "Java Concurrency", sortOrder: 4 },
+  { slug: "redis", nameZh: "Redis 面試題", nameEn: "Redis", sortOrder: 5 },
+  { slug: "database", nameZh: "資料庫面試題", nameEn: "Databases", sortOrder: 6 },
+  { slug: "backend-engineering", nameZh: "後端工程面試題", nameEn: "Backend Engineering", sortOrder: 7 },
+  { slug: "system-design", nameZh: "系統設計面試題", nameEn: "System Design", sortOrder: 8 },
+  { slug: "kubernetes", nameZh: "Kubernetes 面試題", nameEn: "Kubernetes", sortOrder: 9 },
+  { slug: "ai-llm", nameZh: "AI 大模型面試題", nameEn: "AI / Large Language Models", sortOrder: 10 },
+  { slug: "ai-agent", nameZh: "AI Agent 面試題", nameEn: "AI Agents", sortOrder: 11 },
+  { slug: "real-interviews", nameZh: "實戰面試題（真實公司考題風格）", nameEn: "Real Interview Questions (company style)", sortOrder: 12 },
+  { slug: "algorithms", nameZh: "演算法與資料結構面試題", nameEn: "Algorithms & Data Structures", sortOrder: 13 },
+  { slug: "behavioral", nameZh: "行為面試題", nameEn: "Behavioral", sortOrder: 14 },
+  { slug: "frontend", nameZh: "前端面試題", nameEn: "Frontend", sortOrder: 15 },
+  { slug: "computer-network", nameZh: "計算機網路面試題", nameEn: "Computer Networking", sortOrder: 16 },
+  { slug: "message-queue", nameZh: "訊息佇列面試題", nameEn: "Message Queues", sortOrder: 17 },
+  { slug: "design-patterns", nameZh: "設計模式面試題", nameEn: "Design Patterns", sortOrder: 18 },
+  { slug: "leetcode-patterns", nameZh: "LeetCode 範式（Java）", nameEn: "LeetCode Patterns (Java)", sortOrder: 19 },
 ];

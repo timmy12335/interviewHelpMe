@@ -19,9 +19,9 @@
   flex: none;
   height: 56px;
   border-block-end: 1px solid var(--line-strong);
-  background: rgb(7 11 24 / 82%);
+  background: rgb(var(--deep-rgb) / 82%);
   backdrop-filter: blur(14px);
-  box-shadow: 0 1px 0 rgb(34 211 238 / 12%);
+  box-shadow: 0 1px 0 rgb(var(--cyan-rgb) / 12%);
 }
 
 /* 導覽列底部的掃描光帶 */
@@ -73,7 +73,7 @@
 .basic-layout__logo {
   display: inline-flex;
   line-height: 0;
-  filter: drop-shadow(0 0 8px rgb(34 211 238 / 55%));
+  filter: drop-shadow(0 0 8px rgb(var(--cyan-rgb) / 55%));
 }
 
 /* ---------------------------------------------------------------- */
@@ -180,7 +180,12 @@
     gap: 16px;
   }
 
+  /* 手機上只留語系／主題切換，GitHub 連結讓出空間給導覽。 */
   .site-header__actions {
+    gap: 6px;
+  }
+
+  .basic-layout__github {
     display: none;
   }
 
@@ -217,7 +222,7 @@
   flex: none;
   padding: 18px 16px;
   border-top: 1px solid var(--line);
-  background: rgb(4 6 14 / 72%);
+  background: rgb(var(--void-rgb) / 72%);
   backdrop-filter: blur(10px);
   color: var(--ink-faint);
   font-family: var(--font-mono);

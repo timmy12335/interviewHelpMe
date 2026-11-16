@@ -6,8 +6,10 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { GlobalFooter } from "@/components/GlobalFooter";
+import { PrefsToggle } from "@/components/PrefsToggle";
 import { SearchInput } from "@/components/SearchInput";
 import { menus } from "@/config/menu";
+import { useT } from "@/i18n/PreferencesProvider";
 import { isActiveMenuItem } from "@/lib/nav";
 
 import "./index.css";
@@ -19,16 +21,16 @@ function Logo() {
       <svg viewBox="0 0 32 32" width="30" height="30" fill="none">
         <path
           d="M16 2.4 28 9.2v13.6L16 29.6 4 22.8V9.2z"
-          stroke="#22d3ee"
+          style={{ stroke: "var(--cyan)" }}
           strokeWidth="1.3"
         />
         <path
           d="M16 7.6 23.6 12v8L16 24.4 8.4 20v-8z"
-          stroke="#a855f7"
+          style={{ stroke: "var(--violet)" }}
           strokeWidth="1"
           opacity="0.75"
         />
-        <circle cx="16" cy="16" r="2.6" fill="#22d3ee" />
+        <circle cx="16" cy="16" r="2.6" style={{ fill: "var(--cyan)" }} />
       </svg>
     </span>
   );
@@ -37,6 +39,7 @@ function Logo() {
 /** 全站通用版面：頂部導覽列 + 內容區 + 底部欄。 */
 export function BasicLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const t = useT();
 
   return (
     <div id="basicLayout">
@@ -47,7 +50,7 @@ export function BasicLayout({ children }: { children: ReactNode }) {
             <span className="basic-layout__wordmark">InterviewHelpMe</span>
           </Link>
 
-          <nav className="site-nav" aria-label="主要導覽">
+          <nav className="site-nav" aria-label={t("nav.aria")}>
             {menus.map((item) => (
               <Link
                 key={item.path}
@@ -55,13 +58,14 @@ export function BasicLayout({ children }: { children: ReactNode }) {
                 className="site-nav__link"
                 aria-current={isActiveMenuItem(pathname, item) ? "page" : undefined}
               >
-                {item.name}
+                {item.labelKey ? t(item.labelKey) : item.name}
               </Link>
             ))}
           </nav>
 
           <div className="site-header__actions">
             <SearchInput />
+            <PrefsToggle />
             <a
               className="basic-layout__github"
               href="https://github.com/timmy12335/interviewHelpMe"

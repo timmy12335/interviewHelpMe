@@ -5,6 +5,7 @@ import { Card, Space, Typography } from "antd";
 import { DifficultyBadge } from "@/components/DifficultyBadge";
 import { MdViewer } from "@/components/MdViewer";
 import { TagList } from "@/components/TagList";
+import { useT } from "@/i18n/PreferencesProvider";
 import type { Question } from "@/types/question";
 
 export interface QuestionCardProps {
@@ -26,6 +27,7 @@ export function QuestionCard({
   showAnswer = true,
   href,
 }: QuestionCardProps) {
+  const t = useT();
   const title = (
     <Typography.Title level={2} style={{ margin: 0 }}>
       {href ? <a href={href}>{question.title}</a> : question.title}
@@ -40,7 +42,7 @@ export function QuestionCard({
           <TagList tags={question.tags} />
         </Space>
 
-        <section aria-label="題目內容">
+        <section aria-label={t("practice.questionAria")}>
           <MdViewer value={question.content} />
         </section>
 
@@ -50,7 +52,7 @@ export function QuestionCard({
             type="inner"
             title={
               <Typography.Title level={3} style={{ margin: 0 }}>
-                推薦答案
+                {t("practice.recommended")}
               </Typography.Title>
             }
           >

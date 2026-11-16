@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { T } from "@/i18n/T";
 import type { RelatedQuestionLink } from "@/lib/content/relatedQuestions";
 
 import "./index.css";
@@ -21,7 +22,9 @@ export function CheatSheetRelated({ items }: CheatSheetRelatedProps) {
 
   return (
     <section className="cs-related">
-      <p className="hud-eyebrow">Related // 延伸題目</p>
+      <p className="hud-eyebrow">
+        <T k="cheatsheets.related" />
+      </p>
       <ul>
         {items.map((item, index) => (
           <li key={`${item.href}-${index}`}>

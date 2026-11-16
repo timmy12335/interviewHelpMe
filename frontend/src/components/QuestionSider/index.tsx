@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef } from "react";
 
 import { ProgressRing } from "@/components/ProgressRing";
 import { useProgress } from "@/hooks/useProgress";
+import { useLocalized, useT } from "@/i18n/PreferencesProvider";
 import { isTypingTarget } from "@/lib/keyboard";
 import type { QuestionListItem } from "@/types/question";
 
@@ -14,6 +15,8 @@ import "./index.css";
 export interface QuestionSiderProps {
   categorySlug: string;
   categoryName: string;
+  /** 英文介面用的題庫名稱。 */
+  categoryNameEn?: string;
   questions: QuestionListItem[];
   currentSlug: string;
   /** 收合成窄軌；狀態由 PracticeShell 持有，因為它會影響整頁 grid。 */
@@ -25,12 +28,15 @@ export interface QuestionSiderProps {
 export function QuestionSider({
   categorySlug,
   categoryName,
+  categoryNameEn,
   questions,
   currentSlug,
   collapsed = false,
   onToggleCollapse,
 }: QuestionSiderProps) {
   const router = useRouter();
+  const t = useT();
+  const displayName = useLocalized()(categoryName, categoryNameEn);
   const listRef = useRef<HTMLElement | null>(null);
   const activeRef = useRef<HTMLAnchorElement | null>(null);
   const ids = useMemo(
@@ -102,16 +108,18 @@ export function QuestionSider({
       className="q-sider__collapse"
       onClick={onToggleCollapse}
       aria-expanded={!collapsed}
-      title={collapsed ? "展開題單" : "收合題單"}
+      title={collapsed ? t("sider.expand") : t("sider.collapse")}
     >
       <span aria-hidden>{collapsed ? "»" : "«"}</span>
-      <span className="sr-only">{collapsed ? "展開題單" : "收合題單"}</span>
+      <span className="sr-only">
+        {collapsed ? t("sider.expand") : t("sider.collapse")}
+      </span>
     </button>
   ) : null;
 
   if (collapsed) {
     return (
-      <aside className="q-sider q-sider--collapsed" aria-label="題庫題目導覽">
+      <aside className="q-sider q-sider--collapsed" aria-label={t("sider.aria")}>
         {toggle}
         <div className="q-sider__rail">
           <ProgressRing
@@ -123,19 +131,19 @@ export function QuestionSider({
           <span className="q-sider__rail-pos">
             {String(position).padStart(3, "0")}
           </span>
-          <span className="q-sider__rail-name">{categoryName}</span>
+          <span className="q-sider__rail-name">{displayName}</span>
         </div>
       </aside>
     );
   }
 
   return (
-    <aside className="q-sider" aria-label="題庫題目導覽">
+    <aside className="q-sider" aria-label={t("sider.aria")}>
       {toggle}
       <div className="q-sider__head">
         <p className="hud-eyebrow">Module</p>
         <Link className="q-sider__title" href={`/category/${categorySlug}/`}>
-          {categoryName}
+          {displayName}
         </Link>
 
         <div className="q-sider__stats">
@@ -147,10 +155,12 @@ export function QuestionSider({
           />
           <div className="q-sider__stat-text">
             <span className="hud-index">
-              已作答 {answeredCount} / {total}
+              {t("sider.answered", { answered: answeredCount, total })}
             </span>
             {dueCount > 0 ? (
-              <span className="q-sider__due-count">{dueCount} 題待複習</span>
+              <span className="q-sider__due-count">
+                {t("sider.due", { count: dueCount })}
+              </span>
             ) : null}
           </div>
         </div>
@@ -176,29 +186,30 @@ export function QuestionSider({
               className="q-pager"
               href={`/category/${categorySlug}/question/${prev.slug}/`}
             >
-              ← 上一題
+              {t("sider.prev")}
             </Link>
           ) : (
-            <span className="q-pager is-disabled">← 上一題</span>
+            <span className="q-pager is-disabled">{t("sider.prev")}</span>
           )}
           {next ? (
             <Link
               className="q-pager"
               href={`/category/${categorySlug}/question/${next.slug}/`}
             >
-              下一題 →
+              {t("sider.next")}
             </Link>
           ) : (
-            <span className="q-pager is-disabled">下一題 →</span>
+            <span className="q-pager is-disabled">{t("sider.next")}</span>
           )}
         </div>
 
         <p className="q-sider__keys">
-          <kbd>J</kbd> 下一題 <kbd>K</kbd> 上一題 <kbd>A</kbd> 解鎖答案
+          <kbd>J</kbd> {t("sider.keyNext")} <kbd>K</kbd> {t("sider.keyPrev")}{" "}
+          <kbd>A</kbd> {t("sider.keyReveal")}
         </p>
       </div>
 
-      <nav className="q-sider__list" aria-label="本題庫題目" ref={listRef}>
+      <nav className="q-sider__list" aria-label={t("sider.listAria")} ref={listRef}>
         {questions.map((question, itemIndex) => {
           const active = question.slug === currentSlug;
           const answered = answeredIds.has(question.id);
@@ -219,7 +230,7 @@ export function QuestionSider({
               </span>
               <span className="q-nav-title">{question.title}</span>
               {due ? (
-                <span className="q-nav-flag" title="建議複習">
+                <span className="q-nav-flag" title={t("sider.reviewFlag")}>
                   !
                 </span>
               ) : null}

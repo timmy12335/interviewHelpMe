@@ -6,16 +6,13 @@ import { useMemo, useState } from "react";
 
 import { DifficultyBadge } from "@/components/DifficultyBadge";
 import { TagList } from "@/components/TagList";
+import { useLocalized, useT } from "@/i18n/PreferencesProvider";
 import { withBasePath } from "@/lib/paths";
 import type { Category, Difficulty, QuestionListItem } from "@/types/question";
 
 const PAGE_SIZE = 12;
 
-const DIFFICULTY_OPTIONS: { value: Difficulty; label: string }[] = [
-  { value: "easy", label: "簡單" },
-  { value: "medium", label: "中等" },
-  { value: "hard", label: "困難" },
-];
+const DIFFICULTIES: Difficulty[] = ["easy", "medium", "hard"];
 
 export interface QuestionSearchBoardProps {
   questions: QuestionListItem[];
@@ -40,6 +37,8 @@ export function QuestionSearchBoard({
   categories,
 }: QuestionSearchBoardProps) {
   const searchParams = useSearchParams();
+  const t = useT();
+  const pick = useLocalized();
   const [keyword, setKeyword] = useState(searchParams.get("q") ?? "");
   const [categorySlug, setCategorySlug] = useState<string | undefined>();
   const [difficulty, setDifficulty] = useState<Difficulty | undefined>();
@@ -59,11 +58,11 @@ export function QuestionSearchBoard({
   const pageItems = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
-    <Card title={`題目列表（${filtered.length}）`}>
+    <Card title={t("questions.listTitle", { count: filtered.length })}>
       <Flex gap={12} wrap style={{ marginBottom: 16 }}>
         <Input.Search
           allowClear
-          placeholder="搜尋題目標題或標籤"
+          placeholder={t("questions.searchPlaceholder")}
           defaultValue={keyword}
           style={{ maxWidth: 320 }}
           onSearch={(value) => {
@@ -73,7 +72,7 @@ export function QuestionSearchBoard({
         />
         <Select
           allowClear
-          placeholder="全部題庫"
+          placeholder={t("questions.allModules")}
           style={{ minWidth: 200 }}
           value={categorySlug}
           onChange={(value) => {
@@ -82,24 +81,27 @@ export function QuestionSearchBoard({
           }}
           options={categories.map((category) => ({
             value: category.slug,
-            label: category.nameZh,
+            label: pick(category.nameZh, category.nameEn),
           }))}
         />
         <Select
           allowClear
-          placeholder="全部難度"
+          placeholder={t("questions.allDifficulty")}
           style={{ minWidth: 140 }}
           value={difficulty}
           onChange={(value) => {
             setDifficulty(value);
             setPage(1);
           }}
-          options={DIFFICULTY_OPTIONS}
+          options={DIFFICULTIES.map((value) => ({
+            value,
+            label: t(`difficulty.${value}`),
+          }))}
         />
       </Flex>
 
       {filtered.length === 0 ? (
-        <Empty description="沒有符合條件的題目" />
+        <Empty description={t("questions.empty")} />
       ) : (
         <>
           <List

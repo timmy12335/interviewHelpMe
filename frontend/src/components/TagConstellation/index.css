@@ -72,7 +72,7 @@
 .tagmap__tag:hover {
   border-color: var(--cyan);
   color: var(--cyan);
-  background: rgb(34 211 238 / 8%);
+  background: rgb(var(--cyan-rgb) / 8%);
 }
 
 .tagmap__tag:focus-visible {
@@ -82,7 +82,7 @@
 
 .tagmap__tag.is-active {
   border-color: var(--cyan);
-  background: rgb(34 211 238 / 16%);
+  background: rgb(var(--cyan-rgb) / 16%);
   color: var(--cyan);
   box-shadow: var(--glow-cyan);
 }
@@ -113,7 +113,7 @@
 
 .tagmap__more:hover {
   border-style: solid;
-  background: rgb(34 211 238 / 10%);
+  background: rgb(var(--cyan-rgb) / 10%);
 }
 
 .tagmap__more:focus-visible {

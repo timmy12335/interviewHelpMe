@@ -10,6 +10,7 @@ import type { QuestionListItem } from "@/types/question";
 export interface PracticeShellProps {
   categorySlug: string;
   categoryName: string;
+  categoryNameEn?: string;
   questions: QuestionListItem[];
   currentSlug: string;
   children: ReactNode;
@@ -22,6 +23,7 @@ export interface PracticeShellProps {
 export function PracticeShell({
   categorySlug,
   categoryName,
+  categoryNameEn,
   questions,
   currentSlug,
   children,
@@ -36,6 +38,7 @@ export function PracticeShell({
       <QuestionSider
         categorySlug={categorySlug}
         categoryName={categoryName}
+        categoryNameEn={categoryNameEn}
         questions={questions}
         currentSlug={currentSlug}
         collapsed={collapsed}

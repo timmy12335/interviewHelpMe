@@ -1,3 +1,7 @@
+"use client";
+
+import { useT } from "@/i18n/PreferencesProvider";
+
 import "./index.css";
 
 export interface ProgressRingProps {
@@ -24,12 +28,13 @@ export function ProgressRing({
   const radius = (size - STROKE) / 2;
   const circumference = 2 * Math.PI * radius;
   const center = size / 2;
+  const t = useT();
 
   return (
     <span
       className={`progress-ring${due ? " is-due" : ""}`}
       role="img"
-      aria-label={label ?? `已作答 ${value} 題，共 ${total} 題`}
+      aria-label={label ?? t("ring.label", { done: value, total })}
     >
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
         <circle

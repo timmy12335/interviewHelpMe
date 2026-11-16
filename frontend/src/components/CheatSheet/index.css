@@ -65,7 +65,7 @@
 .cs-metric__label {
   padding: 2px 8px;
   border-radius: 4px;
-  background: rgb(255 255 255 / 8%);
+  background: rgb(var(--hi-rgb) / 8%);
   color: var(--accent);
   font-size: 0.8rem;
   font-weight: 600;
@@ -102,9 +102,9 @@
 
 .cs-list--warning {
   padding: 10px 12px 10px 30px;
-  border: 1px solid rgb(251 191 36 / 30%);
+  border: 1px solid rgb(var(--amber-rgb) / 30%);
   border-radius: 8px;
-  background: rgb(251 191 36 / 8%);
+  background: rgb(var(--amber-rgb) / 8%);
   list-style-position: inside;
 }
 

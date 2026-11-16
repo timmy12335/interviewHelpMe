@@ -24,7 +24,7 @@
 
 .cs-related a:hover,
 .cs-related a:focus-visible {
-  background: rgb(34 211 238 / 8%);
+  background: rgb(var(--cyan-rgb) / 8%);
 }
 
 /* 分類標籤等寬對齊，讓題目標題在左邊形成一條直線，掃視時眼睛不用來回找 */

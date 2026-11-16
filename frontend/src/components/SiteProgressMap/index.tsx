@@ -5,6 +5,7 @@ import { useMemo } from "react";
 
 import { ProgressRing } from "@/components/ProgressRing";
 import { useProgress } from "@/hooks/useProgress";
+import { useLocalized, useT } from "@/i18n/PreferencesProvider";
 import type { ModuleSummary } from "@/lib/content/modules";
 
 import "./index.css";
@@ -24,16 +25,22 @@ export function SiteProgressMap({ modules }: SiteProgressMapProps) {
   );
   const { answeredIds, dueIds, answeredCount, dueCount, total, ready } =
     useProgress(allIds);
+  const t = useT();
+  const pick = useLocalized();
 
   return (
-    <section className="site-map hud-panel hud-brackets" aria-label="全站學習地圖">
+    <section className="site-map hud-panel hud-brackets" aria-label={t("map.aria")}>
       <div className="site-map__head">
         <div>
-          <p className="hud-eyebrow">Progress // 學習地圖</p>
+          <p className="hud-eyebrow">{t("map.eyebrow")}</p>
           <p className="site-map__lede">
             {ready
-              ? `已作答 ${answeredCount} / ${total} 題${dueCount ? `，${dueCount} 題待複習` : ""}。進度只存在這台裝置。`
-              : "讀取本機進度中…"}
+              ? t(dueCount ? "map.summaryDue" : "map.summary", {
+                  answered: answeredCount,
+                  total,
+                  due: dueCount,
+                })
+              : t("map.loading")}
           </p>
         </div>
         <ProgressRing
@@ -53,7 +60,7 @@ export function SiteProgressMap({ modules }: SiteProgressMapProps) {
           return (
             <li className="site-map__row" key={module.slug}>
               <Link className="site-map__name" href={`/category/${module.slug}/`}>
-                {module.nameZh}
+                {pick(module.nameZh, module.nameEn)}
               </Link>
               <div className="site-map__cells">
                 {module.units.map((unit, index) => {
@@ -67,7 +74,11 @@ export function SiteProgressMap({ modules }: SiteProgressMapProps) {
                       className={`site-map__cell is-${state}`}
                       href={`/category/${module.slug}/question/${unit.slug}/`}
                       title={`${index + 1}. ${unit.title}`}
-                      aria-label={`${module.nameZh} 第 ${index + 1} 題：${unit.title}`}
+                      aria-label={t("map.cellAria", {
+                        module: pick(module.nameZh, module.nameEn),
+                        index: index + 1,
+                        title: unit.title,
+                      })}
                     />
                   );
                 })}
@@ -81,9 +92,9 @@ export function SiteProgressMap({ modules }: SiteProgressMapProps) {
       </ul>
 
       <ul className="site-map__legend">
-        <li className="site-map__key is-todo">未作答</li>
-        <li className="site-map__key is-done">已作答</li>
-        <li className="site-map__key is-due">待複習</li>
+        <li className="site-map__key is-todo">{t("status.todo")}</li>
+        <li className="site-map__key is-done">{t("status.done")}</li>
+        <li className="site-map__key is-due">{t("status.due")}</li>
       </ul>
     </section>
   );
