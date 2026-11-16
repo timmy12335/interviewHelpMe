@@ -75,3 +75,4 @@ source: original
 - [[003-sliding-window.md]]
 - [[005-hash-table-space-for-time.md]]
 - [[023-interval-problems-sweep-line.md]]
+- [[../leetcode-patterns/022-prefix-sum.md]]

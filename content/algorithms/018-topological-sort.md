@@ -75,3 +75,4 @@ source: original
 - [[016-graph-representation-traversal.md]]
 - [[020-dynamic-programming-thinking.md]]
 - [[019-union-find.md]]
+- [[../leetcode-patterns/017-topological-sort.md]]

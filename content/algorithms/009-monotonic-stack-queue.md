@@ -77,3 +77,5 @@ source: original
 - [[003-sliding-window.md]]
 - [[013-heap-and-top-k.md]]
 - [[001-complexity-analysis.md]]
+- [[../leetcode-patterns/003-stacks.md]]
+- [[../leetcode-patterns/004-queues.md]]

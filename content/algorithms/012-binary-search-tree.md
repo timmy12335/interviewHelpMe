@@ -75,3 +75,4 @@ BST 的所有操作都是 **O(h)**，h 是樹高——不是 O(log n)。只有�
 - [[011-tree-traversal.md]]
 - [[006-binary-search-boundaries.md]]
 - [[013-heap-and-top-k.md]]
+- [[../leetcode-patterns/007-binary-search-trees.md]]

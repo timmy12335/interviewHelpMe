@@ -73,3 +73,4 @@ source: original
 - [[001-complexity-analysis.md]]
 - [[004-prefix-sum-difference-array.md]]
 - [[013-heap-and-top-k.md]]
+- [[../leetcode-patterns/005-hash-tables.md]]

@@ -75,3 +75,4 @@ source: original
 - [[001-complexity-analysis.md]]
 - [[007-sorting-algorithm-tradeoffs.md]]
 - [[012-binary-search-tree.md]]
+- [[../leetcode-patterns/013-searching.md]]

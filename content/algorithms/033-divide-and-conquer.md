@@ -78,3 +78,4 @@ source: original
 
 - [[006-binary-search-boundaries.md]]
 - [[034-memoization-vs-tabulation.md]]
+- [[../leetcode-patterns/024-divide-and-conquer.md]]

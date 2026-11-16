@@ -75,3 +75,5 @@ source: original
 - [[012-binary-search-tree.md]]
 - [[016-graph-representation-traversal.md]]
 - [[010-recursion-and-backtracking.md]]
+- [[../leetcode-patterns/006-trees.md]]
+- [[../leetcode-patterns/015-tree-traversal.md]]

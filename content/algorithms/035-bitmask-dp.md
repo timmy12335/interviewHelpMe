@@ -78,3 +78,4 @@ source: original
 
 - [[034-memoization-vs-tabulation.md]]
 - [[045-bit-manipulation.md]]
+- [[../leetcode-patterns/014-bit-manipulation.md]]

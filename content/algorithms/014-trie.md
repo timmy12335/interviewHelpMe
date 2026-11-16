@@ -75,3 +75,4 @@ source: original
 - [[015-string-matching-kmp.md]]
 - [[005-hash-table-space-for-time.md]]
 - [[011-tree-traversal.md]]
+- [[../leetcode-patterns/010-trie.md]]

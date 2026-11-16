@@ -75,3 +75,4 @@ source: original
 - [[021-knapsack-problems.md]]
 - [[022-greedy-vs-dp.md]]
 - [[010-recursion-and-backtracking.md]]
+- [[../leetcode-patterns/028-dynamic-programming.md]]

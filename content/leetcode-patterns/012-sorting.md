@@ -34,7 +34,7 @@ void mergeSort(int[] a, int l, int r, int[] tmp) {
 }
 ```
 
-**範式二，隨機化快速排序配三路分區**：隨機選基準後，`lt` 左邊都小於基準、`gt` 右邊都大於基準，中間是等於，之後只遞迴兩端。
+**範式二，隨機快排加三路分區**：隨機選基準後，`lt` 左邊都小於基準、`gt` 右邊都大於基準，中間是等於，之後只遞迴兩端。
 
 ```java
 private final Random rnd = new Random();

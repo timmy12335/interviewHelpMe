@@ -75,3 +75,5 @@ source: original
 - [[007-sorting-algorithm-tradeoffs.md]]
 - [[009-monotonic-stack-queue.md]]
 - [[017-shortest-path.md]]
+- [[../leetcode-patterns/008-heaps.md]]
+- [[../leetcode-patterns/029-top-k-elements.md]]

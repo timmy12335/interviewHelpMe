@@ -42,7 +42,7 @@ int search(int[] nums, int target) {
 }
 ```
 
-**範式二，找第一個讓條件成立的位置**：這是最通用的寫法。以「第一個大於等於 target 的位置」為例，若全部都比 target 小，回傳 `nums.length`。
+**範式二，找第一個成立的位置**：這是最通用的寫法。以「第一個大於等於 target 的位置」為例，若全部都比 target 小，回傳 `nums.length`。
 
 ```java
 int lowerBound(int[] nums, int target) {

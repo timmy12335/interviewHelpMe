@@ -66,7 +66,7 @@ int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
 }
 ```
 
-**範式三，最小化路徑上的最大值**：游泳穿越上升的水域，路徑成本是經過格子的最高海拔。把 Dijkstra 的 `d + w` 換成 `max(d, h)`，其餘不變。
+**範式三，最小化路徑最大值**：游泳穿越上升的水域，路徑成本是經過格子的最高海拔。把 Dijkstra 的 `d + w` 換成 `max(d, h)`，其餘不變。
 
 ```java
 int swimInWater(int[][] grid) {

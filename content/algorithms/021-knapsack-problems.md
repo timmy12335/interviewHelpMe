@@ -77,3 +77,4 @@ source: original
 - [[020-dynamic-programming-thinking.md]]
 - [[022-greedy-vs-dp.md]]
 - [[001-complexity-analysis.md]]
+- [[../leetcode-patterns/028-dynamic-programming.md]]
