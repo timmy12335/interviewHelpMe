@@ -1,5 +1,5 @@
 ---
-id: leetcode-patterns-001
+id: leetcode-patterns-020
 category: leetcode-patterns
 slug: two-pointers
 title: Two Pointers：對撞與讀寫指針的 Java 範式
