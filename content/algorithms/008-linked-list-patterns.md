@@ -75,3 +75,6 @@ source: original
 - [[002-two-pointers.md]]
 - [[007-sorting-algorithm-tradeoffs.md]]
 - [[005-hash-table-space-for-time.md]]
+- [[../leetcode-patterns/002-linked-lists.md]]
+- [[../leetcode-patterns/020-two-pointers.md]]
+- [[../leetcode-patterns/023-fast-and-slow-pointers.md]]

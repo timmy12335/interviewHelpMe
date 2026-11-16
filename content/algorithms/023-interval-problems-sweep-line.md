@@ -77,3 +77,4 @@ source: original
 - [[022-greedy-vs-dp.md]]
 - [[004-prefix-sum-difference-array.md]]
 - [[013-heap-and-top-k.md]]
+- [[../leetcode-patterns/025-greedy.md]]

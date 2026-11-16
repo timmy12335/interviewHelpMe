@@ -76,3 +76,5 @@ source: original
 - [[020-dynamic-programming-thinking.md]]
 - [[001-complexity-analysis.md]]
 - [[036-search-optimization.md]]
+- [[../leetcode-patterns/026-recursion.md]]
+- [[../leetcode-patterns/027-backtracking.md]]

@@ -75,3 +75,4 @@ Floyd 我要特別提醒一件事，中繼點那一層迴圈必須寫在最外�
 - [[016-graph-representation-traversal.md]]
 - [[013-heap-and-top-k.md]]
 - [[019-union-find.md]]
+- [[../leetcode-patterns/018-shortest-path.md]]

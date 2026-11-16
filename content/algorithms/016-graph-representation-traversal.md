@@ -75,3 +75,5 @@ visited 為什麼必要，因為圖有環。樹是無環的，每個節點只有
 - [[017-shortest-path.md]]
 - [[018-topological-sort.md]]
 - [[019-union-find.md]]
+- [[../leetcode-patterns/009-graphs.md]]
+- [[../leetcode-patterns/016-dfs-and-bfs.md]]

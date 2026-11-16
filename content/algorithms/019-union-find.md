@@ -73,3 +73,4 @@ source: original
 - [[016-graph-representation-traversal.md]]
 - [[018-topological-sort.md]]
 - [[017-shortest-path.md]]
+- [[../leetcode-patterns/011-union-find.md]]

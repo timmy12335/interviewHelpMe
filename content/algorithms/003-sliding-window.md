@@ -74,3 +74,5 @@ source: original
 - [[004-prefix-sum-difference-array.md]]
 - [[009-monotonic-stack-queue.md]]
 - [[028-string-techniques.md]]
+- [[../leetcode-patterns/020-two-pointers.md]]
+- [[../leetcode-patterns/021-sliding-window.md]]

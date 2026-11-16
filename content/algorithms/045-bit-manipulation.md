@@ -78,3 +78,4 @@ source: original
 
 - [[035-bitmask-dp.md]]
 - [[044-number-theory-basics.md]]
+- [[../leetcode-patterns/014-bit-manipulation.md]]

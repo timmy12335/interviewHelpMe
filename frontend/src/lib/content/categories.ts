@@ -24,4 +24,5 @@ export const CATEGORY_META: CategoryMeta[] = [
   { slug: "computer-network", nameZh: "計算機網路面試題", sortOrder: 16 },
   { slug: "message-queue", nameZh: "訊息佇列面試題", sortOrder: 17 },
   { slug: "design-patterns", nameZh: "設計模式面試題", sortOrder: 18 },
+  { slug: "leetcode-patterns", nameZh: "LeetCode 範式（Java）", sortOrder: 19 },
 ];

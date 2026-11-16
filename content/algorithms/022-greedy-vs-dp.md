@@ -73,3 +73,4 @@ source: original
 - [[020-dynamic-programming-thinking.md]]
 - [[023-interval-problems-sweep-line.md]]
 - [[021-knapsack-problems.md]]
+- [[../leetcode-patterns/025-greedy.md]]

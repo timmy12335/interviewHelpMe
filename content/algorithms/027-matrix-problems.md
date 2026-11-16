@@ -78,3 +78,4 @@ source: original
 
 - [[016-graph-representation-traversal.md]]
 - [[026-in-place-array-manipulation.md]]
+- [[../leetcode-patterns/001-arrays.md]]
