@@ -1,0 +1,35 @@
+.bilingual__switch {
+  display: inline-flex;
+  margin-bottom: 12px;
+  border: 1px solid var(--line-strong);
+}
+
+.bilingual__option {
+  padding: 6px 14px;
+  background: transparent;
+  border: 0;
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: color var(--fast) var(--ease), background var(--fast) var(--ease);
+}
+
+.bilingual__option + .bilingual__option {
+  border-left: 1px solid var(--line-strong);
+}
+
+.bilingual__option:hover {
+  color: var(--ink);
+}
+
+.bilingual__option[aria-pressed="true"] {
+  color: var(--cyan);
+  background: var(--line);
+}
+
+.bilingual__option:focus-visible {
+  outline: 1px solid var(--cyan);
+  outline-offset: 2px;
+}

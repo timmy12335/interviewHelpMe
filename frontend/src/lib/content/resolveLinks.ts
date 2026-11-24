@@ -1,5 +1,5 @@
 import { withBasePath } from "@/lib/paths";
-import type { FollowUp, Question } from "@/types/question";
+import type { FollowUp, Question, QuestionTranslation } from "@/types/question";
 
 import type { DetailBlock } from "@/types/question";
 
@@ -128,6 +128,18 @@ export function withResolvedLinks(
   const resolve = createResolver(index, basePath);
   const { categorySlug } = question;
 
+  return {
+    ...resolveTranslatable(question, categorySlug, resolve),
+    en: question.en && resolveTranslatable(question.en, categorySlug, resolve),
+  };
+}
+
+/** 中文主檔與英文譯本共用的 Markdown 欄位，兩邊用同一套規則解析連結。 */
+function resolveTranslatable<T extends QuestionTranslation>(
+  question: T,
+  categorySlug: string,
+  resolve: WikiLinkResolver,
+): T {
   return {
     ...question,
     content: replaceWikiLinks(question.content, categorySlug, resolve),

@@ -4,7 +4,7 @@ import path from "node:path";
 import type { Category, Question } from "@/types/question";
 
 import { CATEGORY_META, type CategoryMeta } from "./categories";
-import { parseQuestionMarkdown } from "./parseQuestionMarkdown";
+import { parseQuestionMarkdown, parseQuestionTranslation } from "./parseQuestionMarkdown";
 import {
   buildLinkIndex,
   withResolvedLinks,
@@ -61,8 +61,19 @@ function assertCategoryDirectoriesMatchMeta(
   );
 }
 
+/** 英文譯本的副檔名：`001-slug.md` 的譯本是 `001-slug.en.md`。 */
+export const TRANSLATION_SUFFIX = ".en.md";
+
 function isQuestionMarkdownFile(name: string): boolean {
-  return name.endsWith(".md") && name.toLowerCase() !== "readme.md";
+  return (
+    name.endsWith(".md") &&
+    !name.endsWith(TRANSLATION_SUFFIX) &&
+    name.toLowerCase() !== "readme.md"
+  );
+}
+
+function translationPathFor(questionPath: string): string {
+  return questionPath.replace(/\.md$/, TRANSLATION_SUFFIX);
 }
 
 function listQuestionFiles(categoryDir: string): string[] {
@@ -84,6 +95,11 @@ function loadQuestionsFromCategoryDir(contentRoot: string, categorySlug: string)
   for (const filePath of listQuestionFiles(categoryDir)) {
     const raw = fs.readFileSync(filePath, "utf-8");
     const question = parseQuestionMarkdown(raw, filePath);
+
+    const enPath = translationPathFor(filePath);
+    if (fs.existsSync(enPath)) {
+      question.en = parseQuestionTranslation(fs.readFileSync(enPath, "utf-8"), enPath);
+    }
 
     if (question.categorySlug !== categorySlug) {
       throw new Error(
