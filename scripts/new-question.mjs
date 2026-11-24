@@ -48,7 +48,7 @@ function parseArgs(argv) {
 /** 該分類已有的題目檔名（不含 README）。 */
 async function listQuestionFiles(categoryDir) {
   const entries = await readdir(categoryDir);
-  return entries.filter((name) => /^\d+-.*\.md$/.test(name));
+  return entries.filter((name) => /^\d+-.*\.md$/.test(name) && !name.endsWith(".en.md"));
 }
 
 /** 掃過該分類已有的檔案，回傳下一個三位數編號。 */

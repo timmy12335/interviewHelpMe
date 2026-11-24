@@ -18,7 +18,8 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { CATEGORY_META } from "./categories";
-import { getContentRoot } from "./loadContent";
+import { TRANSLATION_SUFFIX, getContentRoot } from "./loadContent";
+import { SECTION_HEADINGS } from "./parseQuestionMarkdown";
 import { parseWikiTarget } from "./wikiLinks";
 
 const CONTENT_ROOT = getContentRoot();
@@ -56,7 +57,12 @@ function listCategories(): string[] {
 function listQuestionFiles(category: string): QuestionFile[] {
   return fs
     .readdirSync(path.join(CONTENT_ROOT, category))
-    .filter((name) => name.endsWith(".md") && name.toLowerCase() !== "readme.md")
+    .filter(
+      (name) =>
+        name.endsWith(".md") &&
+        !name.endsWith(TRANSLATION_SUFFIX) &&
+        name.toLowerCase() !== "readme.md",
+    )
     .sort()
     .map((fileName) => ({
       category,
@@ -317,5 +323,76 @@ describe("README 的題數", () => {
     });
 
     expect(wrong).toEqual([]);
+  });
+});
+
+describe("英文譯本", () => {
+  const translations = CATEGORIES.flatMap((category) =>
+    fs
+      .readdirSync(path.join(CONTENT_ROOT, category))
+      .filter((name) => name.endsWith(TRANSLATION_SUFFIX))
+      .sort()
+      .map((fileName) => ({
+        label: `${category}/${fileName}`,
+        source: `${category}/${fileName.replace(TRANSLATION_SUFFIX, ".md")}`,
+        markdown: fs.readFileSync(path.join(CONTENT_ROOT, category, fileName), "utf8"),
+      })),
+  );
+  const sources = new Map(QUESTIONS.map((q) => [q.label, q.markdown]));
+  const en = SECTION_HEADINGS.en;
+  const required = [
+    `# ${en.question}`,
+    `## ${en.core}`,
+    `## ${en.detail}`,
+    `## ${en.tip}`,
+    `## ${en.script}`,
+    `## ${en.followUps}`,
+  ];
+
+  it("每份譯本都有對應的中文主檔", () => {
+    // 譯本檔名打錯或主檔改名後忘了跟著改，譯本就會靜靜地不再出現在頁面上。
+    const orphans = translations
+      .filter(({ source }) => !sources.has(source))
+      .map(({ label }) => `${label} 找不到 ${label.replace(TRANSLATION_SUFFIX, ".md")}`);
+
+    expect(orphans).toEqual([]);
+  });
+
+  it("譯本具備所有必要區塊與標題", () => {
+    const missing = translations.flatMap(({ label, markdown }) => [
+      ...(frontmatterValue(markdown, "title") ? [] : [`${label} 缺少 frontmatter title`]),
+      ...required
+        .filter((section) => !new RegExp(`^${section}[ \\t]*$`, "m").test(markdown))
+        .map((section) => `${label} 缺少「${section}」`),
+    ]);
+
+    expect(missing).toEqual([]);
+  });
+
+  it("譯本的常見追問數量與主檔一致", () => {
+    // 主檔補了一題追問、譯本沒跟上，切換語言時內容就會少一塊。
+    const countFollowUps = (markdown: string) => (markdown.match(/^### /gm) ?? []).length;
+    const drift = translations.flatMap(({ label, source, markdown }) => {
+      const original = sources.get(source);
+      if (original === undefined) {
+        return [];
+      }
+      const [zh, translated] = [countFollowUps(original), countFollowUps(markdown)];
+      return zh === translated ? [] : [`${label} 有 ${translated} 題追問，主檔有 ${zh} 題`];
+    });
+
+    expect(drift).toEqual([]);
+  });
+
+  it("譯本的粗體標記都成對", () => {
+    const unpaired = translations.flatMap(({ label, markdown }) =>
+      maskCode(markdown)
+        .split("\n")
+        .flatMap((line, index) =>
+          (line.match(/\*\*/g)?.length ?? 0) % 2 === 1 ? [`${label}:${index + 1} 有落單的 **`] : [],
+        ),
+    );
+
+    expect(unpaired).toEqual([]);
   });
 });

@@ -25,4 +25,5 @@ export const CATEGORY_META: CategoryMeta[] = [
   { slug: "message-queue", nameZh: "訊息佇列面試題", sortOrder: 17 },
   { slug: "design-patterns", nameZh: "設計模式面試題", sortOrder: 18 },
   { slug: "leetcode-patterns", nameZh: "LeetCode 範式（Java）", sortOrder: 19 },
+  { slug: "scenario-design", nameZh: "場景設計面試題（中英對照）", sortOrder: 20 },
 ];

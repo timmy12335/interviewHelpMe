@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { PracticeQuestion } from "@/components/PracticeQuestion";
+import { BilingualQuestion } from "@/components/BilingualQuestion";
 import { PracticeShell } from "@/components/PracticeShell";
 import {
   getAllCategories,
@@ -39,7 +39,7 @@ export default function QuestionPage({ params }: QuestionPageProps) {
       questions={siblings}
       currentSlug={params.questionSlug}
     >
-      <PracticeQuestion question={question} />
+      <BilingualQuestion question={question} />
     </PracticeShell>
   );
 }

@@ -8,6 +8,8 @@ import type { StorageLike } from "./progress";
 export const SIDER_COLLAPSED_KEY = "ihm:ui:sider-collapsed";
 export const REF_COLLAPSED_KEY = "ihm:ui:ref-collapsed";
 export const DETAIL_OPEN_KEY = "ihm:ui:detail-open";
+/** 有英文譯本的題目要顯示哪種語言（1 = English）。 */
+export const CONTENT_EN_KEY = "ihm:ui:content-en";
 
 const TRUE = "1";
 const FALSE = "0";

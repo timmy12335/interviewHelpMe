@@ -16,6 +16,25 @@ export type FollowUp = {
   interviewTip?: string;
 };
 
+/** 題目內文的語言。中文是主檔，英文是選擇性的譯本。 */
+export type ContentLocale = "zh" | "en";
+
+/**
+ * 題目的譯本（目前只有英文）：只含會隨語言改變的欄位。
+ * id、難度、標籤、分類與相關題目都以中文主檔為準。
+ */
+export type QuestionTranslation = {
+  title: string;
+  content: string;
+  answer?: string;
+  coreAnswer?: string;
+  detail?: string;
+  detailBlocks?: DetailBlock[];
+  interviewTip?: string;
+  script?: string;
+  followUps?: FollowUp[];
+};
+
 /** 與後端 schema 對齊的題目資料。 */
 export type Question = {
   id: string;
@@ -36,6 +55,8 @@ export type Question = {
   followUps?: FollowUp[];
   related?: string[];
   categorySlug: string;
+  /** 同目錄下 `NNN-slug.en.md` 的英文譯本；沒有譯本的題目不帶這個欄位。 */
+  en?: QuestionTranslation;
 };
 
 /** QuestionList 列表展示所需欄位（不含 answer / content）。 */

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { parseQuestionMarkdown } from "./parseQuestionMarkdown";
+import { parseQuestionMarkdown, parseQuestionTranslation } from "./parseQuestionMarkdown";
 
 const VALID_RAW = `---
 id: ai-agent-001
@@ -130,5 +130,74 @@ difficulty: easy
     const result = parseQuestionMarkdown(VALID_RAW, "test.md");
 
     expect(result.answer).not.toContain("## 講稿");
+  });
+});
+
+describe("parseQuestionTranslation", () => {
+  const EN_RAW = `---
+title: What is an AI Agent?
+---
+
+# Question
+
+What is an AI Agent?
+
+## Core Answer
+
+An LLM-driven decision loop.
+
+## Detailed Explanation
+
+**Loop**: It keeps choosing the next action.
+
+## How to Answer
+
+Definition first, then components.
+
+## Script
+
+An AI agent is a system that uses an LLM to decide what to do next.
+
+## Follow-up Questions
+
+### Does function calling count as an agent?
+
+**Core answer**: Not necessarily.
+
+**Detailed explanation**: The key is the autonomous loop.
+
+**How to answer**: Contrast one call with a loop.
+`;
+
+  it("parses English headings and follow-up labels", () => {
+    const parsed = parseQuestionTranslation(EN_RAW, "x.en.md");
+
+    expect(parsed.title).toBe("What is an AI Agent?");
+    expect(parsed.content).toBe("What is an AI Agent?");
+    expect(parsed.coreAnswer).toBe("An LLM-driven decision loop.");
+    expect(parsed.detailBlocks).toEqual([
+      { heading: "Loop", body: "It keeps choosing the next action." },
+    ]);
+    expect(parsed.interviewTip).toBe("Definition first, then components.");
+    expect(parsed.script).toContain("decide what to do next");
+    expect(parsed.followUps).toEqual([
+      {
+        title: "Does function calling count as an agent?",
+        coreAnswer: "Not necessarily.",
+        detail: "The key is the autonomous loop.",
+        interviewTip: "Contrast one call with a loop.",
+      },
+    ]);
+    expect(parsed.answer).toContain("## Core Answer");
+  });
+
+  it("rejects a translation without a title", () => {
+    expect(() =>
+      parseQuestionTranslation(EN_RAW.replace("title: What is an AI Agent?\n", ""), "x.en.md"),
+    ).toThrow(/title/);
+  });
+
+  it("rejects a translation that still uses Chinese headings", () => {
+    expect(() => parseQuestionTranslation(VALID_RAW, "x.en.md")).toThrow(/# Question/);
   });
 });

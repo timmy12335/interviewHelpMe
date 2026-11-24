@@ -68,4 +68,5 @@ INSERT INTO category (slug, name_zh, name_en, sort_order) VALUES
     ('computer-network', '計算機網路面試題', 'Computer Network', 16),
     ('message-queue', '訊息佇列面試題', 'Message Queue', 17),
     ('design-patterns', '設計模式面試題', 'Design Patterns', 18),
-    ('leetcode-patterns', 'LeetCode 範式（Java）', 'LeetCode Patterns (Java)', 19);
+    ('leetcode-patterns', 'LeetCode 範式（Java）', 'LeetCode Patterns (Java)', 19),
+    ('scenario-design', '場景設計面試題（中英對照）', 'Scenario Design (Bilingual)', 20);

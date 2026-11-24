@@ -65,6 +65,7 @@ npm test
 | [yangshun/tech-interview-handbook](https://github.com/yangshun/tech-interview-handbook) | 演算法題型與解題模式、行為面試、前端面試、求職流程 | `algorithms`、`behavioral`、`frontend` |
 | [Snailclimb/JavaGuide](https://github.com/Snailclimb/JavaGuide) | Java 基礎與集合、併發、JVM、Spring、MySQL、Redis、計算機基礎、設計模式、分散式、高效能與高可用 | `java`、`java-concurrency`、`jvm`、`spring`、`database`、`redis`、`backend-engineering`、`system-design`、`computer-network`、`message-queue`、`design-patterns` |
 | [yongxinz/backend-interview](https://github.com/yongxinz/backend-interview) | 後端共通題：MySQL、Redis、訊息佇列、網路、作業系統、系統設計與架構 | `database`、`redis`、`backend-engineering`、`system-design`、`computer-network`、`message-queue` |
+| [JAVA大神（javadashen.com）](https://javadashen.com/) | 場景設計題：高並發、常見業務場景、SQL、接口安全、大數據、資料安全 | `scenario-design` |
 
 `kubernetes`、`ai-llm`、`ai-agent` 三類沒有對應的來源專案，題目來自官方文件與實務經驗。
 
